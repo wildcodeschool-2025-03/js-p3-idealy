@@ -3,16 +3,23 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router";
 
+import Admin from "./pages/Admin";
+import Apropos from "./pages/Apropos";
+import Compte from "./pages/Compte";
+import Contact from "./pages/Contact";
+import Detail from "./pages/Detail";
+import Home from "./pages/Home";
+import Information from "./pages/Information";
+import Legal from "./pages/Legal";
+import NotFound from "./pages/NotFound";
+import Parcourir from "./pages/Parcourir";
+import Principal from "./pages/Principal";
+import Soumettre from "./pages/Soumettre";
+
 /* ************************************************************************* */
 
 // Import the main app component
 import App from "./App";
-
-// Import additional components for new routes
-// Try creating these components in the "pages" folder
-
-// import About from "./pages/About";
-// import Contact from "./pages/Contact";
 
 /* ************************************************************************* */
 
@@ -20,13 +27,59 @@ import App from "./App";
 // You can add more routes as you build out your app!
 const router = createBrowserRouter([
   {
-    path: "/", // The root path
-    element: <App />, // Renders the App component for the home page
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/admin",
+        element: <Admin />,
+      },
+      {
+        path: "/a-propos",
+        element: <Apropos />,
+      },
+      {
+        path: "/compte",
+        element: <Compte />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
+      {
+        path: "/detail",
+        element: <Detail />,
+      },
+      {
+        path: "/information",
+        element: <Information />,
+      },
+      {
+        path: "/legal",
+        element: <Legal />,
+      },
+      {
+        path: "/not-found",
+        element: <NotFound />,
+      },
+      {
+        path: "/parcourir",
+        element: <Parcourir />,
+      },
+      {
+        path: "/principal",
+        element: <Principal />,
+      },
+      {
+        path: "/soumettre",
+        element: <Soumettre />,
+      },
+    ],
   },
-  // Try adding a new route! For example, "/about" with an About component
 ]);
-
-/* ************************************************************************* */
 
 // Find the root element in the HTML document
 const rootElement = document.getElementById("root");
