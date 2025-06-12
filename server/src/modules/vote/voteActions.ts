@@ -1,0 +1,51 @@
+import type { RequestHandler } from "express";
+
+// Import access to data
+import voteRepository from "./voteRepository";
+
+// The B of BREAD - Browse (Read All) operation
+const browse: RequestHandler = async (req, res, next) => {
+  try {
+    const votes = await voteRepository.readAll();
+
+    res.json(votes);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// The R of BREAD - Read operation
+const read: RequestHandler = async (req, res, next) => {
+  try {
+    const voteId = Number(req.params.id);
+    const vote = await voteRepository.read(voteId);
+
+    if (vote == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(vote);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// The A of BREAD - Add (Create) operation
+const add: RequestHandler = async (req, res, next) => {
+  try {
+    const newVote = {
+      agree: req.body.agree,
+      disagree: req.body.disagree,
+      idea_id: req.body.idea_id,
+      user_id: req.body.user_id,
+    };
+
+    const insertId = await voteRepository.create(newVote);
+
+    res.status(201).json({ insertId });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, add };
