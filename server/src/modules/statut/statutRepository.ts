@@ -55,3 +55,4 @@ class StatutRepository {
 }
 
 export default new StatutRepository();
+

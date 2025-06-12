@@ -85,3 +85,4 @@ class CategoryIdeaRepository {
 }
 
 export default new CategoryIdeaRepository();
+
