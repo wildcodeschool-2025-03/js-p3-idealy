@@ -1,21 +1,40 @@
-create table user (
-  id int unsigned primary key auto_increment not null,
-  email varchar(255) not null unique,
-  password varchar(255) not null
+create table Category (
+    id int primary key auto_increment not null,
+    category varchar(255) not null unique default 'Amélioration'
 );
 
-create table item (
-  id int unsigned primary key auto_increment not null,
-  title varchar(255) not null,
-  user_id int unsigned not null,
-  foreign key(user_id) references user(id)
+create table Statut (
+    id int primary key auto_increment not null,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    statut ENUM(
+        'En cours',
+        'Validé',
+        'Refusé'
+    ) DEFAULT 'En cours',
 );
 
-insert into user(id, email, password)
-values
-  (1, "jdoe@mail.com", "123456");
+create table Category_idea (
+    id int primary key auto_increment not null,
+    category_id int not null,
+    foreign key (category_id) references Category (id),
+    idea_id int not null,
+    foreign key (idea_id) references Idea (id)
+);
 
-insert into item(id, title, user_id)
-values
-  (1, "Stuff", 1),
-  (2, "Doodads", 1);
+insert into
+    Category (category)
+values ("Amélioration"),
+    ("Conditions de travail"),
+    (
+        "Innovation / Nouveaux projets"
+    ),
+    ("Relation client"),
+    ("Optimisation des coûts"),
+    ("Développement durable"),
+    ("Vie d'équipe");
+
+insert into
+    Statut (statut, idea_id)
+values ("En cours", 1),
+    ("Validé", 1),
+    ("Refusé", 1);
