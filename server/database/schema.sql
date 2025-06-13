@@ -1,3 +1,4 @@
+-- SQLBook: Code
   CREATE TABLE Service(
   id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   statut ENUM('Production', 'Marketing', 'Innovation', 'Vente', 'Comptabilité', 'Logistique', 'Qualité', 'Sécurité', 'RH', 'Juridique', 'Maintenance', 'Autre')

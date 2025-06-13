@@ -6,13 +6,6 @@ const router = express.Router();
 // Define Your API Routes Here
 /* ************************************************************************* */
 
-// Define item-related routes
-import itemActions from "./modules/item/itemActions";
-
-router.get("/api/items", itemActions.browse);
-router.get("/api/items/:id", itemActions.read);
-router.post("/api/items", itemActions.add);
-
 // Service-related routes
 import serviceActions from "./modules/service/serviceActions";
 
@@ -69,6 +62,22 @@ router.post("/api/statut", statutActions.add);
 router.put("/api/statut/:id", statutActions.edit);
 router.delete("/api/statut/:id", statutActions.destroy);
 
-/* ************************************************************************* */
+// Define media-related routes
+import mediaActions from "./modules/media/mediaActions";
+
+router.get("/api/media", mediaActions.browse);
+router.get("/api/media/:id", mediaActions.read);
+router.post("/api/media", mediaActions.add);
+router.put("/api/media/:id", mediaActions.edit);
+router.delete("/api/media/:id", mediaActions.destroy);
+
+// Define comment-related routes
+import commentActions from "./modules/comment/commentActions";
+
+router.get("/api/comment", commentActions.browse);
+router.get("/api/comment/:id", commentActions.read);
+router.post("/api/comment", commentActions.add);
+router.put("/api/comment/:id", commentActions.edit);
+router.delete("/api/comment/:id", commentActions.destroy);
 
 export default router;
