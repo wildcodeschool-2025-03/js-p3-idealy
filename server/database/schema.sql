@@ -87,8 +87,6 @@ create table Category_idea (
     foreign key (idea_id) references Idea (id)
 );
 
-----------------------------INSERTS-----------------------------------------------
-
 INSERT INTO Service(statut)
 VALUES
 ('Production'),

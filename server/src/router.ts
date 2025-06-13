@@ -47,37 +47,37 @@ router.post("/api/votes", voteActions.add);
 // Define category-related routes
 import categoryActions from "./modules/category/categoryActions";
 
-router.get("/api/category", categoryActions.browse);
-router.get("/api/category/:id", categoryActions.read);
-router.post("/api/category", categoryActions.add);
-router.put("/api/category/:id", categoryActions.edit);
-router.delete("/api/category/:id", categoryActions.destroy);
+router.get("/api/categories", categoryActions.browse);
+router.get("/api/categories/:id", categoryActions.read);
+router.post("/api/categories", categoryActions.add);
+router.put("/api/categories/:id", categoryActions.edit);
+router.delete("/api/categories/:id", categoryActions.destroy);
 
 // Define statut-related routes
 import statutActions from "./modules/statut/statutActions";
 
-router.get("/api/statut", statutActions.browse);
-router.get("/api/statut/:id", statutActions.read);
-router.post("/api/statut", statutActions.add);
-router.put("/api/statut/:id", statutActions.edit);
-router.delete("/api/statut/:id", statutActions.destroy);
+router.get("/api/status", statutActions.browse);
+router.get("/api/status/:id", statutActions.read);
+router.post("/api/status", statutActions.add);
+router.put("/api/status/:id", statutActions.edit);
+router.delete("/api/status/:id", statutActions.destroy);
 
 // Define media-related routes
 import mediaActions from "./modules/media/mediaActions";
 
-router.get("/api/media", mediaActions.browse);
-router.get("/api/media/:id", mediaActions.read);
-router.post("/api/media", mediaActions.add);
-router.put("/api/media/:id", mediaActions.edit);
-router.delete("/api/media/:id", mediaActions.destroy);
+router.get("/api/medias", mediaActions.browse);
+router.get("/api/medias/:id", mediaActions.read);
+router.post("/api/medias", mediaActions.add);
+router.put("/api/medias/:id", mediaActions.edit);
+router.delete("/api/medias/:id", mediaActions.destroy);
 
 // Define comment-related routes
 import commentActions from "./modules/comment/commentActions";
 
-router.get("/api/comment", commentActions.browse);
-router.get("/api/comment/:id", commentActions.read);
-router.post("/api/comment", commentActions.add);
-router.put("/api/comment/:id", commentActions.edit);
-router.delete("/api/comment/:id", commentActions.destroy);
+router.get("/api/comments", commentActions.browse);
+router.get("/api/comments/:id", commentActions.read);
+router.post("/api/comments", commentActions.add);
+router.put("/api/comments/:id", commentActions.edit);
+router.delete("/api/comments/:id", commentActions.destroy);
 
 export default router;
