@@ -71,7 +71,8 @@ id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 user_id INT NOT NULL,
 FOREIGN KEY(user_id) REFERENCES User(id),
 idea_id INT NOT NULL,
-FOREIGN KEY(idea_id) REFERENCES Idea(id)
+FOREIGN KEY(idea_id) REFERENCES Idea(id),
+isCreator BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 create table Category (
@@ -126,11 +127,11 @@ values ("En cours"),
 
 
   INSERT INTO Idea (title, description, deadline, statut_id) VALUES
-  ("Machine en mauvais état", "Améliorer la machine à café", "2025-12-12", 1);
+  ("Machine en mauvais état", "Améliorer la machine à café", "2025-12-12", 2);
 
 
-INSERT INTO User_idea (user_id, idea_id) VALUES
-(1, 1);
+INSERT INTO User_idea (user_id, idea_id, isCreator) VALUES
+(2, 1, TRUE);
 
 
   INSERT INTO Vote (agree, disagree, idea_id, user_id) VALUES

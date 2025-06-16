@@ -37,6 +37,8 @@ router.get("/api/ideas", ideaActions.browse);
 router.get("/api/ideas/:id", ideaActions.read);
 router.post("/api/ideas", ideaActions.add);
 
+router.get("/api/ideas/:id/creator", ideaActions.getCreatorOfThisIdea); // Get the creator (the user marked as "isCreator = true" on the joint) of a specific given idea
+
 // Define votes-related routes
 import voteActions from "./modules/vote/voteActions";
 
