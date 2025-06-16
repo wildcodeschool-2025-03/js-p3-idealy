@@ -48,4 +48,21 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add };
+// Specific functions
+
+const getCreatorOfThisIdea: RequestHandler = async (req, res, next) => {
+  try {
+    const ideaId = Number(req.params.id);
+    const user = await ideaRepository.getCreatorOfThisIdea(ideaId);
+
+    if (user == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(user);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, add, getCreatorOfThisIdea };

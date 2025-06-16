@@ -11,6 +11,17 @@ type Idea = {
   statut_id: number;
 };
 
+type User = {
+  id: number;
+  firstname?: string;
+  lastname?: string;
+  mail?: string;
+  password?: string;
+  picture?: string;
+  isAdmin?: boolean;
+  service_id?: number;
+};
+
 class IdeaRepository {
   // The C of CRUD - Create operation
 
@@ -60,6 +71,21 @@ class IdeaRepository {
     );
 
     return result.affectedRows > 0;
+  }
+
+  // Specific functions
+
+  // Execute the SQL SELECT query to retrieve the original creator of an idea, given the ID of the idea
+  async getCreatorOfThisIdea(id: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT * FROM User u
+     JOIN User_idea ui ON u.id = ui.user_id
+     WHERE ui.idea_id = ? AND ui.isCreator = TRUE`,
+      [id],
+    );
+
+    // Return the first row of the result, which represents the item
+    return rows[0] as User;
   }
 }
 

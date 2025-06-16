@@ -1,6 +1,6 @@
 // client/src/components/IdeaCard.tsx
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IdeaProp {
   idea: Idea;
@@ -10,13 +10,20 @@ interface Idea {
   id: number;
   title: string;
   description: string;
-  status: string;
+  statut_id: number;
+}
+
+interface User {
+  firstname: string;
+  lastname: string;
+  picture: string;
 }
 
 function IdeaCard({ idea }: IdeaProp) {
   // State pour les compteurs de like et dislike
   const [likeCount, setLikeCount] = useState(14);
   const [dislikeCount, setDislikeCount] = useState(8);
+  const [creator, setCreator] = useState({} as User);
 
   const handleLike = async () => {
     // Logique de requête à l'API
@@ -28,13 +35,21 @@ function IdeaCard({ idea }: IdeaProp) {
     setDislikeCount((prev) => prev + 1);
   };
 
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`)
+      .then((response) => response.json())
+      .then((data: User) => {
+        setCreator(data);
+      });
+  }, [idea]);
+
   return (
     <article className="bg-card rounded-3xl max-w-[370px] py-5 px-5 relative shadow-md flex flex-col">
       {/* Avatar et titre */}
       <section className="flex items-center mb-4">
         <img
           className="rounded-full w-10 mr-5"
-          src="/placeholder-avatar.jpg"
+          src={creator.picture}
           alt="profil du créateur"
         />
         <p className="font-bold">{idea.title}</p>
@@ -48,14 +63,11 @@ function IdeaCard({ idea }: IdeaProp) {
       </section>
 
       {/* Contenu de l'idée */}
-      <p className="text-justify mt-6">
+      <p className="text-justify mt-6">{idea.description}</p>
+      <p className="text-right font-bold mt-2 mb-4">
         {" "}
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Minima
-        quibusdam sit voluptatibus accusamus ducimus, quos dolores reprehenderit
-        deserunt! Quidem ducimus maiores laborum veritatis velit expedita
-        reprehenderit eos veniam deserunt excepturi.
+        {creator.firstname} {creator.lastname}
       </p>
-      <p className="text-right font-bold mt-2 mb-4"> Place Holder</p>
 
       {/* Boutons de vote */}
       <section className="flex items-center justify-center gap-6">
@@ -78,10 +90,10 @@ function IdeaCard({ idea }: IdeaProp) {
       </section>
 
       {/* Surimpression résultat décision */}
-      {idea.status === "Validé" && (
+      {idea.statut_id === 2 && (
         <i className="bi bi-check-circle absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-50 pointer-events-none text-[200px] text-greenButton" />
       )}
-      {idea.status === "Refusé" && (
+      {idea.statut_id === 3 && (
         <i className="bi bi-x-circle absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-50 pointer-events-none text-[200px] text-redButton" />
       )}
     </article>
