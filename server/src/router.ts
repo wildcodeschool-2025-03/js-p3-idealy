@@ -38,6 +38,8 @@ router.get("/api/ideas/:id", ideaActions.read);
 router.post("/api/ideas", ideaActions.add);
 
 router.get("/api/ideas/:id/creator", ideaActions.getCreatorOfThisIdea); // Get the creator (the user marked as "isCreator = true" on the joint) of a specific given idea
+router.get("/api/ideas/:id/votes", ideaActions.getVotesInformationsOfThisIdea); // Get the votes informations (number of agree and disagree) of a specific given idea
+router.get("/api/ideas/:id/categories", ideaActions.getCategoriesOfThisIdea); // Get the categories (a table of all key words associated) of a specific given idea
 
 // Define votes-related routes
 import voteActions from "./modules/vote/voteActions";

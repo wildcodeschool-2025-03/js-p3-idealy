@@ -50,6 +50,7 @@ const add: RequestHandler = async (req, res, next) => {
 
 // Specific functions
 
+// Retrieve the original creator of an idea, given the ID of the idea
 const getCreatorOfThisIdea: RequestHandler = async (req, res, next) => {
   try {
     const ideaId = Number(req.params.id);
@@ -65,4 +66,47 @@ const getCreatorOfThisIdea: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, getCreatorOfThisIdea };
+// Retrieve the votes informations of an idea, given the ID of the idea
+const getVotesInformationsOfThisIdea: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const ideaId = Number(req.params.id);
+    const votesInformations =
+      await ideaRepository.getVotesInformationsOfThisIdea(ideaId);
+
+    if (votesInformations == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(votesInformations);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Retrieve the categories (a table of all key words associated) of an idea, given the ID of the idea
+const getCategoriesOfThisIdea: RequestHandler = async (req, res, next) => {
+  try {
+    const ideaId = Number(req.params.id);
+    const categories = await ideaRepository.getCategoriesOfThisIdea(ideaId);
+    if (categories == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(categories);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default {
+  browse,
+  read,
+  add,
+  getCreatorOfThisIdea,
+  getVotesInformationsOfThisIdea,
+  getCategoriesOfThisIdea,
+};
