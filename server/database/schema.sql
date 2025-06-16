@@ -126,11 +126,11 @@ values ("En cours"),
 
 
   INSERT INTO Idea (title, description, deadline, statut_id) VALUES
-  ("Machine en mauvais état", "Améliorer la machine à café", "2025-12-12", 1);
+  ("Machine en mauvais état", "Améliorer la machine à café", "2025-12-12", 2);
 
 
 INSERT INTO User_idea (user_id, idea_id) VALUES
-(1, 1);
+(2, 1);
 
 
   INSERT INTO Vote (agree, disagree, idea_id, user_id) VALUES
