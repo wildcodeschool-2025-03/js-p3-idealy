@@ -8,7 +8,7 @@ function Header() {
 
   return (
     <>
-      <div className="flex justify-between mt-4 px-4 relative items-center md:justify-center">
+      <div className="flex justify-between mt-4 px-4 relative items-center md:justify-center z-10">
         <Link to="/compte">
           <MdAccountCircle className="text-4xl md:hidden" />
         </Link>
