@@ -1,13 +1,39 @@
 // client/components/ui/PieceJointeButton.tsx
-// Composant pour le bouton de pièce jointe
+
+import { useCallback } from "react";
+
+type Props = {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onDropFiles: (files: File[]) => void;
+  multiple?: boolean;
+};
 
 const PieceJointeButton = ({
   onChange,
-}: {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
+  onDropFiles,
+  multiple = false,
+}: Props) => {
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLLabelElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      onDropFiles(droppedFiles);
+    },
+    [onDropFiles],
+  );
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  };
+
   return (
-    <label className="inline-flex items-center gap-2 cursor-pointer border rounded-lg px-4 py-2 hover:bg-gray-200 transition">
+    <label
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      className="flex flex-col items-center justify-center gap-2 cursor-pointer border-2 border-dashed rounded-lg px-4 py-6 hover:bg-gray-100 transition text-center"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 64 64"
@@ -16,7 +42,7 @@ const PieceJointeButton = ({
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="w-5 h-6"
+        className="w-6 h-6"
         role="img"
         aria-label="Icône de pièce jointe"
       >
@@ -24,8 +50,14 @@ const PieceJointeButton = ({
         <path d="M20 4v50a12 12 0 0 0 24 0V18a8 8 0 0 0 -16 0v36" />
       </svg>
 
-      <span className="text-center">Pièce jointe</span>
-      <input type="file" className="hidden" onChange={onChange} />
+      <span className="text-sm">Cliquez ou déposez vos fichiers ici</span>
+
+      <input
+        type="file"
+        className="hidden"
+        onChange={onChange}
+        multiple={multiple}
+      />
     </label>
   );
 };
