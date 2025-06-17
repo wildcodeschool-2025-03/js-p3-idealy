@@ -40,7 +40,6 @@ const categoryColors: Record<string, string> = {
 };
 
 function IdeaCard({ idea }: IdeaProp) {
-  // State pour les compteurs de like et dislike
   const [creator, setCreator] = useState({} as User);
   const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
   const [categories, setCategories] = useState([] as Category[]);

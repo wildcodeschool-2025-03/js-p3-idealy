@@ -46,7 +46,7 @@ function Header() {
         </div>
 
         <div
-          className={`md:hidden space-y-3 text-center absolute top-full right-0 py-3 px-2 bg-greyBackground shadow-2xl rounded-lg transition-all duration-300 ${
+          className={`md:hidden space-y-3 text-center absolute top-full right-0 py-3 px-2 bg-greyBackground shadow-md rounded-b-3xl transition-all duration-300 ${
             open
               ? "transform translate-x-0 opacity-100"
               : "transform translate-x-full opacity-0"
