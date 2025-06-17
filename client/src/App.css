@@ -22,3 +22,7 @@ body {
   margin: 0 auto;
   background-color: #ffffff;
 }
+
+.font-kalam {
+  font-family: "Kalam", cursive;
+}

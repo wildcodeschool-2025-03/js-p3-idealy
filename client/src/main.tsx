@@ -54,7 +54,7 @@ const router = createBrowserRouter([
         element: <Detail />,
       },
       {
-        path: "/information",
+        path: "/informations",
         element: <Information />,
       },
       {
@@ -62,7 +62,7 @@ const router = createBrowserRouter([
         element: <Legal />,
       },
       {
-        path: "/not-found",
+        path: "*",
         element: <NotFound />,
       },
       {
