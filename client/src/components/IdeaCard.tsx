@@ -77,6 +77,15 @@ function IdeaCard({ idea }: IdeaProp) {
       });
   }, [idea]);
 
+  // Fonction pour tronquer le texte (des descriptions pour assurer une taille cohérente) en s'arrêtant au dernier espaces
+  function truncateText(text: string, maxLength: number) {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    const truncated = text.slice(0, maxLength);
+    const lastSpace = truncated.lastIndexOf(" ");
+    return `${lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated} [...]`;
+  }
+
   return (
     <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col">
       {/* Avatar et titre */}
@@ -101,7 +110,10 @@ function IdeaCard({ idea }: IdeaProp) {
       </section>
 
       {/* Contenu de l'idée */}
-      <p className="text-justify mt-6">{idea.description}</p>
+      <p className="text-justify mt-6">
+        {" "}
+        "{truncateText(idea.description, 252)}"
+      </p>
       <p className="text-right font-bold mt-2 mb-4">
         {" "}
         {creator.firstname} {creator.lastname}
