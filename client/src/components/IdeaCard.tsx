@@ -95,6 +95,7 @@ function IdeaCard({ idea }: IdeaProp) {
         {categories.map((cat) => (
           <span
             key={cat.category}
+            title={cat.category}
             className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
           />
         ))}
