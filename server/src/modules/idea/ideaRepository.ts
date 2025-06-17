@@ -22,6 +22,15 @@ type User = {
   service_id?: number;
 };
 
+type VoteInformation = {
+  agree_count: number;
+  disagree_count: number;
+};
+
+type Category = {
+  category: string;
+};
+
 class IdeaRepository {
   // The C of CRUD - Create operation
 
@@ -86,6 +95,32 @@ class IdeaRepository {
 
     // Return the first row of the result, which represents the item
     return rows[0] as User;
+  }
+
+  // Execute the SQL SELECT query to retrieve the votes information of an idea, given the ID of the idea
+  async getVotesInformationsOfThisIdea(id: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT
+      (SELECT COUNT(*) FROM Vote WHERE idea_id = ? AND agree = TRUE) AS agree_count,
+      (SELECT COUNT(*) FROM Vote WHERE idea_id = ? AND disagree = TRUE) AS disagree_count;`,
+      [id, id],
+    );
+
+    // Return the first row of the result, which represents the item
+    return rows[0] as VoteInformation;
+  }
+
+  // Execute the SQL SELECT query to retrieve the categories of an idea, given the ID of the idea
+  async getCategoriesOfThisIdea(id: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT c.category FROM Category c
+      JOIN Category_idea ci ON c.id = ci.category_id
+      WHERE ci.idea_id = ?`,
+      [id],
+    );
+
+    // Return the array of categories
+    return rows as Category[];
   }
 }
 

@@ -19,20 +19,38 @@ interface User {
   picture: string;
 }
 
+interface VoteInformation {
+  agree_count: number;
+  disagree_count: number;
+}
+
+interface Category {
+  category: string;
+}
+
+// Couleurs des catégories pour les blocs
+const categoryColors: Record<string, string> = {
+  Amélioration: "bg-redButton",
+  Innovation: "bg-yellowButton",
+  "Conditions de travail": "bg-greenButton",
+  "Relation client": "bg-[#007aff]",
+  "Optimisation des coûts": "bg-[#af52de]",
+  "Développement durable": "bg-[#5ac8fa]",
+  "Vie d'équipe": "bg-[#ff9500]",
+};
+
 function IdeaCard({ idea }: IdeaProp) {
   // State pour les compteurs de like et dislike
-  const [likeCount, setLikeCount] = useState(14);
-  const [dislikeCount, setDislikeCount] = useState(8);
   const [creator, setCreator] = useState({} as User);
+  const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
+  const [categories, setCategories] = useState([] as Category[]);
 
   const handleLike = async () => {
     // Logique de requête à l'API
-    setLikeCount((prev) => prev + 1);
   };
 
   const handleDislike = async () => {
     // Logique de requête à l'API
-    setDislikeCount((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -43,8 +61,25 @@ function IdeaCard({ idea }: IdeaProp) {
       });
   }, [idea]);
 
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`)
+      .then((response) => response.json())
+      .then((data: VoteInformation) => {
+        setVoteInfo(data);
+      });
+  }, [idea]);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/categories`)
+      .then((response) => response.json())
+      .then((data: Category[]) => {
+        setCategories(data);
+        console.log("Fetched categories:", data);
+      });
+  }, [idea]);
+
   return (
-    <article className="bg-card rounded-3xl max-w-[370px] py-5 px-5 relative shadow-md flex flex-col">
+    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col">
       {/* Avatar et titre */}
       <section className="flex items-center mb-4">
         <img
@@ -57,9 +92,12 @@ function IdeaCard({ idea }: IdeaProp) {
 
       {/* Blocs de catégorie */}
       <section className="flex items-center gap-2">
-        <span className="block bg-redButton h-2 w-1/5 rounded-md" />
-        <span className="block bg-yellowButton h-2 w-1/5 rounded-md" />
-        <span className="block bg-greenButton h-2 w-1/5 rounded-md" />
+        {categories.map((cat) => (
+          <span
+            key={cat.category}
+            className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
+          />
+        ))}
       </section>
 
       {/* Contenu de l'idée */}
@@ -76,7 +114,7 @@ function IdeaCard({ idea }: IdeaProp) {
           onClick={handleLike}
           className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
         >
-          <span>{likeCount}</span>
+          <span>{voteInfo.agree_count}</span>
           <i className="bi bi-hand-thumbs-up" />
         </button>
         <button
@@ -84,7 +122,7 @@ function IdeaCard({ idea }: IdeaProp) {
           onClick={handleDislike}
           className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
         >
-          <span>{dislikeCount}</span>
+          <span>{voteInfo.disagree_count}</span>
           <i className="bi bi-hand-thumbs-down" />
         </button>
       </section>
