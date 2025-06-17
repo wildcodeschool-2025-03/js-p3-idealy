@@ -1,9 +1,9 @@
+import { MdFiberManualRecord } from "react-icons/md";
 // client/src/pages/Apropos.tsx
 import David from "../assets/images/David.png";
 import Guillaume from "../assets/images/Guillaume.png";
-import Messica from "../assets/images/Messica.png";
 import Maxime from "../assets/images/Maxime.png";
-import { MdFiberManualRecord } from "react-icons/md";
+import Messica from "../assets/images/Messica.png";
 
 function Apropos() {
   return (
