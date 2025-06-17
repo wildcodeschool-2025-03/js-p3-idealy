@@ -17,6 +17,12 @@
   font-family: "Atkinson Hyperlegible", sans-serif;
 }
 
+body {
+  max-width: 90rem;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
 .font-kalam {
   font-family: "Kalam", cursive;
 }
