@@ -127,22 +127,22 @@ values ("En cours"),
 
 
   INSERT INTO Idea (title, description, deadline, statut_id) VALUES
-  ("Machine en mauvais état", "Améliorer la machine à café", "2024-12-12", 2),
-  ("Poste de travail ergonomique", "Proposer une solution ergonomique pour les postes de travail.", "2025-08-04", 1),
-  ("Réduction des déchets plastiques", "Mettre en place des mesures pour réduire les déchets plastiques.", "2025-08-15", 1),
-  ("Application mobile interne", "Développer une application interne pour faciliter la communication.", "2026-03-06", 1),
-  ("Optimisation des horaires", "Réorganiser les horaires pour améliorer la productivité.", "2025-03-20", 2),
-  ("Nouveau processus de feedback", "Mettre en place un processus de feedback anonyme et régulier.", "2025-05-20", 3),
-  ("Campagne bien-être au travail", "Lancer une campagne bien-être incluant yoga et méditation.", "2026-02-07", 1),
-  ("Automatisation du reporting", "Automatiser le reporting hebdomadaire via un outil dédié.", "2025-05-04", 3),
-  ("Sécurité incendie renforcée", "Améliorer les dispositifs de sécurité en cas d’incendie.", "2026-02-23", 1),
-  ("Formation continue des équipes", "Encourager la formation continue des membres de l’équipe.", "2025-01-13", 3),
-  ("Révision des fournisseurs", "Revoir les contrats fournisseurs pour réduire les coûts.", "2025-03-08", 2),
-  ("Aménagement espace détente", "Créer un espace détente plus accueillant pour les pauses.", "2025-03-14", 2),
-  ("Covoiturage entreprise", "Mettre en place un service de covoiturage entre employés.", "2025-05-08", 3),
-  ("Centralisation documentation", "Centraliser toute la documentation dans un espace unique.", "2025-03-09", 2),
-  ("Réduction bruit open space", "Installer des panneaux acoustiques pour limiter le bruit.", "2026-04-16", 1),
-  ("Outil de suivi de projet", "Proposer un outil simple de suivi de projet par équipe.", "2025-11-19", 1);
+("Machine en mauvais état", "La machine à café actuelle est souvent en panne et engendre de nombreuses frustrations parmi les employés. Il serait bénéfique de la remplacer ou de la faire réparer durablement. Cela améliorerait le moral et la productivité du personnel.", "2024-12-12", 2),
+("Poste de travail ergonomique", "Les postes de travail ne sont pas adaptés aux besoins ergonomiques des employés, ce qui peut provoquer des douleurs ou troubles musculo-squelettiques. Une révision de l’agencement des bureaux, chaises et écrans est proposée afin d'améliorer le confort et la santé au quotidien.", "2025-08-04", 1),
+("Réduction des déchets plastiques", "L'utilisation excessive de plastique à usage unique dans l'entreprise représente un impact environnemental important. Il serait pertinent d’introduire des alternatives durables et de sensibiliser le personnel aux gestes écoresponsables pour réduire notre empreinte écologique.", "2025-08-15", 1),
+("Application mobile interne", "La communication entre les équipes pourrait être largement améliorée par une application mobile dédiée. Elle permettrait de centraliser les échanges, calendriers, documents partagés et notifications importantes dans un outil unique, accessible à tout moment.", "2026-03-06", 1),
+("Optimisation des horaires", "Le système actuel d’horaires rigides ne convient pas à tous les services. Une organisation plus souple, avec possibilité de télétravail ou de plages horaires aménagées, pourrait favoriser une meilleure gestion du temps et un équilibre vie professionnelle/personnelle.", "2025-03-20", 2),
+("Nouveau processus de feedback", "Le feedback est actuellement rare et peu structuré. Mettre en place un processus de retour d'information régulier, anonyme et constructif permettrait d'améliorer la transparence, de valoriser les efforts des employés et de corriger rapidement les points bloquants.", "2025-05-20", 3),
+("Campagne bien-être au travail", "Le stress et la fatigue ont un impact croissant sur la motivation des équipes. Une campagne bien-être incluant des séances de yoga, de méditation, des conférences et des activités sociales pourrait améliorer la santé mentale et renforcer la cohésion interne.", "2026-02-07", 1),
+("Automatisation du reporting", "Les rapports hebdomadaires sont chronophages et souvent réalisés manuellement. Automatiser la génération de ces documents permettrait de gagner un temps précieux, de fiabiliser les données et de se concentrer sur l’analyse plutôt que la collecte d’informations.", "2025-05-04", 3),
+("Sécurité incendie renforcée", "Les dispositifs actuels de sécurité incendie sont vieillissants et parfois non conformes. Il est urgent de revoir l’installation des détecteurs, extincteurs, plans d’évacuation et de proposer des formations régulières pour garantir la sécurité de tous les collaborateurs.", "2026-02-23", 1),
+("Formation continue des équipes", "Le développement des compétences est essentiel à l’évolution de l’entreprise. Il est proposé de créer un programme de formation continue, en ligne ou en présentiel, permettant à chacun d’acquérir de nouvelles aptitudes et de s’adapter aux évolutions du marché.", "2025-01-13", 3),
+("Révision des fournisseurs", "Les coûts liés à certains fournisseurs semblent excessifs sans justification claire. Une étude comparative et une renégociation des contrats pourraient générer des économies importantes tout en maintenant, voire en améliorant, la qualité des services et produits.", "2025-03-08", 2),
+("Aménagement espace détente", "L’espace détente est peu utilisé car il manque de confort et de convivialité. Le réaménager avec du mobilier agréable, une décoration chaleureuse et des équipements comme une machine à café ou des jeux de société pourrait en faire un véritable lieu de pause régénérante.", "2025-03-14", 2),
+("Covoiturage entreprise", "Beaucoup d'employés se déplacent seuls en voiture, ce qui augmente les coûts et l’empreinte carbone. La mise en place d’un système de covoiturage structuré favoriserait les trajets partagés, réduirait le trafic et améliorerait l’ambiance entre collègues.", "2025-05-08", 3),
+("Centralisation documentation", "La documentation est éparpillée sur différents supports, ce qui complique l’accès à l’information. Une plateforme centralisée et bien organisée permettrait un gain de temps significatif, une meilleure traçabilité et un accès équitable pour tous les services.", "2025-03-09", 2),
+("Réduction bruit open space", "Le bruit constant dans les open spaces nuit à la concentration et à l'efficacité. Installer des panneaux acoustiques, proposer des casques antibruit et aménager des espaces silencieux pourrait grandement améliorer le confort sonore des collaborateurs.", "2026-04-16", 1),
+("Outil de suivi de projet", "Le suivi des projets est actuellement dispersé entre plusieurs outils non synchronisés. Un logiciel unique, simple et intuitif, permettrait de mieux planifier, suivre les étapes, collaborer efficacement et respecter les délais, tout en gardant une trace claire de l’avancement.", "2025-11-19", 1);
 
 
 
