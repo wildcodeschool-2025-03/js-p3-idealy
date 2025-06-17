@@ -87,57 +87,60 @@ function IdeaCard({ idea }: IdeaProp) {
   }
 
   return (
-    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col">
-      {/* Avatar et titre */}
-      <section className="flex items-center mb-4">
-        <img
-          className="rounded-full w-10 mr-5"
-          src={creator.picture}
-          alt="profil du créateur"
-        />
-        <p className="font-bold">{idea.title}</p>
-      </section>
-
-      {/* Blocs de catégorie */}
-      <section className="flex items-center gap-2">
-        {categories.map((cat) => (
-          <span
-            key={cat.category}
-            title={cat.category}
-            className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
+    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between h-[23rem]">
+      {/* Haut de la carte */}
+      <div>
+        {/* Avatar et titre */}
+        <section className="flex items-center mb-4">
+          <img
+            className="rounded-full w-10 mr-5"
+            src={creator.picture}
+            alt="profil du créateur"
           />
-        ))}
-      </section>
+          <p className="font-bold">{idea.title}</p>
+        </section>
 
-      {/* Contenu de l'idée */}
-      <p className="text-justify mt-6">
-        {" "}
-        "{truncateText(idea.description, 252)}"
-      </p>
-      <p className="text-right font-bold mt-2 mb-4">
-        {" "}
-        {creator.firstname} {creator.lastname}
-      </p>
+        {/* Blocs de catégorie */}
+        <section className="flex items-center gap-2">
+          {categories.map((cat) => (
+            <span
+              key={cat.category}
+              title={cat.category}
+              className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
+            />
+          ))}
+        </section>
 
-      {/* Boutons de vote */}
-      <section className="flex items-center justify-center gap-6">
-        <button
-          type="button"
-          onClick={handleLike}
-          className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
-        >
-          <span>{voteInfo.agree_count}</span>
-          <i className="bi bi-hand-thumbs-up" />
-        </button>
-        <button
-          type="button"
-          onClick={handleDislike}
-          className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
-        >
-          <span>{voteInfo.disagree_count}</span>
-          <i className="bi bi-hand-thumbs-down" />
-        </button>
-      </section>
+        {/* Contenu de l'idée */}
+        <p className="text-justify mt-6">
+          "{truncateText(idea.description, 255)}"
+        </p>
+      </div>
+
+      {/* Bas de la carte : auteur + votes */}
+      <div>
+        <p className="text-right font-bold mb-4">
+          {creator.firstname} {creator.lastname}
+        </p>
+        <section className="flex items-center justify-center gap-6">
+          <button
+            type="button"
+            onClick={handleLike}
+            className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+          >
+            <span>{voteInfo.agree_count}</span>
+            <i className="bi bi-hand-thumbs-up" />
+          </button>
+          <button
+            type="button"
+            onClick={handleDislike}
+            className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+          >
+            <span>{voteInfo.disagree_count}</span>
+            <i className="bi bi-hand-thumbs-down" />
+          </button>
+        </section>
+      </div>
 
       {/* Surimpression résultat décision */}
       {idea.statut_id === 2 && (
