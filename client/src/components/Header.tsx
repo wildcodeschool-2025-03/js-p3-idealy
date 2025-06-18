@@ -8,12 +8,14 @@ function Header() {
 
   return (
     <>
-      <div className="flex justify-between mt-4 px-4 relative items-center md:justify-center z-10">
+      <div className="flex bg-greyBackground justify-between pt-2 px-4 relative items-center md:justify-center z-10">
         <Link to="/compte">
           <MdAccountCircle className="text-4xl md:hidden" />
         </Link>
         <Link to="/">
-          <h1 className="text-center text-4xl font-bold font-kalam">Idealy</h1>
+          <h1 className="text-center text-4xl font-bold font-kalam pt-2">
+            Idealy
+          </h1>
         </Link>
         <div className="flex items-center space-x-2 md:absolute md:right-4">
           <Link
@@ -44,7 +46,7 @@ function Header() {
         </div>
 
         <div
-          className={`md:hidden space-y-3 text-center absolute top-full right-0 py-3 px-2 bg-greyBackground shadow-2xl rounded-lg transition-all duration-300 ${
+          className={`md:hidden space-y-3 text-center absolute top-full right-0 py-3 px-2 bg-greyBackground shadow-md rounded-b-3xl transition-all duration-300 ${
             open
               ? "transform translate-x-0 opacity-100"
               : "transform translate-x-full opacity-0"
@@ -88,7 +90,7 @@ function Header() {
         </div>
       </div>
 
-      <nav className="hidden md:flex justify-center items-center space-x-6 mt-4">
+      <nav className="hidden bg-greyBackground md:flex justify-center items-center space-x-6 pt-4">
         <Link
           to="/soumettre"
           className="px-4 py-2 bg-blackBackground text-white rounded-full text-sm"

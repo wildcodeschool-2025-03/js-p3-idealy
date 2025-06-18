@@ -1,7 +1,7 @@
-import  { useState } from "react";
+import { useState } from "react";
 
 interface Slide {
-  id: string; 
+  id: string;
   content: React.ReactNode; // contenu du slide (image, texte, bouton, etc.)
 }
 
@@ -20,15 +20,12 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
     setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
 
- return (
+  return (
     <div className="bg-white rounded-2xl shadow-lg p-5 max-w-[320px] w-full mx-auto flex flex-col items-center relative">
-      
-
       <div className="w-full aspect-[4/3] rounded-lg overflow-hidden">
         {slides[current].content}
       </div>
 
-      
       <button
         type="button"
         onClick={prevSlide}
@@ -46,7 +43,6 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
         &#8594;
       </button>
 
-    
       <div className="flex justify-center space-x-2 mt-3">
         {slides.map((slide, index) => (
           <span
