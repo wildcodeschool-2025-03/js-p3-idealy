@@ -84,7 +84,7 @@ function IdeaFilter({
 
       {/* Modale menu déroulant */}
       {open && (
-        <div className="absolute md:-left-9/20 -right-0 mt-[8px] w-60 bg-white rounded-3xl shadow-md z-10 p-4 overflow-hidden">
+        <div className="absolute md:-left-1/2 -right-0 mt-[8px] w-60 bg-white rounded-3xl shadow-md z-10 p-4 overflow-hidden">
           <div>
             <p className="font-semibold mb-1">Catégorie</p>
 
