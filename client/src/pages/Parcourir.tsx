@@ -53,7 +53,10 @@ function Parcourir() {
             const creatorRes = await fetch(
               `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`,
             );
-            const creator = await creatorRes.json();
+            let creator = { firstname: "Inconnu", lastname: "" };
+            if (creatorRes.ok) {
+              creator = await creatorRes.json();
+            }
 
             // Fetch du nombre de likes et dislikes de l'idée
             const voteRes = await fetch(
@@ -142,21 +145,23 @@ function Parcourir() {
 
   return (
     <section className="bg-greyBackground min-h-lvh">
-      {/* composant de filtre pour les idées */}
-      <IdeaFilter
-        categories={categories}
-        selectedCategories={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        selectedStatut={selectedStatut}
-        onStatutChange={setSelectedStatut}
-        selectedDeadline={selectedDeadline}
-        onDeadlineChange={setSelectedDeadline}
-      />
+      <section className="flex justify-center items-center py-8 gap-8">
+        {/* composant de filtre pour les idées */}
+        <IdeaFilter
+          categories={categories}
+          selectedCategories={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          selectedStatut={selectedStatut}
+          onStatutChange={setSelectedStatut}
+          selectedDeadline={selectedDeadline}
+          onDeadlineChange={setSelectedDeadline}
+        />
 
-      <IdeaSorter
-        selectedSorting={selectedSorting}
-        onSortingChange={setSelectedSorting}
-      />
+        <IdeaSorter
+          selectedSorting={selectedSorting}
+          onSortingChange={setSelectedSorting}
+        />
+      </section>
 
       {/* Affichage des idées filtrées */}
       <section className="gap-10 flex flex-col items-center md:flex-row flex-wrap justify-center">
