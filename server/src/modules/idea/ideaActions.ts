@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { RequestHandler } from "express";
+import type { Request } from "express";
 import formidable, { type Fields, type Files } from "formidable";
 
 import databaseClient from "../../../database/client";
@@ -9,6 +10,10 @@ import categoryIdeaRepository from "../categoryIdea/categoryIdeaRepository";
 import mediaRepository from "../media/mediaRepository";
 // Import access to data
 import ideaRepository from "./ideaRepository";
+
+interface RequestWithId extends Request {
+  id?: number;
+}
 
 // Crée un dossier temporaire si besoin pour stocker les fichiers
 const uploadDir = path.join(__dirname, "../../../public/uploads");
@@ -78,12 +83,25 @@ const add: RequestHandler = (req, res, next) => {
       }
 
       // Participants (array)
-      const participantIds = getArray(fields.participants);
-      for (const userId of participantIds) {
-        await databaseClient.query<Result>(
-          "INSERT INTO user_idea (user_id, idea_id) VALUES (?, ?)",
-          [userId, ideaId],
-        );
+      const participantIds = getArray(fields.participants); // co-auteurs uniquement
+
+      const creatorId = (req as RequestWithId)?.id || 1; // le user connecté ou l'admin par défaut
+
+      // Ajoute le créateur
+      await databaseClient.query(
+        "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
+        [creatorId, ideaId, 1],
+      );
+
+      // Ajoute les co-auteurs (si présents)
+      for (const coAuthorId of participantIds) {
+        // Évite d'ajouter deux fois l'admin si jamais il est aussi dans les co-auteurs
+        if (Number(coAuthorId) !== creatorId) {
+          await databaseClient.query(
+            "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
+            [coAuthorId, ideaId, 0],
+          );
+        }
       }
 
       // Médias (fichiers)
