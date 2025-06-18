@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 interface IdeaSorterProps {
   selectedSorting: string;
   onSortingChange: (sorting: string) => void;
@@ -11,24 +13,49 @@ const sortingOptions = [
 ];
 
 function IdeaSorter({ selectedSorting, onSortingChange }: IdeaSorterProps) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Ferme le menu si clic en dehors
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <section>
-      <select
-        id="sorting"
-        value={selectedSorting}
-        onChange={(e) => onSortingChange(e.target.value)}
+    <div className="relative inline-block" ref={ref}>
+      <button
+        type="button"
+        className="bg-white rounded-3xl py-1 md:px-7 px-4 shadow-md"
+        onClick={() => setOpen((o) => !o)}
       >
-        <option value="" disabled>
-          {" "}
-          Trier par{" "}
-        </option>
-        {sortingOptions.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </section>
+        Trier par <i className="bi bi-sort-down" />
+      </button>
+      {open && (
+        <div className="absolute md:-left-7/20 -left-full w-60 bg-white rounded-3xl shadow-md z-10 mt-2 py-2">
+          {sortingOptions.map((option) => (
+            <button
+              type="button"
+              key={option.value}
+              className={`block w-5/6 text-right md:text-center mx-auto px-4 py-1 my-2 rounded-3xl hover:bg-blackBackground hover:text-white ${
+                selectedSorting === option.value ? "font-bold" : ""
+              }`}
+              onClick={() => {
+                onSortingChange(option.value);
+                setOpen(false);
+              }}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
