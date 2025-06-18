@@ -114,7 +114,7 @@ const Soumettre = () => {
   };
 
   return (
-    <div className="bg-greyBackground pt-5 pb-5 mt-10 mb-10">
+    <div className="bg-greyBackground pt-10 pb-10">
       <h1 className="flex justify-center text-center text-2xl font-bold">
         Partagez vos idées
       </h1>
