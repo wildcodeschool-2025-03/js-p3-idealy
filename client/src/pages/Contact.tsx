@@ -13,9 +13,9 @@ interface EmailData {
   };
 }
 
-const EMAILJS_SERVICE_ID = "service_2sbpthm";
-const EMAILJS_TEMPLATE_ID = "template_zmdqzea";
-const EMAILJS_PUBLIC_KEY = "IIFqChO4rwLKNF-QV";
+const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 function Contact() {
   const [name, setName] = useState("");
@@ -33,10 +33,14 @@ function Contact() {
     setStatus("sending");
     setError(null);
 
+    if (!serviceId || !templateId || !publicKey) {
+      throw new Error("EmailJS environment variables are missing");
+    }
+
     const emailData: EmailData = {
-      service_id: EMAILJS_SERVICE_ID,
-      template_id: EMAILJS_TEMPLATE_ID,
-      user_id: EMAILJS_PUBLIC_KEY,
+      service_id: serviceId,
+      template_id: templateId,
+      user_id: publicKey,
       template_params: {
         user_name: name,
         user_last_name: lastName,
