@@ -75,10 +75,11 @@ function IdeaFilter({
     <section className="relative inline-block" ref={ref}>
       <button
         type="button"
-        className="bg-white rounded-3xl px-7 py-1 md:px-10 shadow-md"
+        className="bg-white rounded-3xl px-2 py-1 md:px-10 shadow-md"
         onClick={() => setOpen((o) => !o)}
       >
-        Filtrer <i className="bi bi-filter" />
+        <span className="hidden md:block"> Filtrer </span>{" "}
+        <i className="bi bi-funnel" />
       </button>
 
       {/* Modale menu déroulant */}

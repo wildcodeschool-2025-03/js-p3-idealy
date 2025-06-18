@@ -87,7 +87,7 @@ function IdeaCard({ idea }: IdeaProp) {
   }
 
   return (
-    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between h-[23rem]">
+    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full">
       {/* Haut de la carte */}
       <div>
         {/* Avatar et titre */}
