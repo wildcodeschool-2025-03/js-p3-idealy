@@ -38,7 +38,7 @@ function IdeaSorter({ selectedSorting, onSortingChange }: IdeaSorterProps) {
         <i className="bi bi-sort-down" />
       </button>
       {open && (
-        <div className="absolute md:-left-7/20 -right-0 w-60 bg-white rounded-3xl shadow-md z-10 mt-[8px] py-2">
+        <div className="absolute md:-left-9/20 -right-0 w-60 bg-white rounded-3xl shadow-md z-10 mt-[8px] py-2">
           {sortingOptions.map((option) => (
             <button
               type="button"
