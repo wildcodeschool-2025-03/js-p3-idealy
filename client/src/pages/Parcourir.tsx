@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import IdeaCard from "../components/IdeaCard";
 import IdeaFilter from "../components/IdeaFilter";
+import IdeaSorter from "../components/IdeaSorter";
 
 interface Idea {
   id: number;
@@ -11,6 +12,8 @@ interface Idea {
   categories: string[];
   statut_id: number;
   deadline: string;
+  agree_count: number;
+  disagree_count: number;
   creator: {
     firstname: string;
     lastname: string;
@@ -29,12 +32,14 @@ function Parcourir() {
   const [selectedStatut, setSelectedStatut] = useState([] as number[]); // On va filtrer sur le number status_id plutôt que sur le string du statut en jointure
   const [selectedDeadline, setSelectedDeadline] = useState<string[]>([]);
 
+  const [selectedSorting, setSelectedSorting] = useState<string>("");
+
   // Récupère la liste des idées depuis l'API au chargement du composant
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/ideas`)
       .then((response) => response.json())
       .then(async (data: Idea[]) => {
-        // Récupère les catégories et créateur pour chaque idée
+        // Récupère les catégories, créateur, votes pour chaque idée
         // A cause des filtres de cette page : ces missions de fetch sont déja faites par le composant lui-même vu qu'il doit être réutilisable partout
         const ideasWithCategories = await Promise.all(
           data.map(async (idea) => {
@@ -50,10 +55,17 @@ function Parcourir() {
             );
             const creator = await creatorRes.json();
 
+            // Fetch du nombre de likes et dislikes de l'idée
+            const voteRes = await fetch(
+              `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`,
+            );
+            const voteData = await voteRes.json();
             return {
               ...idea,
               categories: catData.map((c) => c.category),
               creator,
+              agree_count: voteData.agree_count,
+              disagree_count: voteData.disagree_count,
             };
           }),
         );
@@ -111,9 +123,22 @@ function Parcourir() {
         return false;
       });
     }
-
     return categoryOk && statutOk && deadlineOk;
   });
+
+  // Order according to value returned by sorter component in selectedsorting state
+  const sortedIdeas = [...filteredIdeas];
+  if (selectedSorting === "alpha") {
+    sortedIdeas.sort((a, b) => a.title.localeCompare(b.title));
+  } else if (selectedSorting === "chrono") {
+    sortedIdeas.sort(
+      (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
+    );
+  } else if (selectedSorting === "most") {
+    sortedIdeas.sort((a, b) => b.agree_count - a.agree_count);
+  } else if (selectedSorting === "least") {
+    sortedIdeas.sort((a, b) => b.disagree_count - a.disagree_count);
+  }
 
   return (
     <section className="bg-greyBackground min-h-lvh">
@@ -128,9 +153,14 @@ function Parcourir() {
         onDeadlineChange={setSelectedDeadline}
       />
 
+      <IdeaSorter
+        selectedSorting={selectedSorting}
+        onSortingChange={setSelectedSorting}
+      />
+
       {/* Affichage des idées filtrées */}
       <section className="gap-10 flex flex-col items-center md:flex-row flex-wrap justify-center">
-        {filteredIdeas.map((idea) => (
+        {sortedIdeas.map((idea) => (
           <IdeaCard key={idea.id} idea={idea} />
         ))}
       </section>
