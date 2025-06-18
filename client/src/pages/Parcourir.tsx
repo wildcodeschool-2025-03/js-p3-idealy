@@ -156,16 +156,17 @@ function Parcourir() {
   }
 
   return (
-    <section className="bg-greyBackground min-h-lvh py-6">
-      <section className="flex items-center justify-center gap-2 pb-2">
+    <section className="bg-greyBackground min-h-lvh py-6 md:pt-10">
+      <section className="flex items-center justify-center gap-1 md:gap-4 pb-6 md:pb-8 max-w-[370px] md:max-w-8/10 lg:max-w-5/10 mx-auto">
         {/* Barre de recherche */}
-        <section className="relative w-2/3">
+        <section className="relative w-full">
           <input
             type="text"
-            placeholder="Rechercher une idée, un auteur, une description..."
+            placeholder="Rechercher un titre, un auteur..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-1 rounded-3xl shadow-md bg-white"
+            maxLength={30}
+            className="w-full px-4 py-2 rounded-3xl shadow-md bg-white text-center focus:outline-0"
           />
           {search && (
             <button

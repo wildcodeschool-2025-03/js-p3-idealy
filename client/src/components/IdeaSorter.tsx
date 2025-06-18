@@ -31,14 +31,14 @@ function IdeaSorter({ selectedSorting, onSortingChange }: IdeaSorterProps) {
     <div className="relative inline-block" ref={ref}>
       <button
         type="button"
-        className="bg-white rounded-3xl py-1 md:px-7 px-2 shadow-md"
+        className="bg-white rounded-3xl py-2 md:w-30 w-10 shadow-md"
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="hidden md:block">Trier par</span>{" "}
+        <span className="hidden md:inline">Trier par</span>{" "}
         <i className="bi bi-sort-down" />
       </button>
       {open && (
-        <div className="absolute md:-left-7/20 -left-full w-60 bg-white rounded-3xl shadow-md z-10 mt-2 py-2">
+        <div className="absolute md:-left-7/20 -right-0 w-60 bg-white rounded-3xl shadow-md z-10 mt-[8px] py-2">
           {sortingOptions.map((option) => (
             <button
               type="button"

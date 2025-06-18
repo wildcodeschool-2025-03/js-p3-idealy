@@ -75,16 +75,16 @@ function IdeaFilter({
     <section className="relative inline-block" ref={ref}>
       <button
         type="button"
-        className="bg-white rounded-3xl px-2 py-1 md:px-10 shadow-md"
+        className="bg-white rounded-3xl w-10 py-2 md:w-30 shadow-md"
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="hidden md:block"> Filtrer </span>{" "}
+        <span className="hidden md:inline"> Filtrer </span>{" "}
         <i className="bi bi-funnel" />
       </button>
 
       {/* Modale menu déroulant */}
       {open && (
-        <div className="absolute md:-left-7/20 -left-1/6 mt-2 w-60 bg-white rounded-3xl shadow-md z-10 p-4 overflow-hidden">
+        <div className="absolute md:-left-7/20 -right-0 mt-[8px] w-60 bg-white rounded-3xl shadow-md z-10 p-4 overflow-hidden">
           <div>
             <p className="font-semibold mb-1">Catégorie</p>
 
