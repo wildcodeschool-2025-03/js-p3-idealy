@@ -78,12 +78,25 @@ const add: RequestHandler = (req, res, next) => {
       }
 
       // Participants (array)
-      const participantIds = getArray(fields.participants);
-      for (const userId of participantIds) {
-        await databaseClient.query<Result>(
-          "INSERT INTO user_idea (user_id, idea_id) VALUES (?, ?)",
-          [userId, ideaId],
-        );
+      let participantIds = getArray(fields.participants); // co-auteurs uniquement
+
+      const creatorId = (req as any)?.id || 1; // le user connecté ou l'admin par défaut
+
+      // Ajoute le créateur
+      await databaseClient.query(
+        "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
+        [creatorId, ideaId, 1]
+      );
+
+      // Ajoute les co-auteurs (si présents)
+      for (const coAuthorId of participantIds) {
+        // Évite d'ajouter deux fois l'admin si jamais il est aussi dans les co-auteurs
+        if (Number(coAuthorId) !== creatorId) {
+          await databaseClient.query(
+            "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
+            [coAuthorId, ideaId, 0]
+          );
+        }
       }
 
       // Médias (fichiers)
