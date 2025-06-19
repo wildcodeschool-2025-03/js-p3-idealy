@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 interface IdeaFilterProps {
   categories: string[];
   selectedCategories: string[];
@@ -29,6 +31,33 @@ function IdeaFilter({
   selectedDeadline,
   onDeadlineChange,
 }: IdeaFilterProps) {
+  const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        // Fermeture avec animation quand clic en dehors
+        setVisible(false);
+        setTimeout(() => setOpen(false), 300);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Fonction pour gérer l’ouverture/fermeture avec animation
+  const toggleDropdown = () => {
+    if (!open) {
+      setOpen(true);
+      setTimeout(() => setVisible(true), 10); // attend le DOM
+    } else {
+      setVisible(false);
+      setTimeout(() => setOpen(false), 300); // attend fin animation
+    }
+  };
+
   // Fonction pour gérer le changement de sélection des cases à cocher pour les catégories (+ renvoie l'info au parent pour modif du state)
   const handleCategoryCheckboxChange = (category: string) => {
     if (selectedCategories.includes(category)) {
@@ -57,45 +86,78 @@ function IdeaFilter({
   };
 
   return (
-    <section>
-      {/* Affiche une liste de catégories d'idées, avec des cases à cocher pour filtrer les idées affichées */}
-      <p>Catégorie</p>
-      {categories.map((category) => (
-        <label key={category} className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={selectedCategories.includes(category)}
-            onChange={() => handleCategoryCheckboxChange(category)}
-          />
-          {category}
-        </label>
-      ))}
+    <section className="relative inline-block" ref={ref}>
+      <button
+        type="button"
+        className="bg-white rounded-3xl w-10 py-2 md:w-30 shadow-md"
+        onClick={toggleDropdown}
+      >
+        <span className="hidden md:inline"> Filtrer </span>{" "}
+        <i className="bi bi-funnel" />
+      </button>
 
-      {/* Affiche une liste de status, avec des cases à cocher pour filtrer les idées affichées */}
-      <p>Statut</p>
-      {statutOptions.map((statut) => (
-        <label key={statut.id} className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={selectedStatut.includes(statut.id)}
-            onChange={() => handleStatusCheckboxChange(statut.id)}
-          />
-          {statut.label}
-        </label>
-      ))}
+      {/* Modale menu déroulant */}
+      {open && (
+        <div
+          className={`absolute md:-left-1/2 -right-0 w-60 bg-white rounded-3xl shadow-2xl z-10 mt-[8px] p-4 overflow-hidden transition-all duration-300 transform
+            ${visible ? "md:translate-y-0 max-md:translate-x-0 opacity-100" : "md:translate-y-2 max-md:-translate-x-5 opacity-0"}`}
+        >
+          <div>
+            <p className="font-semibold mb-1">Catégorie</p>
 
-      {/* Affiche une liste de cdeadlines, avec des cases à cocher pour filtrer les idées affichées */}
-      <p>Deadline</p>
-      {deadlineOptions.map((deadline) => (
-        <label key={deadline.value} className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={selectedDeadline.includes(deadline.value)}
-            onChange={() => handleDeadlineCheckboxChange(deadline.value)}
-          />
-          {deadline.label}
-        </label>
-      ))}
+            {/* Filtre des catégories des idées */}
+            {categories.map((category) => (
+              <label
+                key={category}
+                className="flex items-center gap-2 px-2 py-1 rounded-3xl hover:bg-blackBackground hover:text-white cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(category)}
+                  onChange={() => handleCategoryCheckboxChange(category)}
+                />
+                {category}
+              </label>
+            ))}
+          </div>
+          <div className="mt-3">
+            <p className="font-semibold mb-1">Statut</p>
+
+            {/* Filtre des status des idées */}
+            {statutOptions.map((statut) => (
+              <label
+                key={statut.id}
+                className="flex items-center gap-2 px-2 py-1 rounded-3xl hover:bg-blackBackground hover:text-white cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedStatut.includes(statut.id)}
+                  onChange={() => handleStatusCheckboxChange(statut.id)}
+                />
+                {statut.label}
+              </label>
+            ))}
+          </div>
+          <div className="mt-3">
+            <p className="font-semibold mb-1">Echéance</p>
+
+            {/* Filtre des deadlines des idées */}
+            {deadlineOptions.map((deadline) => (
+              <label
+                key={deadline.value}
+                className="flex items-center gap-2 px-2 py-1 rounded-3xl hover:bg-blackBackground hover:text-white cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedDeadline.includes(deadline.value)}
+                  onChange={() => handleDeadlineCheckboxChange(deadline.value)}
+                />
+                {deadline.label}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

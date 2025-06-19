@@ -17,6 +17,8 @@
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@types/formidable": "^3.4.5",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",

@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-interface IdeaProp {
+interface IdeaCardProps {
   idea: Idea;
+  showVotes?: boolean;
+  showStatusOverlay?: boolean;
 }
 
 interface Idea {
@@ -39,8 +41,11 @@ const categoryColors: Record<string, string> = {
   "Vie d'équipe": "bg-[#ff9500]",
 };
 
-function IdeaCard({ idea }: IdeaProp) {
-  // State pour les compteurs de like et dislike
+function IdeaCard({
+  idea,
+  showVotes = true,
+  showStatusOverlay = true,
+}: IdeaCardProps) {
   const [creator, setCreator] = useState({} as User);
   const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
   const [categories, setCategories] = useState([] as Category[]);
@@ -78,61 +83,78 @@ function IdeaCard({ idea }: IdeaProp) {
       });
   }, [idea]);
 
+  // Fonction pour tronquer le texte (des descriptions pour assurer une taille cohérente) en s'arrêtant au dernier espaces
+  function truncateText(text: string, maxLength: number) {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    const truncated = text.slice(0, maxLength);
+    const lastSpace = truncated.lastIndexOf(" ");
+    return `${lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated} [...]`;
+  }
+
   return (
-    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col">
-      {/* Avatar et titre */}
-      <section className="flex items-center mb-4">
-        <img
-          className="rounded-full w-10 mr-5"
-          src={creator.picture}
-          alt="profil du créateur"
-        />
-        <p className="font-bold">{idea.title}</p>
-      </section>
-
-      {/* Blocs de catégorie */}
-      <section className="flex items-center gap-2">
-        {categories.map((cat) => (
-          <span
-            key={cat.category}
-            title={cat.category}
-            className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
+    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full">
+      {/* Haut de la carte */}
+      <div>
+        {/* Avatar et titre */}
+        <section className="flex items-center mb-4">
+          <img
+            className="rounded-full w-10 mr-5"
+            src={creator.picture}
+            alt="profil du créateur"
           />
-        ))}
-      </section>
+          <p className="font-bold">{idea.title}</p>
+        </section>
 
-      {/* Contenu de l'idée */}
-      <p className="text-justify mt-6">{idea.description}</p>
-      <p className="text-right font-bold mt-2 mb-4">
-        {" "}
-        {creator.firstname} {creator.lastname}
-      </p>
+        {/* Blocs de catégorie */}
+        <section className="flex items-center gap-2">
+          {categories.map((cat) => (
+            <span
+              key={cat.category}
+              title={cat.category}
+              className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
+            />
+          ))}
+        </section>
 
-      {/* Boutons de vote */}
-      <section className="flex items-center justify-center gap-6">
-        <button
-          type="button"
-          onClick={handleLike}
-          className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
-        >
-          <span>{voteInfo.agree_count}</span>
-          <i className="bi bi-hand-thumbs-up" />
-        </button>
-        <button
-          type="button"
-          onClick={handleDislike}
-          className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
-        >
-          <span>{voteInfo.disagree_count}</span>
-          <i className="bi bi-hand-thumbs-down" />
-        </button>
-      </section>
+        {/* Contenu de l'idée */}
+        <p className="text-justify mt-6">
+          "{truncateText(idea.description, 255)}"
+        </p>
+      </div>
+
+      {/* Bas de la carte : auteur + votes */}
+      <div>
+        <p className="text-right font-bold mb-4">
+          {creator.firstname} {creator.lastname}
+        </p>
+        {showVotes && (
+          <section className="flex items-center justify-center gap-6">
+            <button
+              type="button"
+              onClick={handleLike}
+              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+            >
+              <span>{voteInfo.agree_count}</span>
+              <i className="bi bi-hand-thumbs-up" />
+            </button>
+            <button
+              type="button"
+              onClick={handleDislike}
+              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+            >
+              <span>{voteInfo.disagree_count}</span>
+              <i className="bi bi-hand-thumbs-down" />
+            </button>
+          </section>
+        )}
+      </div>
 
       {/* Surimpression résultat décision */}
-      {idea.statut_id === 2 && (
+      {showStatusOverlay && idea.statut_id === 2 && (
         <i className="bi bi-check-circle absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-50 pointer-events-none text-[200px] text-greenButton" />
       )}
-      {idea.statut_id === 3 && (
+      {showStatusOverlay && idea.statut_id === 3 && (
         <i className="bi bi-x-circle absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-50 pointer-events-none text-[200px] text-redButton" />
       )}
     </article>
