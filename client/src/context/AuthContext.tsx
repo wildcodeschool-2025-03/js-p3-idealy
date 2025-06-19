@@ -1,4 +1,4 @@
-// client/src/context/LoginContext.tsx
+// client/src/context/AuthContext.tsx
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -7,20 +7,23 @@ interface User {
   id: number;
   firstname: string;
   lastname: string;
-  avatarUrl?: string;
+  mail: string;
+  service_id: number;
+  picture: string;
+  isAdmin: boolean;
 }
 
-interface LoginContextType {
+interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
   user: User | null;
-  login: (token: string, user: User, stayLoggedIn?: boolean) => void;
+  login: (mail: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
-const LoginContext = createContext<LoginContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -39,16 +42,37 @@ export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  // Fonction de connexion.
-  const login = (newToken: string, newUser: User, stayLoggedIn = true) => {
-    setToken(newToken);
-    setUser(newUser);
-    setIsAuthenticated(true);
+  // Fonction de connexion
+  const login = async (mail: string, password: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mail, password }),
+        },
+      );
 
-    // Sauvegarde dans local storage si l'utilisateur veux rester connecté.
-    if (stayLoggedIn) {
+      if (!response.ok) {
+        throw new Error("Identifiants invalides");
+      }
+
+      const user = await response.json();
+
+      const newToken = "fake-token"; // A remplacer par la logique de génération de token réelle
+
+      setToken(newToken);
+      setUser(user);
+      setIsAuthenticated(true);
+
+      // Sauvegarde dans local storage si l'utilisateur veux rester connecté.
       localStorage.setItem("token", newToken);
-      localStorage.setItem("user", JSON.stringify(newUser));
+      localStorage.setItem("user", JSON.stringify(user));
+    } catch (error) {
+      // Gère l'erreur (affiche un message, etc.)
+      console.error(error);
+      throw error;
     }
   };
 
@@ -63,18 +87,18 @@ export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <LoginContext.Provider
+    <AuthContext.Provider
       value={{ isAuthenticated, token, user, login, logout }}
     >
       {children}
-    </LoginContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export const useLogin = (): LoginContextType => {
-  const context = useContext(LoginContext);
+export const useLogin = (): AuthContextType => {
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useLogin must be used within a LoginProvider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
