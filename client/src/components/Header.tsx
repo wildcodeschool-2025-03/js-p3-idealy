@@ -11,18 +11,18 @@ function Header() {
   const handleMyIdeas = () => {
     setOpen(false);
     const storedUser = localStorage.getItem("user");
-    let prenom = "";
-    let nom = "";
+    let firstname = "";
+    let lastname = "";
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        prenom = user.firstname || "";
-        nom = user.lastname || "";
+        firstname = user.firstname || "";
+        lastname = user.lastname || "";
       } catch (e) {
         // Optionnel : gérer l'erreur de parsing
       }
     }
-    navigate("/parcourir", { state: { prenom, nom } });
+    navigate("/parcourir", { state: { firstname, lastname } });
   };
 
   return (
@@ -132,7 +132,7 @@ function Header() {
         <button
           type="button"
           onClick={handleMyIdeas}
-          className="px-8 py-2 bg-blackBackground text-white rounded-full text-sm"
+          className="px-8 py-2 bg-blackBackground text-white rounded-full text-sm cursor-pointer"
         >
           Mes idées
         </button>
