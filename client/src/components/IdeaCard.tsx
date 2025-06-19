@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-interface IdeaProp {
+interface IdeaCardProps {
   idea: Idea;
+  showVotes?: boolean;
+  showStatusOverlay?: boolean;
 }
 
 interface Idea {
@@ -39,7 +41,11 @@ const categoryColors: Record<string, string> = {
   "Vie d'équipe": "bg-[#ff9500]",
 };
 
-function IdeaCard({ idea }: IdeaProp) {
+function IdeaCard({
+  idea,
+  showVotes = true,
+  showStatusOverlay = true,
+}: IdeaCardProps) {
   const [creator, setCreator] = useState({} as User);
   const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
   const [categories, setCategories] = useState([] as Category[]);
@@ -122,31 +128,33 @@ function IdeaCard({ idea }: IdeaProp) {
         <p className="text-right font-bold mb-4">
           {creator.firstname} {creator.lastname}
         </p>
-        <section className="flex items-center justify-center gap-6">
-          <button
-            type="button"
-            onClick={handleLike}
-            className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
-          >
-            <span>{voteInfo.agree_count}</span>
-            <i className="bi bi-hand-thumbs-up" />
-          </button>
-          <button
-            type="button"
-            onClick={handleDislike}
-            className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
-          >
-            <span>{voteInfo.disagree_count}</span>
-            <i className="bi bi-hand-thumbs-down" />
-          </button>
-        </section>
+        {showVotes && (
+          <section className="flex items-center justify-center gap-6">
+            <button
+              type="button"
+              onClick={handleLike}
+              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+            >
+              <span>{voteInfo.agree_count}</span>
+              <i className="bi bi-hand-thumbs-up" />
+            </button>
+            <button
+              type="button"
+              onClick={handleDislike}
+              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+            >
+              <span>{voteInfo.disagree_count}</span>
+              <i className="bi bi-hand-thumbs-down" />
+            </button>
+          </section>
+        )}
       </div>
 
       {/* Surimpression résultat décision */}
-      {idea.statut_id === 2 && (
+      {showStatusOverlay && idea.statut_id === 2 && (
         <i className="bi bi-check-circle absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-50 pointer-events-none text-[200px] text-greenButton" />
       )}
-      {idea.statut_id === 3 && (
+      {showStatusOverlay && idea.statut_id === 3 && (
         <i className="bi bi-x-circle absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-50 pointer-events-none text-[200px] text-redButton" />
       )}
     </article>
