@@ -136,6 +136,46 @@ class UserRepository {
     // Return how many rows were affected
     return result.affectedRows;
   }
+
+  async update(user: User) {
+    if (user.password) {
+      const [result] = await databaseClient.query<Result>(
+        "UPDATE User SET firstname = ?, lastname = ?, mail = ?, picture = ?, service_id = ?, password = ? WHERE id = ?",
+        [
+          user.firstname,
+          user.lastname,
+          user.mail,
+          user.picture,
+          user.service_id,
+          user.password,
+          user.id,
+        ],
+      );
+      return result.affectedRows;
+    }
+
+    const [result] = await databaseClient.query<Result>(
+      "UPDATE User SET firstname = ?, lastname = ?, mail = ?, picture = ?, service_id = ? WHERE id = ?",
+      [
+        user.firstname,
+        user.lastname,
+        user.mail,
+        user.picture,
+        user.service_id,
+        user.id,
+      ],
+    );
+    return result.affectedRows;
+  }
+
+  async getServiceOfThisUser(userId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT s.statut AS service_name FROM User u JOIN Service s ON u.service_id = s.id WHERE u.id = ?",
+      [userId],
+    );
+
+    return rows[0];
+  }
 }
 
 export default new UserRepository();

@@ -12,7 +12,7 @@ function Header() {
         <Link to="/compte">
           <MdAccountCircle className="text-4xl md:hidden" />
         </Link>
-        <Link to="/">
+        <Link to="/principal">
           <h1 className="text-center text-4xl font-bold font-kalam">Idealy</h1>
         </Link>
         <div className="flex items-center space-x-2 md:absolute md:right-4">
