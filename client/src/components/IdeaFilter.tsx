@@ -32,17 +32,31 @@ function IdeaFilter({
   onDeadlineChange,
 }: IdeaFilterProps) {
   const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
-        setOpen(false);
+        // Fermeture avec animation quand clic en dehors
+        setVisible(false);
+        setTimeout(() => setOpen(false), 300);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Fonction pour gérer l’ouverture/fermeture avec animation
+  const toggleDropdown = () => {
+    if (!open) {
+      setOpen(true);
+      setTimeout(() => setVisible(true), 10); // attend le DOM
+    } else {
+      setVisible(false);
+      setTimeout(() => setOpen(false), 300); // attend fin animation
+    }
+  };
 
   // Fonction pour gérer le changement de sélection des cases à cocher pour les catégories (+ renvoie l'info au parent pour modif du state)
   const handleCategoryCheckboxChange = (category: string) => {
@@ -75,15 +89,19 @@ function IdeaFilter({
     <section className="relative inline-block" ref={ref}>
       <button
         type="button"
-        className="bg-white rounded-3xl px-7 py-1 md:px-10 shadow-md"
-        onClick={() => setOpen((o) => !o)}
+        className="bg-white rounded-3xl w-10 py-2 md:w-30 shadow-md"
+        onClick={toggleDropdown}
       >
-        Filtrer <i className="bi bi-filter" />
+        <span className="hidden md:inline"> Filtrer </span>{" "}
+        <i className="bi bi-funnel" />
       </button>
 
       {/* Modale menu déroulant */}
       {open && (
-        <div className="absolute md:-left-7/20 -left-1/6 mt-2 w-60 bg-white rounded-3xl shadow-md z-10 p-4 overflow-hidden">
+        <div
+          className={`absolute md:-left-1/2 -right-0 w-60 bg-white rounded-3xl shadow-2xl z-10 mt-[8px] p-4 overflow-hidden transition-all duration-300 transform
+            ${visible ? "md:translate-y-0 max-md:translate-x-0 opacity-100" : "md:translate-y-2 max-md:-translate-x-5 opacity-0"}`}
+        >
           <div>
             <p className="font-semibold mb-1">Catégorie</p>
 

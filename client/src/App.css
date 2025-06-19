@@ -21,6 +21,7 @@ body {
   max-width: 90rem;
   margin: 0 auto;
   background-color: #ffffff;
+  overflow-x: hidden;
 }
 
 .font-kalam {

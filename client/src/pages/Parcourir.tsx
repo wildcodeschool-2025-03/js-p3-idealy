@@ -32,9 +32,11 @@ function Parcourir() {
   const [selectedStatut, setSelectedStatut] = useState([] as number[]); // On va filtrer sur le number status_id plutôt que sur le string du statut en jointure
   const [selectedDeadline, setSelectedDeadline] = useState<string[]>([]);
 
-  const [selectedSorting, setSelectedSorting] = useState<string>("");
+  const [selectedSorting, setSelectedSorting] = useState(""); // State de l'ordonnement
 
-  // Récupère la liste des idées depuis l'API au chargement du composant
+  const [search, setSearch] = useState(""); // State de la barre de recherche
+
+  // Etape 0 : Récupérer la liste complète des idées depuis l'API au chargement du composant
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/ideas`)
       .then((response) => response.json())
@@ -91,8 +93,18 @@ function Parcourir() {
       });
   }, []);
 
-  // Filtre les idées en fonction des filtres sélectionnée (appelé à chaque re-render du composant c.a.d à chaque changement d'un state quelconque)
-  const filteredIdeas = ideas.filter((idea) => {
+  // Etape 1 : Afficher les idées en fonction de la barre de recherche
+  const searchedIdeas = ideas.filter((idea) =>
+    [
+      idea.creator.firstname,
+      idea.creator.lastname,
+      idea.title,
+      idea.description,
+    ].some((field) => field.toLowerCase().includes(search.toLowerCase())),
+  );
+
+  // Etape 2 : Filtrer les idées en fonction des filtres sélectionnée (appelé à chaque re-render du composant c.a.d à chaque changement d'un state quelconque)
+  const filteredIdeas = searchedIdeas.filter((idea) => {
     // Filtre catégorie
     const categoryOk =
       selectedCategory.length === 0 ||
@@ -129,7 +141,7 @@ function Parcourir() {
     return categoryOk && statutOk && deadlineOk;
   });
 
-  // Order according to value returned by sorter component in selectedsorting state
+  // Etape 3 : ordonner les idées filtrées en fonction du tri sélectionné
   const sortedIdeas = [...filteredIdeas];
   if (selectedSorting === "alpha") {
     sortedIdeas.sort((a, b) => a.title.localeCompare(b.title));
@@ -144,9 +156,32 @@ function Parcourir() {
   }
 
   return (
-    <section className="bg-greyBackground min-h-lvh">
-      <section className="flex justify-center items-center py-8 gap-8">
-        {/* composant de filtre pour les idées */}
+    <section className="bg-greyBackground min-h-lvh py-6 md:pt-10">
+      <section className="flex items-center justify-center gap-1 md:gap-4 pb-6 md:pb-8 max-w-[370px] md:max-w-8/10 lg:max-w-5/10 mx-auto">
+        {/* Barre de recherche */}
+        <section className="relative w-full">
+          <input
+            type="text"
+            placeholder="Rechercher un titre, un auteur..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            maxLength={30}
+            className="w-full px-4 py-2 rounded-3xl shadow-md bg-white text-center focus:outline-0"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-blackBackground text-lg"
+              aria-label="Effacer la recherche"
+            >
+              <i className="bi bi-x-circle" />
+            </button>
+          )}
+        </section>
+
+        {/* Filtre et Ordre */}
+
         <IdeaFilter
           categories={categories}
           selectedCategories={selectedCategory}
