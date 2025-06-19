@@ -11,9 +11,12 @@ import mediaRepository from "../media/mediaRepository";
 // Import access to data
 import ideaRepository from "./ideaRepository";
 
+
+
 interface RequestWithId extends Request {
   id?: number;
 }
+
 
 // Crée un dossier temporaire si besoin pour stocker les fichiers
 const uploadDir = path.join(__dirname, "../../../public/uploads");
@@ -24,7 +27,13 @@ if (!fs.existsSync(uploadDir)) {
 // The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    const ideas = await ideaRepository.readAll();
+    const { user_id, statut, sort } = req.query;
+    // If sort is "recent", we return the 5 most recent ideas
+    const ideas = await ideaRepository.readAll({ 
+      user_id: user_id ? Number(user_id) : undefined, 
+      statut: statut ? Number(statut) : undefined,
+      sort: sort ? String(sort) : undefined
+    });
     res.json(ideas);
   } catch (err) {
     next(err);
