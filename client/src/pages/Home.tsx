@@ -19,6 +19,10 @@ function Home() {
 
   return (
     <section className="min-h-lvh">
+      {/*Intégrer ici la page "principal" et mettre le reste du return en modale par dessus*/}
+
+      {/*Tout ce qu'il y a dessous est à mettre en modal*/}
+
       <h1>idealy</h1>
 
       <section>
