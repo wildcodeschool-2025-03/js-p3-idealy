@@ -83,7 +83,7 @@ function Information() {
         <button
           type="button"
           aria-label="Statistiques"
-          className="block mx-auto bg-yellowButton rounded-full p-2 text-white font-semibold text-lg cursor-default"
+          className="block mx-auto bg-yellowButton rounded-full p-2 font-semibold text-lg cursor-default"
         >
           Statistiques
         </button>
@@ -94,7 +94,7 @@ function Information() {
         <button
           type="button"
           aria-label="Idées récemment validées"
-          className="block mx-auto bg-greenButton rounded-full p-2 text-white font-semibold text-lg cursor-default"
+          className="block mx-auto bg-greenButton rounded-full p-2 font-semibold text-lg cursor-default"
         >
           Idées récemment validées
         </button>
@@ -114,7 +114,7 @@ function Information() {
         <button
           type="button"
           aria-label="Idées récemment refusées"
-          className="block mx-auto bg-redButton rounded-full p-2 text-white font-semibold text-lg cursor-default"
+          className="block mx-auto bg-redButton rounded-full p-2 font-semibold text-lg cursor-default"
         >
           Idées récemment refusées
         </button>
