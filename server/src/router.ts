@@ -18,6 +18,8 @@ router.put("/api/services/:id", serviceActions.edit);
 // User-related routes
 import userActions from "./modules/user/userActions";
 
+router.post("/api/users/login", userActions.login);
+
 router.get("/api/users", userActions.browse);
 router.get("/api/users/:id", userActions.read);
 router.post("/api/users", userActions.add);
