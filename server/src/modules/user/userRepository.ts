@@ -136,6 +136,17 @@ class UserRepository {
     // Return how many rows were affected
     return result.affectedRows;
   }
+
+  async authenticate(mail: string, password: string) {
+    // Execute the SQL SELECT query to authenticate a user by mail and password
+    const [rows] = await databaseClient.query<Rows>(
+      "select * from User where mail = ? and password = ?",
+      [mail, password],
+    );
+
+    // Return the first row of the result, which represents the authenticated user
+    return rows[0] as User | undefined;
+  }
 }
 
 export default new UserRepository();

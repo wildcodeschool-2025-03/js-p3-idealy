@@ -218,6 +218,28 @@ const editService: RequestHandler = async (req, res, next) => {
   }
 };
 
+const login: RequestHandler = async (req, res, next) => {
+  try {
+    // Extract the login credentials from the request body
+    const { mail, password } = req.body;
+
+    // Authenticate the user
+    const user = await userRepository.authenticate(mail, password);
+    if (!user) {
+      // If authentication fails, respond with HTTP 401 (Unauthorized)
+      res.sendStatus(401);
+    } else {
+      // If authentication succeeds, respond with the user data
+      // Supprime le champ password avant d'envoyer l'utilisateur
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    }
+  } catch (err) {
+    // Pass any errors to the error-handling middleware
+    next(err);
+  }
+};
+
 export default {
   browse,
   read,
@@ -229,4 +251,5 @@ export default {
   editPassword,
   editPicture,
   editService,
+  login,
 };
