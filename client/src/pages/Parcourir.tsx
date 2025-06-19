@@ -1,6 +1,8 @@
 // client/src/pages/Parcourir
 
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+
 import IdeaCard from "../components/IdeaCard";
 import IdeaFilter from "../components/IdeaFilter";
 import IdeaSorter from "../components/IdeaSorter";
@@ -25,6 +27,9 @@ interface Category {
 }
 
 function Parcourir() {
+  const location = useLocation(); // Pour la transmission d'info (par le header ici)
+  const { firstname, lastname } = location.state || {};
+
   const [ideas, setIdeas] = useState([] as Idea[]);
   const [categories, setCategories] = useState([] as string[]);
 
@@ -34,7 +39,11 @@ function Parcourir() {
 
   const [selectedSorting, setSelectedSorting] = useState(""); // State de l'ordonnement
 
-  const [search, setSearch] = useState(""); // State de la barre de recherche
+  // On initialise la barre de recherche avec prénom + nom s'ils existent
+  const [search, setSearch] = useState(() => {
+    const defaultSearch = [firstname, lastname].filter(Boolean).join(" ");
+    return defaultSearch;
+  });
 
   // Etape 0 : Récupérer la liste complète des idées depuis l'API au chargement du composant
   useEffect(() => {
@@ -94,14 +103,19 @@ function Parcourir() {
   }, []);
 
   // Etape 1 : Afficher les idées en fonction de la barre de recherche
-  const searchedIdeas = ideas.filter((idea) =>
-    [
+  const searchedIdeas = ideas.filter((idea) => {
+    const searchableText = [
       idea.creator.firstname,
       idea.creator.lastname,
       idea.title,
       idea.description,
-    ].some((field) => field.toLowerCase().includes(search.toLowerCase())),
-  );
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return searchableText.includes(search.toLowerCase());
+  });
 
   // Etape 2 : Filtrer les idées en fonction des filtres sélectionnée (appelé à chaque re-render du composant c.a.d à chaque changement d'un state quelconque)
   const filteredIdeas = searchedIdeas.filter((idea) => {

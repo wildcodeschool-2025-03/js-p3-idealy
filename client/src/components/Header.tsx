@@ -1,10 +1,29 @@
 import { useState } from "react";
 // client/src/components/Header.tsx
 import { MdAccountCircle } from "react-icons/md";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Navigation du bouton "mes idées" => Nécessaire car on veut passer à la page parcourir les infos de l'user actuel
+  const handleMyIdeas = () => {
+    setOpen(false);
+    const storedUser = localStorage.getItem("user");
+    let prenom = "";
+    let nom = "";
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        prenom = user.firstname || "";
+        nom = user.lastname || "";
+      } catch (e) {
+        // Optionnel : gérer l'erreur de parsing
+      }
+    }
+    navigate("/parcourir", { state: { prenom, nom } });
+  };
 
   return (
     <>
@@ -66,6 +85,13 @@ function Header() {
           >
             Parcourir les idées
           </Link>
+          <button
+            type="button"
+            onClick={handleMyIdeas}
+            className="px-8 py-1 bg-blackBackground text-white rounded-2xl text-sm"
+          >
+            Mes idées
+          </button>
           <Link
             to="/informations"
             className="block py-1 px-2 bg-blackBackground rounded-2xl text-sm text-white "
@@ -103,23 +129,18 @@ function Header() {
         >
           Parcourir les idées
         </Link>
+        <button
+          type="button"
+          onClick={handleMyIdeas}
+          className="px-8 py-2 bg-blackBackground text-white rounded-full text-sm"
+        >
+          Mes idées
+        </button>
         <Link
           to="/informations"
-          className="px-4 py-2 bg-blackBackground text-white rounded-full text-sm"
+          className="px-6 py-2 bg-blackBackground text-white rounded-full text-sm"
         >
           Informations
-        </Link>
-        <Link
-          to="/contact"
-          className="px-4 py-2 bg-blackBackground text-white rounded-full text-sm"
-        >
-          Contact
-        </Link>
-        <Link
-          to="/a-propos"
-          className="px-4 py-2 bg-blackBackground text-white rounded-full text-sm"
-        >
-          A Propos
         </Link>
       </nav>
     </>
