@@ -2,9 +2,9 @@
 
 function NotFound() {
   return (
-    <section className="flex flex-col bg-greyBackground md:w-2/3 items-center justify-center text-center mx-auto text-xl md:text-2xl font-bold">
+    <section className="flex flex-col bg-greyBackground items-center justify-center text-center mx-auto text-xl md:text-2xl font-bold">
       <div className="flex flex-col md:flex-row items-center justify-center mt-10 mb-10 gap-10 w-full">
-        <img src="/404.png" alt="404 Not Found" className=" w-1/3 md:w-1/2" />
+        <img src="/404.png" alt="404 Not Found" className=" w-1/3" />
 
         <div className="flex flex-col md:flex-row rounded-lg p-2 lg:p-4 bg-card shadow-lg">
           {/* Desktop */}
