@@ -1,7 +1,18 @@
 import type { RequestHandler } from "express";
 
+import serviceRepository from "../service/serviceRepository";
 // Import access to data
 import userRepository from "./userRepository";
+
+interface UserUpdateData {
+  id: number;
+  firstname: string;
+  lastname: string;
+  mail: string;
+  picture?: string;
+  service_id: number;
+  password?: string;
+}
 
 // The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req, res, next) => {
@@ -76,6 +87,43 @@ const destroy: RequestHandler = async (req, res, next) => {
   } catch (err) {
     // Pass any errors to the error-handling middleware
     next(err);
+  }
+};
+
+const update: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = Number(req.params.id);
+    const { firstname, lastname, mail, service, picture, password } = req.body;
+
+    const serviceData = await serviceRepository.readByName(service);
+    if (!serviceData) {
+      res.status(400).json({ error: "Service not found" });
+      return;
+    }
+    const service_id = serviceData?.id;
+
+    const userToUpdate: UserUpdateData = {
+      id: userId,
+      firstname,
+      lastname,
+      mail,
+      picture,
+      service_id,
+    };
+    if (password && password.trim().length > 0) {
+      userToUpdate.password = password;
+    }
+
+    const affectedRows = await userRepository.update(userToUpdate);
+
+    if (affectedRows === 0) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    const updatedUser = await userRepository.read(userId);
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -218,6 +266,21 @@ const editService: RequestHandler = async (req, res, next) => {
   }
 };
 
+
+const getServiceOfThisUser: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = Number(req.params.id);
+    const service = await userRepository.getServiceOfThisUser(userId);
+    if (service == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(service);
+    }
+  } catch (err) {
+        next(err);
+  }
+};
+
 const login: RequestHandler = async (req, res, next) => {
   try {
     // Extract the login credentials from the request body
@@ -236,6 +299,7 @@ const login: RequestHandler = async (req, res, next) => {
     }
   } catch (err) {
     // Pass any errors to the error-handling middleware
+
     next(err);
   }
 };
@@ -244,6 +308,7 @@ export default {
   browse,
   read,
   destroy,
+  update,
   add,
   editFirstname,
   editLastname,
@@ -251,5 +316,6 @@ export default {
   editPassword,
   editPicture,
   editService,
+  getServiceOfThisUser,
   login,
 };

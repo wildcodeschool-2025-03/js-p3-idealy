@@ -25,6 +25,10 @@ router.get("/api/users/:id", userActions.read);
 router.post("/api/users", userActions.add);
 router.delete("/api/users/:id", userActions.destroy);
 
+router.get("/api/users/:id/service", userActions.getServiceOfThisUser);
+
+router.put("/api/users/:id", userActions.update);
+
 router.patch("/api/users/:id/firstname", userActions.editFirstname);
 router.patch("/api/users/:id/lastname", userActions.editLastname);
 router.patch("/api/users/:id/mail", userActions.editMail);

@@ -21,6 +21,14 @@ class ServiceRepository {
     return result.insertId;
   }
 
+  async readByName(serviceName: string) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT * FROM Service WHERE statut = ?",
+      [serviceName],
+    );
+    return rows[0];
+  }
+
   // The Rs of CRUD - Read operations
 
   async read(id: number) {

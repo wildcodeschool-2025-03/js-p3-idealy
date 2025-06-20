@@ -1,0 +1,207 @@
+import { useEffect, useState } from "react";
+import type { UserInterface } from "../pages/Compte";
+
+interface serviceInterface {
+  id: number;
+  statut: string;
+}
+
+interface EditProfilModalInterface {
+  userData: UserInterface;
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (data: UserInterface) => void;
+}
+
+function EditProfilModal({
+  userData,
+  isOpen,
+  onClose,
+  onSave,
+}: EditProfilModalInterface) {
+  const [formData, setFormData] = useState({
+    id: userData?.id || 0,
+    firstname: userData?.firstname || "",
+    lastname: userData?.lastname || "",
+    mail: userData?.mail || "",
+    service: userData?.service || "",
+    picture: userData?.picture || "",
+    password: "",
+  });
+
+  const [services, setServices] = useState<serviceInterface[]>([]);
+
+  useEffect(() => {
+    if (isOpen && userData && services.length > 0) {
+      const userService = services.find((s) => s.id === userData.service_id);
+
+      setFormData({
+        id: userData.id,
+        firstname: userData.firstname || "",
+        lastname: userData.lastname || "",
+        mail: userData.mail || "",
+        service: userService ? userService.statut : "",
+        picture: userData.picture || "",
+        password: "",
+      });
+    }
+  }, [isOpen, userData, services]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch(`${import.meta.env.VITE_API_URL}/api/services`)
+        .then((response) => response.json())
+        .then((data) => {
+          setServices(data);
+        })
+        .catch((error) => console.error("Erreur:", error));
+    }
+  }, [isOpen]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const selectedService = services.find((s) => s.statut === formData.service);
+    const dataToSave: UserInterface = {
+      ...formData,
+      service_id: selectedService
+        ? selectedService.id
+        : userData.service_id || 0,
+    };
+    onSave(dataToSave);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <div className="fixed inset-0 bg-blackBackground bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4 relative">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-blackBackground absolute top-6 right-6"
+            aria-label="Fermer"
+          >
+            X
+          </button>
+          <h2 className="text-xl font-bold mb-8">Modifier mes informations</h2>
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor="firstname"
+                className="block text-sm font-medium mb-1"
+              >
+                Prénom
+              </label>
+              <input
+                type="text"
+                id="firstname"
+                name="firstname"
+                value={formData.firstname}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="lastname"
+                className="block text-sm font-medium mb-1"
+              >
+                Nom
+              </label>
+              <input
+                type="text"
+                id="lastname"
+                name="lastname"
+                value={formData.lastname}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+            </div>
+            <div>
+              <label htmlFor="mail" className="block text-sm font-medium mb-1">
+                Adresse email
+              </label>
+              <input
+                type="email"
+                id="mail"
+                name="mail"
+                value={formData.mail}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mb-1"
+              >
+                Mot de passe
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center"
+                placeholder="Mot de passe"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="service"
+                className="block text-sm font-medium mb-1"
+              >
+                Service
+              </label>
+              <select
+                id="service"
+                name="service"
+                value={formData.service}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Choisir un service</option>
+                {services.map((service) => (
+                  <option key={service.id} value={service.statut}>
+                    {service.statut}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <button
+                type="submit"
+                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-greenButton shadow-lg"
+              >
+                Enregistrer
+              </button>
+
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-redButton shadow-lg"
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default EditProfilModal;

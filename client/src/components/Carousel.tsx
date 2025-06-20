@@ -25,6 +25,7 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
   };
 
   return (
+
     <div className=" rounded-2xl  p-5 max-w-full w-full mx-auto flex flex-col items-center relative px-3">
       <div className="w-full ">
         {slides[current].content}
