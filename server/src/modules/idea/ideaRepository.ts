@@ -57,11 +57,14 @@ class IdeaRepository {
   // Read all ideas, with an optional sort parameter
   // If sort is "recent", it returns the 3 most recent ideas
 
-  async readAll({user_id, statut, sort}:{user_id?: number, statut?: number, sort?: string}) {
+  async readAll({
+    user_id,
+    statut,
+    sort,
+  }: { user_id?: number; statut?: number; sort?: string }) {
     let sql = "SELECT * FROM Idea";
     const params: (string | number)[] = [];
     const where: string[] = []; // On prépare un tableau pour les conditions
-    
 
     if (user_id) {
       sql += " JOIN User_idea ui ON ui.idea_id = Idea.id";
@@ -73,18 +76,17 @@ class IdeaRepository {
       where.push("statut_id = ?");
       params.push(statut);
     }
-   if (where.length > 0) {
-  sql += ` WHERE ${where.join(" AND ")}`;
-}
+    if (where.length > 0) {
+      sql += ` WHERE ${where.join(" AND ")}`;
+    }
     if (sort === "recent") {
       sql += " ORDER BY timestamp DESC LIMIT 3";
     }
-   
+
     const [rows] = await databaseClient.query(sql, params);
 
     return rows as Idea[];
   }
-
 
   // The U of CRUD - Update operation
 

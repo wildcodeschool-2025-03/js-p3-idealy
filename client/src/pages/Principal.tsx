@@ -1,9 +1,9 @@
 // client/src/pages/Principal.tsx
 
-import { Link} from "react-router";
-import { useEffect, useState} from "react";
-import IdeaCard from "../components/IdeaCard"; 
-import Carousel from "../components/Carousel";  
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
+import Carousel from "../components/Carousel";
+import IdeaCard from "../components/IdeaCard";
 
 interface Idea {
   id: number;
@@ -14,111 +14,116 @@ interface Idea {
   statut_id: number;
 }
 
-
 function Principal() {
-const [recentIdeas, setRecentIdeas] = useState<Idea[]>([]);
-const [userIdeas, setUserIdeas] = useState<Idea[]>([]);
-const [validatedIdeas, setValidatedIdeas] = useState<Idea[]>([]);
+  const [recentIdeas, setRecentIdeas] = useState<Idea[]>([]);
+  const [userIdeas, setUserIdeas] = useState<Idea[]>([]);
+  const [validatedIdeas, setValidatedIdeas] = useState<Idea[]>([]);
 
-useEffect(()=>{
-  fetch(`${import.meta.env.VITE_API_URL}/api/ideas?sort=recent`)
-  .then((response) => response.json())
-  .then((data: Idea[]) => {
-    setRecentIdeas(data);
-  });
-}, []);
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/ideas?sort=recent`)
+      .then((response) => response.json())
+      .then((data: Idea[]) => {
+        setRecentIdeas(data);
+      });
+  }, []);
 
-// Vos idées (exemple avec l utilisateur 2 sans connexion)
-useEffect(() => {
-  fetch(`${import.meta.env.VITE_API_URL}/api/ideas?user_id=2&sort=recent`)
-    .then(res => res.json())
-    .then(setUserIdeas);
-}, []);
+  // Vos idées (exemple avec l utilisateur 2 sans connexion)
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/ideas?user_id=2&sort=recent`)
+      .then((res) => res.json())
+      .then(setUserIdeas);
+  }, []);
 
+  // Idées validées
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/ideas?statut=2&sort=recent`)
+      .then((res) => res.json())
+      .then(setValidatedIdeas);
+  }, []);
 
-// Idées validées
-useEffect(() => {
-  fetch(`${import.meta.env.VITE_API_URL}/api/ideas?statut=2&sort=recent`)
-    .then(res => res.json())
-    .then(setValidatedIdeas);
-}, []);
+  const recentSlides = recentIdeas.map((idea) => ({
+    id: idea.id.toString(),
+    content: <IdeaCard idea={idea} />,
+  }));
 
-const recentSlides = recentIdeas.map((idea) => ({
-  id: idea.id.toString(),
-  content: <IdeaCard idea={idea} />,
-}));
+  const userSlides = userIdeas.map((idea) => ({
+    id: idea.id.toString(),
+    content: <IdeaCard idea={idea} />,
+  }));
 
-const userSlides = userIdeas.map((idea) => ({
-  id: idea.id.toString(),
-  content: <IdeaCard idea={idea} />,
-}));
+  const validatedSlides = validatedIdeas.map((idea) => ({
+    id: idea.id.toString(),
+    content: <IdeaCard idea={idea} />,
+  }));
 
-const validatedSlides = validatedIdeas.map((idea) => ({
-  id: idea.id.toString(),
-  content: <IdeaCard idea={idea} />,
-}));
-
-return (
-
-      <main className="flex flex-col items-center justify-center font-[atkinson] mb-4 mt-4 md:px-8 md:py-8 md:mb-8 md:mt-8 ">
-      <Link to="/parcourir" className="text-1xl md:text-2xl  font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#ff5f57] rounded-md px-4 py-4 text-center w-fit mx-auto">
+  return (
+    <main className="flex flex-col items-center justify-center font-[atkinson] mb-4 mt-4 md:px-8 md:py-8 md:mb-8 md:mt-8 ">
+      <Link
+        to="/parcourir"
+        className="text-1xl md:text-2xl  font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#ff5f57] rounded-md px-4 py-4 text-center w-fit mx-auto"
+      >
         Idées les plus récentes
       </Link>
 
-{/* Carousel mobile uniquement */}
-<div className="block md:hidden w-full mb-6">
-  <Carousel slides={recentSlides} />
-</div>
+      {/* Carousel mobile uniquement */}
+      <div className="block md:hidden w-full mb-6">
+        <Carousel slides={recentSlides} />
+      </div>
 
-  {/* Liste classique pour desktop */}
-        <ul className="hidden md:flex md:flex-row md:gap-6 md:p-4">
+      {/* Liste classique pour desktop */}
+      <ul className="hidden md:flex md:flex-row md:gap-6 md:p-4">
         {recentIdeas.map((idea) => (
           <IdeaCard key={idea.id} idea={idea} />
         ))}
       </ul>
 
-       <Link to="/parcourir" className="text-1xl md:text-2xl font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#ffbd2e] rounded-md px-4 py-4 text-center w-fit mx-auto">
+      <Link
+        to="/parcourir"
+        className="text-1xl md:text-2xl font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#ffbd2e] rounded-md px-4 py-4 text-center w-fit mx-auto"
+      >
         Vos idées
       </Link>
 
-  {userIdeas.length === 0 ? (
-    <div>
-      <p>Vous n’avez pas encore proposé d’idée.</p>
+      {userIdeas.length === 0 ? (
+        <div>
+          <p>Vous n’avez pas encore proposé d’idée.</p>
 
-      <Link to="/soumettre">Soumettre une idée</Link>
-    </div>
-  ) : (
-    
-   <>
-    <div className="block md:hidden w-full mb-6">
-      <Carousel slides={userSlides} />
-    </div>
-    <ul className="hidden md:flex md:flex-row md:gap-6 md:p-4">
-      {userIdeas.map(idea => <IdeaCard key={idea.id} idea={idea} />)}
-    </ul>
-  </>
-)}
+          <Link to="/soumettre">Soumettre une idée</Link>
+        </div>
+      ) : (
+        <>
+          <div className="block md:hidden w-full mb-6">
+            <Carousel slides={userSlides} />
+          </div>
+          <ul className="hidden md:flex md:flex-row md:gap-6 md:p-4">
+            {userIdeas.map((idea) => (
+              <IdeaCard key={idea.id} idea={idea} />
+            ))}
+          </ul>
+        </>
+      )}
 
-       <Link to="/parcourir" className="text-1xl md:text-2xl font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#28c940] rounded-md px-4 py-4 text-center w-fit mx-auto">
+      <Link
+        to="/parcourir"
+        className="text-1xl md:text-2xl font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#28c940] rounded-md px-4 py-4 text-center w-fit mx-auto"
+      >
         Idées validées
       </Link>
 
       {/* Carousel mobile uniquement */}
-<div className="block md:hidden w-full mb-6">
-  <Carousel slides={validatedSlides} />
-</div>
+      <div className="block md:hidden w-full mb-6">
+        <Carousel slides={validatedSlides} />
+      </div>
 
- <ul className="hidden md:flex md:flex-row md:gap-6 md:p-4">
-    {validatedIdeas.length === 0 ? (
-      <li>Aucune idée validée.</li>
-    ) : (
-      validatedIdeas.map(idea => <IdeaCard key={idea.id} idea={idea} />)
-    )}
-  </ul>
-
-
-      </main>
-);
+      <ul className="hidden md:flex md:flex-row md:gap-6 md:p-4">
+        {validatedIdeas.length === 0 ? (
+          <li>Aucune idée validée.</li>
+        ) : (
+          validatedIdeas.map((idea) => <IdeaCard key={idea.id} idea={idea} />)
+        )}
+      </ul>
+    </main>
+  );
 }
 
 export default Principal;

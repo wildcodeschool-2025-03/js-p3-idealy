@@ -12,7 +12,7 @@ interface CarouselProps {
 const Carousel: React.FC<CarouselProps> = ({ slides }) => {
   const [current, setCurrent] = useState(0);
 
-   if (!slides.length) {
+  if (!slides.length) {
     return null; // ou <div>Aucune idée à afficher</div>
   }
 
@@ -25,11 +25,8 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
   };
 
   return (
-
     <div className=" rounded-2xl  p-5 max-w-full w-full mx-auto flex flex-col items-center relative px-3">
-      <div className="w-full ">
-        {slides[current].content}
-      </div>
+      <div className="w-full ">{slides[current].content}</div>
 
       <button
         type="button"

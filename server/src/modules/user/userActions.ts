@@ -266,7 +266,6 @@ const editService: RequestHandler = async (req, res, next) => {
   }
 };
 
-
 const getServiceOfThisUser: RequestHandler = async (req, res, next) => {
   try {
     const userId = Number(req.params.id);
@@ -277,7 +276,7 @@ const getServiceOfThisUser: RequestHandler = async (req, res, next) => {
       res.json(service);
     }
   } catch (err) {
-        next(err);
+    next(err);
   }
 };
 

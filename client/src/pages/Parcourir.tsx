@@ -28,7 +28,7 @@ interface Category {
 
 function Parcourir() {
   const location = useLocation(); // Pour la transmission d'info (par le header ici)
-  const { firstname, lastname } = location.state || {};
+  const { firstname, lastname, t } = location.state || {};
 
   const [ideas, setIdeas] = useState([] as Idea[]);
   const [categories, setCategories] = useState([] as string[]);
@@ -40,10 +40,16 @@ function Parcourir() {
   const [selectedSorting, setSelectedSorting] = useState(""); // State de l'ordonnement
 
   // On initialise la barre de recherche avec prénom + nom s'ils existent
-  const [search, setSearch] = useState(() => {
-    const defaultSearch = [firstname, lastname].filter(Boolean).join(" ");
-    return defaultSearch;
-  });
+  const [search, setSearch] = useState("");
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: contrairement à ce que dit biome, t est ABSOLUMENT NECESSAIRE ici pour forcer le reset de la recherche lors de la navigation
+  useEffect(() => {
+    if (firstname || lastname) {
+      setSearch([firstname, lastname].filter(Boolean).join(" "));
+    } else {
+      setSearch("");
+    }
+  }, [firstname, lastname, t]);
 
   // Etape 0 : Récupérer la liste complète des idées depuis l'API au chargement du composant
   useEffect(() => {

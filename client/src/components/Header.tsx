@@ -18,11 +18,10 @@ function Header() {
         const user = JSON.parse(storedUser);
         firstname = user.firstname || "";
         lastname = user.lastname || "";
-      } catch (e) {
-        // Optionnel : gérer l'erreur de parsing
-      }
+      } catch (e) {}
     }
-    navigate("/parcourir", { state: { firstname, lastname } });
+    // Ajoute un champ unique pour forcer le changement de state (navigation depuis la même page)
+    navigate("/parcourir", { state: { firstname, lastname, t: Date.now() } });
   };
 
   // Probablement robustifier ça (en faisant une requete SQL pour aller chercher l'info par exemple)
@@ -52,7 +51,6 @@ function Header() {
 
         <Link to="/principal">
           <h1 className="text-center text-4xl font-bold font-kalam">Idealy</h1>
-
         </Link>
         <div className="flex items-center space-x-2 md:absolute md:right-4">
           <button
