@@ -137,7 +137,6 @@ class UserRepository {
     return result.affectedRows;
   }
 
-
   async update(user: User) {
     if (user.password) {
       const [result] = await databaseClient.query<Result>(
@@ -176,7 +175,7 @@ class UserRepository {
     );
 
     return rows[0];
-    }
+  }
 
   async authenticate(mail: string, password: string) {
     // Execute the SQL SELECT query to authenticate a user by mail and password
@@ -187,7 +186,6 @@ class UserRepository {
 
     // Return the first row of the result, which represents the authenticated user
     return rows[0] as User | undefined;
-
   }
 }
 
