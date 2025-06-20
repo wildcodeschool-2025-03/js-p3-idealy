@@ -1,10 +1,47 @@
 import { useState } from "react";
 // client/src/components/Header.tsx
 import { MdAccountCircle } from "react-icons/md";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Navigation du bouton "mes idées" => Nécessaire car on veut passer à la page parcourir les infos de l'user actuel
+  const handleMyIdeas = () => {
+    setOpen(false);
+    const storedUser = localStorage.getItem("user");
+    let firstname = "";
+    let lastname = "";
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        firstname = user.firstname || "";
+        lastname = user.lastname || "";
+      } catch (e) {
+        // Optionnel : gérer l'erreur de parsing
+      }
+    }
+    navigate("/parcourir", { state: { firstname, lastname } });
+  };
+
+  // Probablement robustifier ça (en faisant une requete SQL pour aller chercher l'info par exemple)
+  const handleAdmin = () => {
+    setOpen(false);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        if (user.isAdmin === true) {
+          navigate("/admin");
+        } else {
+          console.log("vous n'êtes pas admin");
+        }
+      } catch (e) {
+        // Optionnel : gérer l'erreur de parsing
+      }
+    }
+  };
 
   return (
     <>
@@ -18,12 +55,13 @@ function Header() {
           </h1>
         </Link>
         <div className="flex items-center space-x-2 md:absolute md:right-4">
-          <Link
-            to="/admin"
-            className="bg-blackBackground text-white rounded-2xl py-1 px-2 hidden md:block"
+          <button
+            type="button"
+            onClick={handleAdmin}
+            className="bg-blackBackground text-white rounded-2xl py-1 px-2 hidden md:block cursor-pointer"
           >
             Administration
-          </Link>
+          </button>
           <Link to="/compte">
             <MdAccountCircle className="text-4xl hidden md:block" />
           </Link>
@@ -52,37 +90,44 @@ function Header() {
               : "transform translate-x-full opacity-0"
           }`}
         >
-          <Link
-            to="/admin"
-            className="block py-1 px-2 bg-blackBackground rounded-2xl text-sm text-white"
-            onClick={() => setOpen(false)}
+          <button
+            type="button"
+            onClick={handleAdmin}
+            className="block py-1 w-full bg-blackBackground rounded-2xl text-sm text-white cursor-pointer"
           >
             Administration
-          </Link>
+          </button>
           <Link
             to="/parcourir"
-            className="block py-1 px-2 bg-blackBackground rounded-2xl text-sm text-white "
+            className="block py-1 px-3 w-full bg-blackBackground rounded-2xl text-sm text-white "
             onClick={() => setOpen(false)}
           >
-            Parcourir les idées
+            Parcourir tout
           </Link>
+          <button
+            type="button"
+            onClick={handleMyIdeas}
+            className="block w-full py-1 bg-blackBackground text-white rounded-2xl text-sm cursor-pointer"
+          >
+            Mes idées
+          </button>
           <Link
             to="/informations"
-            className="block py-1 px-2 bg-blackBackground rounded-2xl text-sm text-white "
+            className="block py-1 w-full bg-blackBackground rounded-2xl text-sm text-white "
             onClick={() => setOpen(false)}
           >
             Informations
           </Link>
           <Link
             to="/contact"
-            className="block py-1 px-2 bg-blackBackground rounded-2xl text-sm text-white "
+            className="block py-1 w-full bg-blackBackground rounded-2xl text-sm text-white "
             onClick={() => setOpen(false)}
           >
             Contact
           </Link>
           <Link
             to="/a-propos"
-            className="block py-1 px-2 bg-blackBackground rounded-2xl text-sm text-white "
+            className="block py-1 w-full bg-blackBackground rounded-2xl text-sm text-white "
             onClick={() => setOpen(false)}
           >
             A propos
@@ -103,23 +148,18 @@ function Header() {
         >
           Parcourir les idées
         </Link>
+        <button
+          type="button"
+          onClick={handleMyIdeas}
+          className="px-8 py-2 bg-blackBackground text-white rounded-full text-sm cursor-pointer"
+        >
+          Mes idées
+        </button>
         <Link
           to="/informations"
-          className="px-4 py-2 bg-blackBackground text-white rounded-full text-sm"
+          className="px-6 py-2 bg-blackBackground text-white rounded-full text-sm"
         >
           Informations
-        </Link>
-        <Link
-          to="/contact"
-          className="px-4 py-2 bg-blackBackground text-white rounded-full text-sm"
-        >
-          Contact
-        </Link>
-        <Link
-          to="/a-propos"
-          className="px-4 py-2 bg-blackBackground text-white rounded-full text-sm"
-        >
-          A Propos
         </Link>
       </nav>
     </>
