@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import IdeaCard from "../components/IdeaCard";
 
+import Statistiques from "../components/Statistiques";
+<Statistiques />;
+
 interface Idea {
   id: number;
   title: string;
@@ -87,7 +90,8 @@ function Information() {
         >
           Statistiques
         </button>
-        {/* Statistiques à venir ici */}
+        {/* appel du composant Statitiques */}
+        <Statistiques />
       </article>
 
       <article className="w-full max-w-6xl px-2 md:px-8">

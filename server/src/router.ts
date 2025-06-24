@@ -90,4 +90,9 @@ router.post("/api/comments", commentActions.add);
 router.put("/api/comments/:id", commentActions.edit);
 router.delete("/api/comments/:id", commentActions.destroy);
 
+// Definie statistics routes
+import { getStatistics } from "./modules/statistics/statisticsActions";
+
+router.get("/api/statistics", getStatistics);
+
 export default router;
