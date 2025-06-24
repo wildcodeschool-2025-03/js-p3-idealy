@@ -1,16 +1,21 @@
 // client/src/pages/Soumettre.tsx
 
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import DeadlineModal from "../components/ui/DeadlineModal";
 import PieceJointeButton from "../components/ui/PieceJointeButton";
+import SoumissionFeedback from "../components/ui/SoumissionFeedback";
 import { categoryColors } from "../constants/categoryColors";
+import { useLogin } from "../context/AuthContext";
 
 type Category = { id: number; category: string };
 type Participant = { id: number; firstname: string; lastname: string };
 
-const excludedIds = [1]; // IDs à ignorer
+const excludedIds = [1];
 
 const Soumettre = () => {
+  const { user } = useLogin();
+  const navigate = useNavigate();
   const [isDeadlineModalOpen, setIsDeadlineModalOpen] = useState(false);
   const [deadlineDates, setDeadlineDates] = useState<{
     creation: string;
@@ -31,6 +36,12 @@ const Soumettre = () => {
   const [participantOptions, setParticipantOptions] = useState<Participant[]>(
     [],
   );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -67,16 +78,28 @@ const Soumettre = () => {
     e.preventDefault();
 
     if (!deadlineDates) {
-      alert("Les dates de deadline ne sont pas définies.");
+      setFeedback({
+        type: "error",
+        message: "Les dates de deadline ne sont pas définies.",
+      });
+      return;
+    }
+
+    if (!user?.id) {
+      setFeedback({
+        type: "error",
+        message: "Vous devez être connecté pour soumettre une idée.",
+      });
       return;
     }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("deadline", deadlineDates.decision); // correspond à la date finale
-    formData.append("timestamp", deadlineDates.creation); // date de création
-    formData.append("statut_id", "1"); // par défaut 'En cours'
+    formData.append("deadline", deadlineDates.decision);
+    formData.append("timestamp", deadlineDates.creation);
+    formData.append("statut_id", "1");
+    formData.append("creator_id", String(user.id));
 
     for (const file of files) {
       formData.append("files", file);
@@ -91,27 +114,64 @@ const Soumettre = () => {
     }
 
     try {
+      setIsLoading(true);
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ideas`, {
         method: "POST",
         body: formData,
       });
+      setIsLoading(false);
 
       if (res.ok) {
-        alert("Idée soumise avec succès !");
         setTitle("");
         setDescription("");
         setFiles([]);
         setCategories([]);
         setParticipants([]);
         setDeadlineDates(null);
+        setFeedback({
+          type: "success",
+          message: "Votre idée a été soumise avec succès.",
+        });
       } else {
-        alert("Erreur lors de l'envoi");
+        setFeedback({
+          type: "error",
+          message: "Veuillez réessayer plus tard.",
+        });
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("Erreur de soumission :", error);
-      alert("Une erreur est survenue lors de l'envoi.");
+      setFeedback({
+        type: "error",
+        message: "Veuillez réessayer plus tard.",
+      });
     }
   };
+
+  if (feedback) {
+    return (
+      <SoumissionFeedback
+        type={feedback.type}
+        message={feedback.message}
+        onClose={() => {
+          if (feedback.type === "success") {
+            navigate("/principal");
+          } else {
+            setFeedback(null);
+          }
+        }}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-yellowButton border-t-transparent" />
+        <p className="mt-4 text-lg font-medium">Envoi en cours...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-greyBackground pt-10 pb-10">
