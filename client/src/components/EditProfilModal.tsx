@@ -30,6 +30,7 @@ function EditProfilModal({
   });
 
   const [services, setServices] = useState<serviceInterface[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (isOpen && userData && services.length > 0) {
@@ -68,16 +69,37 @@ function EditProfilModal({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const selectedService = services.find((s) => s.statut === formData.service);
-    const dataToSave: UserInterface = {
-      ...formData,
-      service_id: selectedService
-        ? selectedService.id
-        : userData.service_id || 0,
+
+    // Upload de la photo si une nouvelle a été sélectionnée (JSON = que textes / nombres donc FormData pour fichier)
+    if (selectedFile) {
+      const fileFormData = new FormData(); // crée un conteneur
+      fileFormData.append("picture", selectedFile); // remplis le conteneur avec "picture" + fichier
+
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users/${userData.id}/picture`,
+        {
+          method: "PATCH", // Pas de PUT car modification uniquement de la photo
+          body: fileFormData,
+        },
+      );
+    }
+
+    // Récuperation de l'ID du service sélectionné
+    const selectedService = services.find((s) => s.statut === formData.service); // cherche le service selectionné pour recupérer l'ID
+
+    const dataToSave = {
+      id: formData.id,
+      firstname: formData.firstname,
+      lastname: formData.lastname,
+      mail: formData.mail,
+      // Utilise l'ID du nouveau service ou garde l'ancien si pas trouvé
+      service_id: selectedService ? selectedService.id : userData.service_id,
+      service: formData.service,
     };
-    onSave(dataToSave);
+
+    onSave(dataToSave); // envoie les données au composant parent = Compte.tsx
   };
 
   if (!isOpen) return null;
@@ -97,6 +119,31 @@ function EditProfilModal({
           <h2 className="text-xl font-bold mb-8">Modifier mes informations</h2>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor="picture"
+                className="block text-sm font-medium mb-1"
+              >
+                Photo de profil
+              </label>
+              <input
+                type="file"
+                id="picture"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setSelectedFile(file);
+                  }
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+              {selectedFile && (
+                <p className="text-sm text-gray-600 mt-1">
+                  Fichier sélectionné : {selectedFile.name}
+                </p>
+              )}
+            </div>
             <div>
               <label
                 htmlFor="firstname"

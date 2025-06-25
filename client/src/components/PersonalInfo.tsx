@@ -36,8 +36,12 @@ function PersonalInfo({ user, onEditClick }: PersonalInfoProps) {
     <>
       <div className="text-center mb-6">
         <img
-          className="rounded-full mx-auto mb-2"
-          src={dataUser.picture}
+          className="rounded-full mx-auto mb-2 w-56 h-56 object-cover"
+          src={
+            dataUser.picture?.startsWith("http")
+              ? dataUser.picture
+              : `${import.meta.env.VITE_API_URL}${dataUser.picture}`
+          }
           alt="Avatar utilisateur"
         />
       </div>
