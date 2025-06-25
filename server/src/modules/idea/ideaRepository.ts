@@ -31,6 +31,14 @@ type Category = {
   category: string;
 };
 
+type IdeaUpdate = {
+  id: number;
+  title: string;
+  description: string;
+  deadline: string;
+  statut_id: number;
+};
+
 class IdeaRepository {
   // The C of CRUD - Create operation
 
@@ -61,31 +69,49 @@ class IdeaRepository {
     user_id,
     statut,
     sort,
-  }: { user_id?: number; statut?: number; sort?: string }) {
-    let sql = "SELECT * FROM Idea";
+    toValidate,
+  }: {
+    user_id?: number;
+    statut?: number;
+    sort?: string;
+    toValidate?: boolean;
+  }) {
+    let sql: string;
     const params: (string | number)[] = [];
-    const where: string[] = []; // On prépare un tableau pour les conditions
+    const where: string[] = [];
 
-    if (user_id) {
-      sql += " JOIN User_idea ui ON ui.idea_id = Idea.id";
-      where.push("ui.user_id = ?");
-      params.push(user_id);
-      where.push("ui.isCreator = TRUE"); // On ajoute la condition pour l'utilisateur créateur
+    if (toValidate) {
+      sql = `SELECT Idea.*, u.firstname, u.lastname, u.mail as email
+           FROM Idea
+           JOIN User_idea ui ON ui.idea_id = Idea.id AND ui.isCreator = TRUE
+           JOIN User u ON u.id = ui.user_id`;
+      where.push("Idea.statut_id = 1");
+      where.push("Idea.deadline <= CURDATE()");
+    } else {
+      sql = "SELECT * FROM Idea";
+      if (user_id) {
+        sql += " JOIN User_idea ui ON ui.idea_id = Idea.id";
+        where.push("ui.user_id = ?");
+        params.push(user_id);
+        where.push("ui.isCreator = TRUE");
+      }
+      if (statut) {
+        where.push("statut_id = ?");
+        params.push(statut);
+      }
     }
-    if (statut) {
-      where.push("statut_id = ?");
-      params.push(statut);
-    }
+
     if (where.length > 0) {
       sql += ` WHERE ${where.join(" AND ")}`;
     }
     if (sort === "recent") {
       sql += " ORDER BY timestamp DESC LIMIT 3";
+    } else if (toValidate) {
+      sql += " ORDER BY Idea.timestamp DESC";
     }
 
-    const [rows] = await databaseClient.query(sql, params);
-
-    return rows as Idea[];
+    const [rows] = await databaseClient.query<Rows>(sql, params);
+    return rows;
   }
 
   // The U of CRUD - Update operation
@@ -111,6 +137,39 @@ class IdeaRepository {
   }
 
   // Specific functions
+
+  //Admin page select recent ideas + statut en cours + deadline dépassée   (deuxieme methode a tester mais non fonctionnel pour le moment)
+
+  /*async findIdeasToValidate() {
+  const [rows] = await databaseClient.query<Rows>(
+    `SELECT Idea.*, u.firstname, u.lastname, u.mail as email
+     FROM Idea
+     JOIN User_idea ui ON ui.idea_id = Idea.id AND ui.isCreator = TRUE
+     JOIN User u ON u.id = ui.user_id
+     WHERE Idea.statut_id = 1
+       AND Idea.deadline <= CURDATE()
+     ORDER BY Idea.timestamp DESC`
+  );
+  return rows;
+}*/
+
+  //admin page valider refuser supprimer une idée
+
+  async putValidationOrRefusal(idea: IdeaUpdate) {
+    const [result] = await databaseClient.query<Result>(
+      "UPDATE Idea SET title = ?, description = ?, deadline = ?, statut_id = ? WHERE id = ?",
+      [idea.title, idea.description, idea.deadline, idea.statut_id, idea.id],
+    );
+    return result.affectedRows > 0;
+  }
+
+  async deleteIdea(ideaId: number) {
+    const [result] = await databaseClient.query<Result>(
+      "DELETE FROM Idea WHERE id = ?",
+      [ideaId],
+    );
+    return result.affectedRows > 0;
+  }
 
   // Execute the SQL SELECT query to retrieve the original creator of an idea, given the ID of the idea
   async getCreatorOfThisIdea(id: number) {

@@ -24,12 +24,12 @@ if (!fs.existsSync(uploadDir)) {
 // The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    const { user_id, statut, sort } = req.query;
-    // If sort is "recent", we return the 5 most recent ideas
+    const { user_id, statut, sort, toValidate } = req.query;
     const ideas = await ideaRepository.readAll({
       user_id: user_id ? Number(user_id) : undefined,
       statut: statut ? Number(statut) : undefined,
       sort: sort ? String(sort) : undefined,
+      toValidate: toValidate === "1",
     });
     res.json(ideas);
   } catch (err) {
@@ -41,6 +41,7 @@ const browse: RequestHandler = async (req, res, next) => {
 const read: RequestHandler = async (req, res, next) => {
   try {
     const ideaId = Number(req.params.id);
+
     const idea = await ideaRepository.read(ideaId);
 
     if (idea == null) {
@@ -147,6 +148,64 @@ const getFiles = (
 
 // Specific functions
 
+//admin page
+/*const browseToValidate: RequestHandler = async (req, res, next) => {
+  try {
+    const ideas = await ideaRepository.findIdeasToValidate();
+    res.json(ideas);
+  } catch (err) {
+    console.error("Erreur SQL dans /api/ideas/to-validate :", err); 
+    next(err);
+  }
+};*/
+
+//admin page update
+
+/*const transporter = nodemailer.createTransport({
+  host: process.env.MAIL_HOST,
+  port: Number(process.env.MAIL_PORT),
+  secure: process.env.MAIL_SECURE === "true",
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+});*/
+
+const putValidationOrRefusal: RequestHandler = async (req, res, next) => {
+  try {
+    const deadline = String(req.body.deadline).split("T")[0];
+    const idea = {
+      id: Number(req.params.id),
+      title: String(req.body.title),
+      description: String(req.body.description),
+      deadline,
+      statut_id: Number(req.body.statut_id),
+    };
+    console.log("PUT idea", idea);
+
+    const affectedRows = await ideaRepository.putValidationOrRefusal(idea);
+
+    if (affectedRows === false) {
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(204);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteIdea: RequestHandler = async (req, res, next) => {
+  try {
+    const ideaId = Number(req.params.id);
+    await ideaRepository.deleteIdea(ideaId);
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // Retrieve the original creator of an idea, given the ID of the idea
 const getCreatorOfThisIdea: RequestHandler = async (req, res, next) => {
   try {
@@ -206,4 +265,6 @@ export default {
   getCreatorOfThisIdea,
   getVotesInformationsOfThisIdea,
   getCategoriesOfThisIdea,
+  putValidationOrRefusal,
+  deleteIdea,
 };

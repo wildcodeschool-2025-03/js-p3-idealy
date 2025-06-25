@@ -50,7 +50,7 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path: "/detail",
+        path: "/detail/:id", // Dynamic route for details page admin
         element: <Detail />,
       },
       {
