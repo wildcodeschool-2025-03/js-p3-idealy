@@ -91,7 +91,7 @@ const add: RequestHandler = (req, res, next) => {
       // Participants (array)
       const participantIds = getArray(fields.participants); // co-auteurs uniquement
 
-      const creatorId = (req as RequestWithId)?.id || 1; // le user connecté ou l'admin par défaut
+      const creatorId = Number(getField(fields.creator_id)) || 1; // le user connecté ou l'admin par défaut
 
       // Ajoute le créateur
       await databaseClient.query(
