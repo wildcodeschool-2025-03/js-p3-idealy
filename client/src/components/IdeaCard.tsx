@@ -1,6 +1,7 @@
 // client/src/components/IdeaCard.tsx
 
 import { useEffect, useState } from "react";
+import { useLogin } from "../context/AuthContext";
 
 interface IdeaCardProps {
   idea: Idea;
@@ -49,13 +50,72 @@ function IdeaCard({
   const [creator, setCreator] = useState({} as User);
   const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
   const [categories, setCategories] = useState([] as Category[]);
+  const { user } = useLogin();
 
   const handleLike = async () => {
-    // Logique de requête à l'API
+    try {
+      const voteData = {
+        idea_id: idea.id,
+        user_id: user?.id,
+        agree: true,
+        disagree: false,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/votes`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(voteData),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Erreur lors du vote.");
+      }
+
+      // Affichage immédiat du nombre de votes sans refresh du composant
+      setVoteInfo((prev) => ({
+        ...prev,
+        agree_count: (prev.agree_count || 0) + 1,
+      }));
+    } catch (error) {
+      console.error("Erreur de création :", error);
+      alert("Une erreur est survenue lors du vote.");
+    }
   };
 
   const handleDislike = async () => {
-    // Logique de requête à l'API
+    try {
+      const voteData = {
+        idea_id: idea.id,
+        user_id: user?.id,
+        agree: false,
+        disagree: true,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/votes`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(voteData),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Erreur lors du vote.");
+      }
+
+      // Affichage immédiat du nombre de votes sans refresh du composant
+      setVoteInfo((prev) => ({
+        ...prev,
+        disagree_count: (prev.disagree_count || 0) + 1,
+      }));
+    } catch (error) {
+      console.error("Erreur de création :", error);
+      alert("Une erreur est survenue lors du vote.");
+    }
   };
 
   useEffect(() => {
@@ -133,7 +193,7 @@ function IdeaCard({
             <button
               type="button"
               onClick={handleLike}
-              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
             >
               <span>{voteInfo.agree_count}</span>
               <i className="bi bi-hand-thumbs-up" />
@@ -141,7 +201,7 @@ function IdeaCard({
             <button
               type="button"
               onClick={handleDislike}
-              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
             >
               <span>{voteInfo.disagree_count}</span>
               <i className="bi bi-hand-thumbs-down" />
