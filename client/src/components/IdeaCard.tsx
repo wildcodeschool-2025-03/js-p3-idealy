@@ -50,6 +50,10 @@ function IdeaCard({
   const [creator, setCreator] = useState({} as User);
   const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
   const [categories, setCategories] = useState([] as Category[]);
+  const [userVote, setUserVote] = useState<{
+    agree: boolean;
+    disagree: boolean;
+  } | null>(null);
   const { user } = useLogin();
 
   const handleLike = async () => {
@@ -62,7 +66,7 @@ function IdeaCard({
       };
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/votes`,
+        `${import.meta.env.VITE_API_URL}/api/votes/upsert`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -74,11 +78,13 @@ function IdeaCard({
         throw new Error("Erreur lors du vote.");
       }
 
-      // Affichage immédiat du nombre de votes sans refresh du composant
-      setVoteInfo((prev) => ({
-        ...prev,
-        agree_count: (prev.agree_count || 0) + 1,
-      }));
+      // Refetch les votes pour avoir le bon total
+      const voteRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`,
+      );
+      const voteDataUpdated = await voteRes.json();
+      setVoteInfo(voteDataUpdated);
+      setUserVote({ agree: true, disagree: false });
     } catch (error) {
       console.error("Erreur de création :", error);
       alert("Une erreur est survenue lors du vote.");
@@ -95,7 +101,7 @@ function IdeaCard({
       };
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/votes`,
+        `${import.meta.env.VITE_API_URL}/api/votes/upsert`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -107,17 +113,20 @@ function IdeaCard({
         throw new Error("Erreur lors du vote.");
       }
 
-      // Affichage immédiat du nombre de votes sans refresh du composant
-      setVoteInfo((prev) => ({
-        ...prev,
-        disagree_count: (prev.disagree_count || 0) + 1,
-      }));
+      // Refetch les votes pour avoir le bon total
+      const voteRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`,
+      );
+      const voteDataUpdated = await voteRes.json();
+      setVoteInfo(voteDataUpdated);
+      setUserVote({ agree: false, disagree: true });
     } catch (error) {
       console.error("Erreur de création :", error);
       alert("Une erreur est survenue lors du vote.");
     }
   };
 
+  // Info créateur de l'idée
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`)
       .then((response) => response.json())
@@ -126,6 +135,7 @@ function IdeaCard({
       });
   }, [idea]);
 
+  // Info nb de votes
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`)
       .then((response) => response.json())
@@ -134,6 +144,7 @@ function IdeaCard({
       });
   }, [idea]);
 
+  // Récupère juste les catégories existantes
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/categories`)
       .then((response) => response.json())
@@ -142,6 +153,26 @@ function IdeaCard({
         console.log("Fetched categories:", data);
       });
   }, [idea]);
+
+  // Récupère l'info si l'utilisateur avait voté pour ou contre
+  useEffect(() => {
+    if (user?.id) {
+      fetch(
+        `${import.meta.env.VITE_API_URL}/api/votes?idea_id=${idea.id}&user_id=${user.id}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            setUserVote({
+              agree: !!data[0].agree,
+              disagree: !!data[0].disagree,
+            });
+          } else {
+            setUserVote(null);
+          }
+        });
+    }
+  }, [idea, user]);
 
   // Fonction pour tronquer le texte (des descriptions pour assurer une taille cohérente) en s'arrêtant au dernier espaces
   function truncateText(text: string, maxLength: number) {
@@ -193,18 +224,34 @@ function IdeaCard({
             <button
               type="button"
               onClick={handleLike}
-              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+              className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
             >
-              <span>{voteInfo.agree_count}</span>
-              <i className="bi bi-hand-thumbs-up" />
+              <span className="inline-block text-center w-6">
+                {voteInfo.agree_count}
+              </span>
+              <i
+                className={
+                  userVote?.agree
+                    ? "bi bi-hand-thumbs-up-fill"
+                    : "bi bi-hand-thumbs-up"
+                }
+              />
             </button>
             <button
               type="button"
               onClick={handleDislike}
-              className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+              className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
             >
-              <span>{voteInfo.disagree_count}</span>
-              <i className="bi bi-hand-thumbs-down" />
+              <span className="inline-block text-center w-6">
+                {voteInfo.disagree_count}
+              </span>
+              <i
+                className={
+                  userVote?.disagree
+                    ? "bi bi-hand-thumbs-down-fill"
+                    : "bi bi-hand-thumbs-down"
+                }
+              />
             </button>
           </section>
         )}
