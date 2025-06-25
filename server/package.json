@@ -7,7 +7,9 @@
     "db:seed": "tsx ./bin/seed",
     "build": "tsx ./bin/migrate",
     "start": "tsx ./src/main",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "test:deadline": "jest --verbose --testPathPattern=deadlineUtils",
+    "test:stats": "jest tests/statistics/routes.spec.ts --verbose"
   },
   "dependencies": {
     "cors": "^2.8.5",

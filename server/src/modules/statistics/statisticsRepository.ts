@@ -1,5 +1,5 @@
-import type { RowDataPacket } from "mysql2";
 // server/src/modules/statistics/statisticsRepository.ts
+import type { RowDataPacket } from "mysql2";
 import databaseClient from "../../../database/client";
 
 async function countIdeasSubmittedThisMonth(): Promise<number> {
