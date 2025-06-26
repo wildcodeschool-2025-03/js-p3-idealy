@@ -48,4 +48,29 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add };
+// upsert = insert OU update
+const upsert: RequestHandler = async (req, res, next) => {
+  try {
+    const { agree, disagree, idea_id, user_id } = req.body;
+
+    // Vérifie si un vote existe déjà pour ce couple (user, idea)
+    const existingVote = await voteRepository.readByIdeaAndUser(
+      idea_id,
+      user_id,
+    );
+
+    if (existingVote) {
+      // Update
+      await voteRepository.updateVote({ agree, disagree, idea_id, user_id });
+      res.status(200).json({ message: "Vote mis à jour" });
+    } else {
+      // Create
+      await voteRepository.create({ agree, disagree, idea_id, user_id });
+      res.status(201).json({ message: "Vote créé" });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, add, upsert };

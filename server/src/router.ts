@@ -54,6 +54,8 @@ router.get("/api/votes", voteActions.browse);
 router.get("/api/votes/:id", voteActions.read);
 router.post("/api/votes", voteActions.add);
 
+router.post("/api/votes/upsert", voteActions.upsert); // Create OR Update at the same time
+
 // Define category-related routes
 import categoryActions from "./modules/category/categoryActions";
 
