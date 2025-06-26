@@ -199,6 +199,7 @@ const deleteIdea: RequestHandler = async (req, res, next) => {
   try {
     const ideaId = Number(req.params.id);
     await ideaRepository.deleteIdea(ideaId);
+    console.log("DELETE idea", ideaId);
 
     res.sendStatus(204);
   } catch (err) {
