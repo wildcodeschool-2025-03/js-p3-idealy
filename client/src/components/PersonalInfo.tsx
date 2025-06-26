@@ -1,36 +1,17 @@
 import { useEffect, useState } from "react";
-
-interface UserInterface {
-  id: number;
-  firstname: string;
-  lastname: string;
-  mail: string;
-  service: string;
-  picture?: string;
-}
+import type { User } from "../context/AuthContext";
 
 interface PersonalInfoProps {
-  user: UserInterface;
+  user: User;
   onEditClick: () => void;
 }
 
 function PersonalInfo({ user, onEditClick }: PersonalInfoProps) {
-  const [dataUser, setDataUser] = useState<UserInterface>(user);
+  const [dataUser, setDataUser] = useState<User>(user);
 
   useEffect(() => {
     setDataUser(user);
   }, [user]);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}/service`)
-      .then((response) => response.json())
-      .then((data) => {
-        setDataUser((prev) => ({
-          ...prev,
-          service: data.service_name,
-        }));
-      });
-  }, [user.id]);
 
   return (
     <>
