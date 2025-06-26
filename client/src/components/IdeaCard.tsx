@@ -1,7 +1,9 @@
 // client/src/components/IdeaCard.tsx
 
+import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import { useLogin } from "../context/AuthContext";
+import { sanitizeAndTruncate } from "../utils/sanitizeAndTruncate";
 
 interface IdeaCardProps {
   idea: Idea;
@@ -177,13 +179,7 @@ function IdeaCard({
   }, [idea, user]);
 
   // Fonction pour tronquer le texte (des descriptions pour assurer une taille cohérente) en s'arrêtant au dernier espaces
-  function truncateText(text: string, maxLength: number) {
-    if (!text) return "";
-    if (text.length <= maxLength) return text;
-    const truncated = text.slice(0, maxLength);
-    const lastSpace = truncated.lastIndexOf(" ");
-    return `${lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated} [...]`;
-  }
+  //function truncateText remplacé par utils/sanitizeAndTruncate.ts pour affichage des balises de l'editeur de texte.
 
   // Calcul du délai de vote autorisé
   const isVoteAllowed = (() => {
@@ -194,6 +190,8 @@ function IdeaCard({
     const allowedDuration = (deadline - created) * (2 / 3);
     return now - created <= allowedDuration;
   })();
+
+  const { html, isTruncated } = sanitizeAndTruncate(idea.description, 255);
 
   return (
     <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full">
@@ -221,9 +219,14 @@ function IdeaCard({
         </section>
 
         {/* Contenu de l'idée */}
-        <p className="text-justify mt-6">
-          "{truncateText(idea.description, 255)}"
-        </p>
+        <div className="relative max-h-[10rem] overflow-hidden mt-6 text-justify">
+          <div className="prose prose-sm max-w-none">{parse(html)}</div>
+          {isTruncated && (
+            <span className="absolute bottom-1 right-2 text-gray-500 text-sm font-semibold">
+              [...]
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Bas de la carte : auteur + votes */}

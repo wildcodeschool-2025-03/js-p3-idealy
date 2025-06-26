@@ -1,7 +1,9 @@
 // client/src/pages/Soumettre.tsx
 
+import DOMPurify from "dompurify";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import TextEditor from "../components/TextEditor";
 import DeadlineModal from "../components/ui/DeadlineModal";
 import PieceJointeButton from "../components/ui/PieceJointeButton";
 import SoumissionFeedback from "../components/ui/SoumissionFeedback";
@@ -11,10 +13,9 @@ import { useLogin } from "../context/AuthContext";
 type Category = { id: number; category: string };
 type Participant = { id: number; firstname: string; lastname: string };
 
-const excludedIds = [1];
-
 const Soumettre = () => {
   const { user } = useLogin();
+  const excludedIds = [1, user?.id].filter(Boolean);
   const navigate = useNavigate();
   const [isDeadlineModalOpen, setIsDeadlineModalOpen] = useState(false);
   const [deadlineDates, setDeadlineDates] = useState<{
@@ -27,8 +28,8 @@ const Soumettre = () => {
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const participantDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [categories, setCategories] = useState<number[]>([]);
   const [participants, setParticipants] = useState<number[]>([]);
@@ -36,7 +37,6 @@ const Soumettre = () => {
   const [participantOptions, setParticipantOptions] = useState<Participant[]>(
     [],
   );
-
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState<{
     type: "success" | "error";
@@ -93,6 +93,19 @@ const Soumettre = () => {
       return;
     }
 
+    const rawHtml = editorRef.current?.innerHTML.trim() || "";
+    const description = DOMPurify.sanitize(rawHtml, {
+      USE_PROFILES: { html: true },
+    });
+
+    if (!description || description === "<br>") {
+      setFeedback({
+        type: "error",
+        message: "La description ne peut pas être vide.",
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -123,11 +136,11 @@ const Soumettre = () => {
 
       if (res.ok) {
         setTitle("");
-        setDescription("");
         setFiles([]);
         setCategories([]);
         setParticipants([]);
         setDeadlineDates(null);
+        if (editorRef.current) editorRef.current.innerHTML = "";
         setFeedback({
           type: "success",
           message: "Votre idée a été soumise avec succès.",
@@ -284,29 +297,27 @@ const Soumettre = () => {
 
               {categoryDropdownOpen && (
                 <div className="absolute z-10 mt-1 w-full bg-card border rounded shadow-lg max-h-60 overflow-auto">
-                  {categoryOptions
-                    .filter((c) => !excludedIds.includes(c.id))
-                    .map((c) => (
-                      <label
-                        key={c.id}
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={categories.includes(c.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setCategories((prev) => [...prev, c.id]);
-                            } else {
-                              setCategories((prev) =>
-                                prev.filter((id) => id !== c.id),
-                              );
-                            }
-                          }}
-                        />
-                        {c.category}
-                      </label>
-                    ))}
+                  {categoryOptions.map((c) => (
+                    <label
+                      key={c.id}
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={categories.includes(c.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setCategories((prev) => [...prev, c.id]);
+                          } else {
+                            setCategories((prev) =>
+                              prev.filter((id) => id !== c.id),
+                            );
+                          }
+                        }}
+                      />
+                      {c.category}
+                    </label>
+                  ))}
                 </div>
               )}
 
@@ -348,13 +359,7 @@ const Soumettre = () => {
 
           {/* Description + PJ */}
           <div className="flex flex-col w-11/12 md:w-1/2 lg:w-1/3 gap-2">
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description de l'idée"
-              className="h-[40vh] w-full text-center placeholder-black p-4 focus:outline-none"
-              required
-            />
+            <TextEditor ref={editorRef} />
             <PieceJointeButton
               multiple
               onChange={(e) => {
