@@ -84,7 +84,7 @@ CREATE TABLE User_idea (
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User (id),
     idea_id INT NOT NULL,
-    FOREIGN KEY (idea_id) REFERENCES Idea (id),
+    FOREIGN KEY (idea_id) REFERENCES Idea (id) ON DELETE CASCADE,
     isCreator BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -98,8 +98,9 @@ create table Category_idea (
     category_id int not null,
     foreign key (category_id) references Category (id),
     idea_id int not null,
-    foreign key (idea_id) references Idea (id)
+    foreign key (idea_id) references Idea (id) on delete cascade
 );
+
 
 INSERT INTO
     Service (statut)
@@ -259,14 +260,14 @@ VALUES (
     (
         "Poste de travail ergonomique",
         "Les postes de travail ne sont pas adaptés aux besoins ergonomiques des employés, ce qui peut provoquer des douleurs ou troubles musculo-squelettiques. Une révision de l’agencement des bureaux, chaises et écrans est proposée afin d'améliorer le confort et la santé au quotidien.",
-        "2025-08-04",
+        "2025-06-06",
         "2025-05-16",
         1
     ),
     (
         "Réduction des déchets plastiques",
         "L'utilisation excessive de plastique à usage unique dans l'entreprise représente un impact environnemental important. Il serait pertinent d’introduire des alternatives durables et de sensibiliser le personnel aux gestes écoresponsables pour réduire notre empreinte écologique.",
-        "2025-08-15",
+        "2025-06-07",
         "2025-07-10",
         1
     ),
@@ -557,3 +558,4 @@ VALUES (1, 1),
     (3, 15),
     (1, 15),
     (3, 16);
+
