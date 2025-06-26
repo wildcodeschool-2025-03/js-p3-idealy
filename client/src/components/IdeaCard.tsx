@@ -14,6 +14,8 @@ interface Idea {
   title: string;
   description: string;
   statut_id: number;
+  deadline: string;
+  timestamp: string;
 }
 
 interface User {
@@ -192,6 +194,16 @@ function IdeaCard({
     return `${lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated} [...]`;
   }
 
+  // Calcul du délai de vote autorisé
+  const isVoteAllowed = (() => {
+    if (!idea.deadline || !idea.timestamp) return true;
+    const created = new Date(idea.timestamp).getTime();
+    const deadline = new Date(idea.deadline).getTime();
+    const now = Date.now();
+    const allowedDuration = (deadline - created) * (2 / 3);
+    return now - created <= allowedDuration;
+  })();
+
   return (
     <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full">
       {/* Haut de la carte */}
@@ -237,7 +249,11 @@ function IdeaCard({
             <button
               type="button"
               onClick={handleLike}
-              className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+              className={`bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white ${
+                isVoteAllowed ? "cursor-pointer" : "cursor-not-allowed"
+              }`}
+              disabled={!isVoteAllowed}
+              title={!isVoteAllowed ? "Le délai de vote est dépassé" : ""}
             >
               <span className="inline-block text-center w-6">
                 {voteInfo.agree_count}
@@ -253,7 +269,11 @@ function IdeaCard({
             <button
               type="button"
               onClick={handleDislike}
-              className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+              className={`bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white ${
+                isVoteAllowed ? "cursor-pointer" : "cursor-not-allowed"
+              }`}
+              disabled={!isVoteAllowed}
+              title={!isVoteAllowed ? "Le délai de vote est dépassé" : ""}
             >
               <span className="inline-block text-center w-6">
                 {voteInfo.disagree_count}

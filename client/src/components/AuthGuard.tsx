@@ -1,7 +1,7 @@
 // client/src/components/AuthGuard.tsx
 
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useLogin } from "../context/AuthContext";
 
 interface AuthGuardProps {
@@ -9,33 +9,32 @@ interface AuthGuardProps {
 }
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-  const { isAuthenticated } = useLogin();
+  const { isAuthenticated, user, isLoading } = useLogin();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Rediriger vers "/" si non connecté, sauf sur la page "/"
   useEffect(() => {
-    if (!isAuthenticated) {
-      // Rediriger si l'utilisateur n'est pas connecté
+    if (isLoading) return;
+
+    const isPublic = location.pathname === "/";
+    if (!isAuthenticated && !isPublic) {
       navigate("/");
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isLoading, location.pathname, navigate]);
 
-  return isAuthenticated ? <>{children}</> : null;
+  // Rediriger vers "/forbidden" si un non-admin tente d'accéder à "/admin"
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (location.pathname === "/admin" && (!user || !user.isAdmin)) {
+      navigate("/forbidden");
+    }
+  }, [location.pathname, user, isLoading, navigate]);
+
+  if (isLoading) return null;
+
+  return isAuthenticated || location.pathname === "/" ? <>{children}</> : null;
 };
 
 export default AuthGuard;
-
-// Exemple d'utilisation dans une route protégée
-// import AuthGuard from "../components/AuthGuard";
-//
-// const Dashboard = () => {
-//  return (
-//    <AuthGuard>
-//      <div className="p-4">
-//        <h1>Bienvenue dans le tableau de bord</h1>
-//        {/* Le contenu réservé aux utilisateurs connectés */}
-//      </div>
-//    </AuthGuard>
-//  );
-//};
-//
-//export default Dashboard;

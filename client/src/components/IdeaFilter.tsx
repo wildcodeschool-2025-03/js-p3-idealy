@@ -6,8 +6,8 @@ interface IdeaFilterProps {
   onCategoryChange: (selected: string[]) => void;
   selectedStatut: number[];
   onStatutChange: (selected: number[]) => void;
-  selectedDeadline: string[];
-  onDeadlineChange: (selected: string[]) => void;
+  selectedTimestamp: string[];
+  onTimestampChange: (selected: string[]) => void;
 }
 
 const statutOptions = [
@@ -16,7 +16,7 @@ const statutOptions = [
   { id: 3, label: "Refusé" },
 ];
 
-const deadlineOptions = [
+const timestampOptions = [
   { value: "week", label: "Semaine dernière" },
   { value: "month", label: "Mois dernier" },
   { value: "year", label: "Année dernière" },
@@ -28,8 +28,8 @@ function IdeaFilter({
   onCategoryChange,
   selectedStatut,
   onStatutChange,
-  selectedDeadline,
-  onDeadlineChange,
+  selectedTimestamp,
+  onTimestampChange,
 }: IdeaFilterProps) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -77,11 +77,13 @@ function IdeaFilter({
   };
 
   // Fonction pour gérer le changement de sélection des cases à cocher pour les deadline (+ renvoie l'info au parent pour modif du state)
-  const handleDeadlineCheckboxChange = (deadline: string) => {
-    if (selectedDeadline.includes(deadline)) {
-      onDeadlineChange(selectedDeadline.filter((d: string) => d !== deadline));
+  const handleTimestampCheckboxChange = (deadline: string) => {
+    if (selectedTimestamp.includes(deadline)) {
+      onTimestampChange(
+        selectedTimestamp.filter((d: string) => d !== deadline),
+      );
     } else {
-      onDeadlineChange([...selectedDeadline, deadline]);
+      onTimestampChange([...selectedTimestamp, deadline]);
     }
   };
 
@@ -139,20 +141,22 @@ function IdeaFilter({
             ))}
           </div>
           <div className="mt-3">
-            <p className="font-semibold mb-1">Echéance</p>
+            <p className="font-semibold mb-1">Date</p>
 
             {/* Filtre des deadlines des idées */}
-            {deadlineOptions.map((deadline) => (
+            {timestampOptions.map((timestamp) => (
               <label
-                key={deadline.value}
+                key={timestamp.value}
                 className="flex items-center gap-2 px-2 py-1 rounded-3xl hover:bg-blackBackground hover:text-white cursor-pointer"
               >
                 <input
                   type="checkbox"
-                  checked={selectedDeadline.includes(deadline.value)}
-                  onChange={() => handleDeadlineCheckboxChange(deadline.value)}
+                  checked={selectedTimestamp.includes(timestamp.value)}
+                  onChange={() =>
+                    handleTimestampCheckboxChange(timestamp.value)
+                  }
                 />
-                {deadline.label}
+                {timestamp.label}
               </label>
             ))}
           </div>

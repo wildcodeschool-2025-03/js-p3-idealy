@@ -19,6 +19,7 @@ interface AuthContextType {
   isLoading: boolean;
   token: string | null;
   user: User | null;
+  isLoading: boolean; // 🔸 Ajouté
   login: (mail: string, password: string) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   // Chargement initial des données de connexion depuis le localStorage.
+  // Ajoute un état de chargement pour éviter les rendus prématurés.
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
@@ -46,7 +48,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
     }
 
-    setIsLoading(false);
+
+    setIsLoading(false); //  Fin du chargement
+
   }, []);
 
   const updateUser = (updatedUserData: User) => {
@@ -140,6 +144,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
+
       value={{
         isAuthenticated,
         isLoading,
@@ -150,6 +155,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updateUser,
         refreshUser,
       }}
+
     >
       {children}
     </AuthContext.Provider>

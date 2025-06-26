@@ -1,30 +1,30 @@
-// client/src/pages/NotFound.tsx
+// client/src/pages/Forbidden.tsx
 
 import { Link } from "react-router";
 
-function NotFound() {
+function Forbidden() {
   return (
     <section className="flex flex-col bg-greyBackground items-center justify-center text-center mx-auto text-xl md:text-2xl font-bold">
       <div className="flex flex-col md:flex-row items-center justify-center mt-10 mb-10 gap-10 w-full">
-        <img src="/404.png" alt="404 Not Found" className="w-1/3" />
+        <img src="/404.png" alt="403 Forbidden" className="w-1/3" />
 
         <div className="flex flex-col md:flex-row rounded-lg p-2 lg:p-4 bg-card shadow-lg">
           {/* Desktop */}
           <p className="hidden md:block">
             OUPS
             <br />
-            Cette page est introuvable !
+            Vous n’avez pas les droits d’accès !
           </p>
 
           {/* Mobile */}
           <p className="md:hidden">
             OUPS
             <br />
-            Cette page est
+            Vous n’avez pas
             <br />
-            introuvable !
+            les droits d’accès !
             <br />
-            Erreur 404
+            Erreur 403
           </p>
         </div>
       </div>
@@ -40,4 +40,4 @@ function NotFound() {
   );
 }
 
-export default NotFound;
+export default Forbidden;
