@@ -8,35 +8,33 @@ function Legal() {
 
         <div>
           <h2 className="font-semibold">1. Éditeur du site</h2>
-          <p>Nom du site : [Nom de votre site]</p>
-          <p>Éditeur : [Nom / Raison sociale de l’éditeur du site]</p>
-          <p>Adresse : [Adresse postale]</p>
-          <p>Téléphone : [Numéro de téléphone]</p>
-          <p>Email : [Adresse email de contact]</p>
-          <p>Forme juridique : [Ex. auto-entrepreneur, SAS, SARL, etc.]</p>
-          <p>N° SIRET / SIREN : [Numéro]</p>
-          <p>
-            Directeur de la publication : [Nom et prénom du responsable légal]
-          </p>
+          <p>Nom du site : idealy</p>
+          <p>Éditeur : Wild Code School</p>
+          <p>Adresse : 44 Rue Alphonse Penaud, 75020 Paris</p>
+          <p>Téléphone : 09 78 45 04 38</p>
+          <p>Email : contact@wildcodeschool.com</p>
+          <p>Directeur de la publication : Groupe 3 - Projet n°3</p>
         </div>
 
         <div>
           <h2 className="font-semibold">2. Hébergement</h2>
-          <p>Hébergeur : [Nom de l'hébergeur]</p>
-          <p>Adresse : [Adresse complète de l’hébergeur]</p>
-          <p>Téléphone : [Numéro de téléphone de l’hébergeur]</p>
-          <p>Site web : [URL du site de l’hébergeur]</p>
+          <p>Hébergeur : Vercel</p>
+          <p>
+            Adresse : 440 N Barranca Avenue, Suite 4133, Covina,
+            California 91723, États‑Unis
+          </p>
+          <p>Téléphone : +1 951‑383‑6898</p>
+          <p>Site web : https://vercel.com/</p>
         </div>
 
         <div>
           <h2 className="font-semibold">3. Propriété intellectuelle</h2>
           <p>
-            L'ensemble des contenus présents sur le site [Nom du site] (textes,
-            images, graphismes, logo, etc.) est protégé par le droit d’auteur et
-            reste la propriété exclusive de [Nom de l’éditeur], sauf mention
-            contraire. Toute reproduction, représentation, diffusion ou
-            exploitation, totale ou partielle, sans autorisation expresse est
-            interdite.
+            L'ensemble des contenus présents sur le site idealy (textes, images,
+            graphismes, logo, etc.) est protégé par le droit d’auteur et reste
+            la propriété exclusive de Wild Code School, sauf mention contraire.
+            Toute reproduction, représentation, diffusion ou exploitation,
+            totale ou partielle, sans autorisation expresse est interdite.
           </p>
         </div>
 
@@ -66,8 +64,7 @@ function Legal() {
             l'utilisateur et exécution d’un contrat.
           </p>
           <p>
-            <strong>Responsable du traitement :</strong> [Nom / Raison sociale
-            de l’éditeur du site]
+            <strong>Responsable du traitement :</strong> Wild Code School
           </p>
           <p>
             <strong>Durée de conservation :</strong> Les données sont conservées
@@ -77,7 +74,7 @@ function Legal() {
             <strong>Droits de l’utilisateur :</strong> Vous disposez d’un droit
             d’accès, de rectification, d’opposition, etc.
           </p>
-          <p>Pour exercer ces droits : [Email de contact pour la RGPD]</p>
+          <p>Pour exercer ces droits : contact@wildcodeschool.com</p>
         </div>
 
         <div>
