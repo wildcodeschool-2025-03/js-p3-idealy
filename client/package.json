@@ -10,6 +10,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.8",
     "bootstrap-icons": "^1.13.1",
+    "flowbite": "^3.1.2",
     "react": "^19.1.0",
     "react-countup": "^6.5.3",
     "react-dom": "^19.1.0",
