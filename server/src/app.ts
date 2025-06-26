@@ -2,6 +2,19 @@
 
 import express from "express";
 
+/* ************************************************************************* */
+
+// Production-ready setup: What is it for?
+
+// The code includes sections to set up a production environment where the client and server are executed from the same processus.
+
+// What it's for:
+// - Serving client static files from the server, which is useful when building a single-page application with React.
+// - Redirecting unhandled requests (e.g., all requests not matching a defined API route) to the client's index.html. This allows the client to handle client-side routing.
+
+import fs from "node:fs";
+import path from "node:path";
+
 const app = express();
 
 // Configure it
@@ -70,19 +83,6 @@ app.use(
 
 // Mount the API router under the "/api" endpoint
 app.use(router);
-
-/* ************************************************************************* */
-
-// Production-ready setup: What is it for?
-
-// The code includes sections to set up a production environment where the client and server are executed from the same processus.
-
-// What it's for:
-// - Serving client static files from the server, which is useful when building a single-page application with React.
-// - Redirecting unhandled requests (e.g., all requests not matching a defined API route) to the client's index.html. This allows the client to handle client-side routing.
-
-import fs from "node:fs";
-import path from "node:path";
 
 // Serve server resources
 
