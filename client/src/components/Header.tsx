@@ -53,13 +53,15 @@ function Header() {
           <h1 className="text-center text-4xl font-bold font-kalam">Idealy</h1>
         </Link>
         <div className="flex items-center space-x-2 md:absolute md:right-4">
-          <button
-            type="button"
-            onClick={handleAdmin}
-            className="bg-blackBackground text-white rounded-2xl py-1 px-2 hidden md:block cursor-pointer"
-          >
-            Administration
-          </button>
+          <Link to="/admin">
+            <button
+              type="button"
+              onClick={handleAdmin}
+              className="bg-blackBackground text-white rounded-2xl py-1 px-2 hidden md:block cursor-pointer"
+            >
+              Administration
+            </button>
+          </Link>
           <Link to="/compte">
             <MdAccountCircle className="text-4xl hidden md:block" />
           </Link>

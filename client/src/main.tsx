@@ -3,11 +3,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router";
 
+import AuthGuard from "./components/AuthGuard";
 import Admin from "./pages/Admin";
 import Apropos from "./pages/Apropos";
 import Compte from "./pages/Compte";
 import Contact from "./pages/Contact";
 import Detail from "./pages/Detail";
+import Forbidden from "./pages/Forbidden";
 import Home from "./pages/Home";
 import Information from "./pages/Information";
 import Legal from "./pages/Legal";
@@ -29,53 +31,108 @@ const router = createBrowserRouter([
   {
     element: <App />,
     children: [
+      // Route libre
       {
         path: "/",
         element: <Home />,
       },
+
+      // Routes protégées par AuthGuard
       {
+        element: (
+          <AuthGuard>
+            <Admin />
+          </AuthGuard>
+        ),
         path: "/admin",
-        element: <Admin />,
       },
       {
+        element: (
+          <AuthGuard>
+            <Apropos />
+          </AuthGuard>
+        ),
         path: "/a-propos",
-        element: <Apropos />,
       },
       {
+        element: (
+          <AuthGuard>
+            <Compte />
+          </AuthGuard>
+        ),
         path: "/compte",
-        element: <Compte />,
       },
       {
+        element: (
+          <AuthGuard>
+            <Contact />
+          </AuthGuard>
+        ),
         path: "/contact",
-        element: <Contact />,
       },
       {
-        path: "/detail/:id", // Dynamic route for details page admin
-        element: <Detail />,
+        element: (
+          <AuthGuard>
+            <Detail />
+          </AuthGuard>
+        ),
+        path: "/detail/:id",
       },
       {
+        element: (
+          <AuthGuard>
+            <Information />
+          </AuthGuard>
+        ),
         path: "/informations",
-        element: <Information />,
       },
       {
+        element: (
+          <AuthGuard>
+            <Legal />
+          </AuthGuard>
+        ),
         path: "/legal",
-        element: <Legal />,
       },
       {
+        element: (
+          <AuthGuard>
+            <NotFound />
+          </AuthGuard>
+        ),
         path: "*",
-        element: <NotFound />,
       },
       {
+        element: (
+          <AuthGuard>
+            <Parcourir />
+          </AuthGuard>
+        ),
         path: "/parcourir",
-        element: <Parcourir />,
       },
       {
+        element: (
+          <AuthGuard>
+            <Principal />
+          </AuthGuard>
+        ),
         path: "/principal",
-        element: <Principal />,
       },
       {
+        element: (
+          <AuthGuard>
+            <Soumettre />
+          </AuthGuard>
+        ),
         path: "/soumettre",
-        element: <Soumettre />,
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Forbidden />
+          </AuthGuard>
+        ),
+        path: "/forbidden",
       },
     ],
   },

@@ -17,6 +17,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
   user: User | null;
+  isLoading: boolean; // 🔸 Ajouté
   login: (mail: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -27,10 +28,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
   // Chargement initial des données de connexion depuis le localStorage.
+  // Ajoute un état de chargement pour éviter les rendus prématurés.
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
@@ -40,6 +43,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
     }
+
+    setIsLoading(false); //  Fin du chargement
   }, []);
 
   // Fonction de connexion
@@ -88,7 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, token, user, login, logout }}
+      value={{ isAuthenticated, token, user, login, logout, isLoading }} // 🔸 Ajouté ici aussi
     >
       {children}
     </AuthContext.Provider>
