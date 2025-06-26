@@ -17,11 +17,11 @@ interface Idea {
 }
 
 function Admin() {
- const { user } = useLogin();
-  
-     const [recentIdeas, setRecentIdeas] = useState<Idea[]>([]);
+  const { user } = useLogin();
+
+  const [recentIdeas, setRecentIdeas] = useState<Idea[]>([]);
   const [justifs, setJustifs] = useState<{ [id: number]: string }>({});
-    const [confirmAction, setConfirmAction] = useState<{
+  const [confirmAction, setConfirmAction] = useState<{
     id: number;
     action: "valider" | "refuser" | "supprimer" | null;
   } | null>(null);
@@ -34,7 +34,6 @@ function Admin() {
       });
   }, []);
 
-
   if (!user || !user.isAdmin) {
     return (
       <main>
@@ -44,7 +43,6 @@ function Admin() {
     );
   }
 
- 
   const handleDecision = async (
     id: number,
     action: "valider" | "refuser" | "supprimer",
@@ -125,7 +123,9 @@ function Admin() {
           <div className="flex gap-2 mt-2">
             <button
               type="button"
-              onClick={() => setConfirmAction({ id: idea.id, action: "valider" })}
+              onClick={() =>
+                setConfirmAction({ id: idea.id, action: "valider" })
+              }
               className="text-green-600 text-2xl"
               title="Valider"
             >
@@ -133,7 +133,9 @@ function Admin() {
             </button>
             <button
               type="button"
-              onClick={() => setConfirmAction({ id: idea.id, action: "refuser" })}
+              onClick={() =>
+                setConfirmAction({ id: idea.id, action: "refuser" })
+              }
               className="text-red-600 text-2xl"
               title="Refuser"
             >
@@ -141,7 +143,9 @@ function Admin() {
             </button>
             <button
               type="button"
-              onClick={() => setConfirmAction({ id: idea.id, action: "supprimer" })}
+              onClick={() =>
+                setConfirmAction({ id: idea.id, action: "supprimer" })
+              }
               className="text-gray-600 text-2xl"
               title="Supprimer"
             >
@@ -153,45 +157,42 @@ function Admin() {
     ),
   }));
 
-  
-
   return (
     <main className="p-2 md:p-8 max-w-5xl mx-auto">
       <h1 className="text-xl md:text-3xl font-bold mb-4 text-center">
         Gestionnaire
       </h1>
 
-       {confirmAction && (
-  <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded shadow-lg flex flex-col items-center">
-      <p className="mb-4 text-lg font-bold">
-        Êtes-vous sûr de vouloir {confirmAction.action} cette idée&nbsp;?
-      </p>
-      <div className="flex gap-4">
-        <button
-        type="button"
-          className="bg-green-600 text-white px-4 py-2 rounded"
-          onClick={() => {
-            if (confirmAction.action) {
-              handleDecision(confirmAction.id, confirmAction.action);
-            }
-            setConfirmAction(null);
-          }}
-        >
-          Confirmer
-        </button>
-        <button
-          type="button"
-          className="bg-gray-400 text-white px-4 py-2 rounded"
-          onClick={() => setConfirmAction(null)}
-        >
-          Annuler
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+      {confirmAction && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg flex flex-col items-center">
+            <p className="mb-4 text-lg font-bold">
+              Êtes-vous sûr de vouloir {confirmAction.action} cette idée&nbsp;?
+            </p>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className="bg-green-600 text-white px-4 py-2 rounded"
+                onClick={() => {
+                  if (confirmAction.action) {
+                    handleDecision(confirmAction.id, confirmAction.action);
+                  }
+                  setConfirmAction(null);
+                }}
+              >
+                Confirmer
+              </button>
+              <button
+                type="button"
+                className="bg-gray-400 text-white px-4 py-2 rounded"
+                onClick={() => setConfirmAction(null)}
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Carousel mobile */}
       <div className="block md:hidden w-full mb-6">
@@ -250,7 +251,9 @@ function Admin() {
                   <div className="flex flex-col gap-2 items-center">
                     <button
                       type="button"
-                    onClick={() => setConfirmAction({ id: idea.id, action: "valider" })}
+                      onClick={() =>
+                        setConfirmAction({ id: idea.id, action: "valider" })
+                      }
                       className="text-green-600 text-2xl"
                       title="Valider"
                     >
@@ -258,7 +261,9 @@ function Admin() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setConfirmAction({ id: idea.id, action: "refuser" })}
+                      onClick={() =>
+                        setConfirmAction({ id: idea.id, action: "refuser" })
+                      }
                       className="text-red-600 text-2xl"
                       title="Refuser"
                     >
@@ -266,7 +271,9 @@ function Admin() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setConfirmAction({ id: idea.id, action: "supprimer" })}
+                      onClick={() =>
+                        setConfirmAction({ id: idea.id, action: "supprimer" })
+                      }
                       className="text-gray-600 text-2xl"
                       title="Supprimer"
                     >
