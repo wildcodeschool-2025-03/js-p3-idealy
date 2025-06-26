@@ -36,7 +36,7 @@ function Parcourir() {
 
   const [selectedCategory, setSelectedCategory] = useState([] as string[]);
   const [selectedStatut, setSelectedStatut] = useState([] as number[]); // On va filtrer sur le number status_id plutôt que sur le string du statut en jointure
-  const [selectedDeadline, setSelectedDeadline] = useState<string[]>([]);
+  const [selectedTimestamp, setSelectedTimestamp] = useState<string[]>([]);
 
   const [selectedSorting, setSelectedSorting] = useState(""); // State de l'ordonnement
 
@@ -135,12 +135,12 @@ function Parcourir() {
     const statutOk =
       selectedStatut.length === 0 || selectedStatut.includes(idea.statut_id);
 
-    // Filtre Deadline
-    let deadlineOk = true;
+    // Filtre timestamp
+    let timestampOk = true;
     const now = new Date();
-    if (selectedDeadline.length > 0) {
-      const deadline = new Date(idea.deadline);
-      deadlineOk = selectedDeadline.some((period) => {
+    if (selectedTimestamp.length > 0) {
+      const deadline = new Date(idea.timestamp);
+      timestampOk = selectedTimestamp.some((period) => {
         if (period === "week") {
           const lastWeek = new Date(now);
           lastWeek.setDate(now.getDate() - 7);
@@ -159,7 +159,7 @@ function Parcourir() {
         return false;
       });
     }
-    return categoryOk && statutOk && deadlineOk;
+    return categoryOk && statutOk && timestampOk;
   });
 
   // Etape 3 : ordonner les idées filtrées en fonction du tri sélectionné
@@ -168,7 +168,8 @@ function Parcourir() {
     sortedIdeas.sort((a, b) => a.title.localeCompare(b.title));
   } else if (selectedSorting === "chrono") {
     sortedIdeas.sort(
-      (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
     );
   } else if (selectedSorting === "most") {
     sortedIdeas.sort((a, b) => b.agree_count - a.agree_count);
@@ -209,8 +210,8 @@ function Parcourir() {
           onCategoryChange={setSelectedCategory}
           selectedStatut={selectedStatut}
           onStatutChange={setSelectedStatut}
-          selectedDeadline={selectedDeadline}
-          onDeadlineChange={setSelectedDeadline}
+          selectedTimestamp={selectedTimestamp}
+          onTimestampChange={setSelectedTimestamp}
         />
 
         <IdeaSorter
