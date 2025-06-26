@@ -18,7 +18,7 @@ export interface UserInterface {
 function Compte() {
   const [userData, setUserData] = useState<UserInterface>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const currentUserId = 4;
+  const currentUserId = 2;
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/users/${currentUserId}`)
@@ -26,42 +26,43 @@ function Compte() {
       .then((data) => setUserData(data));
   }, []);
 
+  // Envoi / récupère / affiche
   const handleSaveProfile = async (updatedData: UserInterface) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/users/${currentUserId}`,
         {
-          method: "PUT",
+          method: "PUT", // modification de plusieurs champs en une fois
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updatedData),
+          body: JSON.stringify(updatedData), // convertit en string
         },
       );
+
       if (response.ok) {
-        const updatedUser = await response.json();
+        // Forcer le rechargement avec un timestamp pour éviter le cache
+        const timestamp = new Date().getTime();
 
-        if (updatedData.service) {
-          updatedUser.service = updatedData.service;
-        }
-
-        const fullUserResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/users/${currentUserId}`,
+        // requete 1 = recupère toutes les infos (firstname, lastname etc...)
+        const updatedUserResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/users/${currentUserId}?t=${timestamp}`,
         );
-        const fullUserData = await fullUserResponse.json();
+        const fullUserData = await updatedUserResponse.json(); // extrait les données de la réponse
 
+        // requete 2 = recupère le nom depuis l'id récupéré dans la 1ere requete {service_name: "Sécurité"}
         const serviceResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/users/${currentUserId}/service`,
         );
-        const serviceData = await serviceResponse.json();
+        const serviceData = await serviceResponse.json(); // extrait le nom du service
 
+        // mise à jour des données + nom du service
         setUserData({
-          ...fullUserData,
-          service: serviceData.service_name,
+          ...fullUserData, // id, firstname, lastname etc...
+          service: serviceData.service_name, // ajoute le nom du service
         });
 
-        setIsEditModalOpen(false);
-        console.log("Modifications enregistrées");
+        setIsEditModalOpen(false); // ferme la modale
       }
     } catch (error) {
       console.error("Erreur:", error);

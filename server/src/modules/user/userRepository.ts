@@ -107,7 +107,7 @@ class UserRepository {
   async updatePassword(user: User) {
     // Execute the SQL UPDATE query to update an existing user in the "User" table
     const [result] = await databaseClient.query<Result>(
-      "update Service set password = ? where id = ?",
+      "update User set password = ? where id = ?",
       [user.password, user.id],
     );
 
@@ -138,14 +138,14 @@ class UserRepository {
   }
 
   async update(user: User) {
+    // Requete 1 = Mise à jour avec mot de passe si fourni
     if (user.password) {
       const [result] = await databaseClient.query<Result>(
-        "UPDATE User SET firstname = ?, lastname = ?, mail = ?, picture = ?, service_id = ?, password = ? WHERE id = ?",
+        "UPDATE User SET firstname = ?, lastname = ?, mail = ?, service_id = ?, password = ? WHERE id = ?",
         [
           user.firstname,
           user.lastname,
           user.mail,
-          user.picture,
           user.service_id,
           user.password,
           user.id,
@@ -154,16 +154,10 @@ class UserRepository {
       return result.affectedRows;
     }
 
+    // Requete 2 = Mise à jour sans mot de passe
     const [result] = await databaseClient.query<Result>(
-      "UPDATE User SET firstname = ?, lastname = ?, mail = ?, picture = ?, service_id = ? WHERE id = ?",
-      [
-        user.firstname,
-        user.lastname,
-        user.mail,
-        user.picture,
-        user.service_id,
-        user.id,
-      ],
+      "UPDATE User SET firstname = ?, lastname = ?, mail = ?, service_id = ? WHERE id = ?",
+      [user.firstname, user.lastname, user.mail, user.service_id, user.id], // valeurs à injecter dans les placeholders
     );
     return result.affectedRows;
   }

@@ -1,5 +1,7 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { RequestHandler } from "express";
-
+import formidable from "formidable";
 import serviceRepository from "../service/serviceRepository";
 // Import access to data
 import userRepository from "./userRepository";
@@ -12,6 +14,11 @@ interface UserUpdateData {
   picture?: string;
   service_id: number;
   password?: string;
+}
+
+const uploadDir = path.join(__dirname, "../../../public/uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // The B of BREAD - Browse (Read All) operation
@@ -92,35 +99,31 @@ const destroy: RequestHandler = async (req, res, next) => {
 
 const update: RequestHandler = async (req, res, next) => {
   try {
-    const userId = Number(req.params.id);
-    const { firstname, lastname, mail, service, picture, password } = req.body;
-
-    const serviceData = await serviceRepository.readByName(service);
-    if (!serviceData) {
-      res.status(400).json({ error: "Service not found" });
-      return;
-    }
-    const service_id = serviceData?.id;
+    const userId = Number(req.params.id); // convertit l'ID en nombre
+    const { firstname, lastname, mail, service_id, password } = req.body; // evite les répétitions : req.body.firstname etc...
 
     const userToUpdate: UserUpdateData = {
       id: userId,
       firstname,
       lastname,
       mail,
-      picture,
-      service_id,
+      service_id, // Utilisation directe de l'ID recu
     };
+
+    // vérifie que le mot de passe n'est pas vide + enlève les espaces puis test la longueur du mdp
     if (password && password.trim().length > 0) {
       userToUpdate.password = password;
     }
 
-    const affectedRows = await userRepository.update(userToUpdate);
+    const affectedRows = await userRepository.update(userToUpdate); // retourne le nombre de lignes modifiées
 
+    // si 0 modification = pas d'utilisateur trouvé
     if (affectedRows === 0) {
       res.status(404).json({ error: "User not found" });
       return;
     }
-    const updatedUser = await userRepository.read(userId);
+
+    const updatedUser = await userRepository.read(userId); // relis la base de données avec les modifications
     res.status(200).json(updatedUser);
   } catch (error) {
     next(error);
@@ -128,27 +131,42 @@ const update: RequestHandler = async (req, res, next) => {
 };
 
 // The E of BREAD - Edit operation
-const editPicture: RequestHandler = async (req, res, next) => {
-  try {
-    // Update a specific category based on the provided ID
-    const user = {
-      id: Number(req.params.id),
-      picture: req.body.picture,
-    };
+const editPicture: RequestHandler = (req, res, next) => {
+  const form = formidable({
+    uploadDir, // sauvegarde les fichiers dans /uploads/
+    keepExtensions: true, // garde les extensions dans les noms de fichier
+    maxFileSize: 5 * 1024 * 1024,
+  });
 
-    const affectedRows = await userRepository.updatePicture(user);
-
-    // If the category is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the category in JSON format
-    if (affectedRows === 0) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
+  // Décode la requête FormData et sépare le contenu :
+  // - fields = données texte (nom, email...)
+  // - files = fichiers uploadés
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      return res.status(500).json({ error: "Erreur serveur" });
     }
-  } catch (err) {
-    // Pass any errors to the error-handling middleware
-    next(err);
-  }
+    try {
+      const userId = Number(req.params.id); // transforme ex : "4" en 4
+
+      // Récuperation directe du fichier sans fonction getFile
+      const uploadedFile = files.picture;
+      const file = Array.isArray(uploadedFile) ? uploadedFile[0] : uploadedFile;
+
+      if (file) {
+        const filename = path.basename(file.filepath); // extrait le nom ex: filename = test.jpg
+
+        // update la BDD
+        await userRepository.updatePicture({
+          id: userId,
+          picture: `/uploads/${filename}`,
+        });
+      }
+      res.sendStatus(204);
+    } catch (err) {
+      // Pass any errors to the error-handling middleware
+      next(err);
+    }
+  });
 };
 
 const editFirstname: RequestHandler = async (req, res, next) => {
