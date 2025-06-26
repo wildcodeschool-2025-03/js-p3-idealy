@@ -10,6 +10,7 @@ interface Idea {
   categories: string[];
   statut_id: number;
   deadline: string;
+  timestamp: string;
   agree_count: number;
   disagree_count: number;
   creator: {
