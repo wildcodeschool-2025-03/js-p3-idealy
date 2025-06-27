@@ -59,6 +59,39 @@ class VoteRepository {
     return rows as Vote[];
   }
 
+  // Pour affichage correct des votes sur la carte
+  async getVotesForIdeaWithUser(ideaId: number, userId?: number) {
+    const [[totals]] = await databaseClient.query<Rows>(
+      `SELECT 
+      SUM(agree) AS agree_count, 
+      SUM(disagree) AS disagree_count 
+    FROM Vote 
+    WHERE idea_id = ?`,
+      [ideaId],
+    );
+
+    let user_vote = null;
+
+    if (userId) {
+      const [rows] = await databaseClient.query<Rows>(
+        "SELECT agree, disagree FROM Vote WHERE idea_id = ? AND user_id = ?",
+        [ideaId, userId],
+      );
+      if (rows.length > 0) {
+        user_vote = {
+          agree: !!rows[0].agree,
+          disagree: !!rows[0].disagree,
+        };
+      }
+    }
+
+    return {
+      agree_count: totals.agree_count ?? 0,
+      disagree_count: totals.disagree_count ?? 0,
+      user_vote,
+    };
+  }
+
   // The U of CRUD - Update operation
 
   // The D of CRUD - Delete operation
