@@ -19,6 +19,7 @@ interface Idea {
 }
 
 interface User {
+  id: number;
   firstname: string;
   lastname: string;
   picture: string;
@@ -133,9 +134,17 @@ function IdeaCard({
     fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`)
       .then((response) => response.json())
       .then((data: User) => {
-        setCreator(data);
+        if (user && data.id === user.id) {
+          // si le créateur de l'idée est l'utilisateur connecté
+          setCreator({
+            ...data, // garde les infos du créateur
+            picture: user.picture, // utilise la photo depuis le contexte
+          });
+        } else {
+          setCreator(data); // sinon utilisés les données de l'API
+        }
       });
-  }, [idea]);
+  }, [idea, user]); // se déclenche quand user change (après refreshUser)
 
   // Info nb de votes
   useEffect(() => {
@@ -203,7 +212,11 @@ function IdeaCard({
         <section className="flex items-center mb-4">
           <img
             className="rounded-full w-10 mr-5"
-            src={creator.picture}
+            src={
+              creator.picture?.startsWith("http") // est-ce que l'url de la photo commence "http" ?
+                ? creator.picture // oui = renvoi l'url complète
+                : `${import.meta.env.VITE_API_URL}${creator.picture}` // non = renvoi l'url de base
+            }
             alt="profil du créateur"
           />
           <p className="font-bold">{idea.title}</p>

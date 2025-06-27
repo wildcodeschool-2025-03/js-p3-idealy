@@ -155,10 +155,9 @@ const editPicture: RequestHandler = (req, res, next) => {
       if (file) {
         const filename = path.basename(file.filepath); // extrait le nom ex: filename = test.jpg
 
-        // update la BDD
         await userRepository.updatePicture({
           id: userId,
-          picture: `/uploads/${filename}`,
+          picture: `/uploads/${filename}?v=${Date.now()}`,
         });
       }
       res.sendStatus(204);

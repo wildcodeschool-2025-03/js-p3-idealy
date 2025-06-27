@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { UserInterface } from "../pages/Compte";
+import type { User } from "../context/AuthContext";
 
 interface serviceInterface {
   id: number;
@@ -7,10 +7,10 @@ interface serviceInterface {
 }
 
 interface EditProfilModalInterface {
-  userData: UserInterface;
+  userData: User;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: UserInterface) => void;
+  onSave: (data: User) => void;
 }
 
 function EditProfilModal({
@@ -74,7 +74,7 @@ function EditProfilModal({
 
     // Upload de la photo si une nouvelle a été sélectionnée (JSON = que textes / nombres donc FormData pour fichier)
     if (selectedFile) {
-      const fileFormData = new FormData(); // crée un conteneur
+      const fileFormData = new FormData(); // crée un conteneur - FormData car JSON ne prend pas les types files
       fileFormData.append("picture", selectedFile); // remplis le conteneur avec "picture" + fichier
 
       await fetch(
@@ -97,6 +97,8 @@ function EditProfilModal({
       // Utilise l'ID du nouveau service ou garde l'ancien si pas trouvé
       service_id: selectedService ? selectedService.id : userData.service_id,
       service: formData.service,
+      picture: userData.picture,
+      isAdmin: userData.isAdmin,
     };
 
     onSave(dataToSave); // envoie les données au composant parent = Compte.tsx
