@@ -33,12 +33,14 @@ function Contact() {
     setStatus("sending");
     setError(null);
 
-   if (!serviceId || !templateId || !publicKey) {
-  setStatus("error");
-  setError("Le service de contact n'est pas disponible actuellement. Merci de nous écrire à contact@idealy.com.");
-  setShowModal(true);
-  return;
-}
+    if (!serviceId || !templateId || !publicKey) {
+      setStatus("error");
+      setError(
+        "Le service de contact n'est pas disponible actuellement. Merci de nous écrire à contact@idealy.com.",
+      );
+      setShowModal(true);
+      return;
+    }
 
     const emailData: EmailData = {
       service_id: serviceId,
@@ -170,7 +172,6 @@ function Contact() {
             aria-busy={status === "sending"}
           >
             {status === "sending" ? "Envoi en cours..." : "Envoyer"}
-        
           </button>
         </div>
       </form>
