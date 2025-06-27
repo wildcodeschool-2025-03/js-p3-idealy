@@ -40,6 +40,7 @@ router.patch("/api/users/:id/service", userActions.editService);
 import ideaActions from "./modules/idea/ideaActions";
 
 router.get("/api/ideas", ideaActions.browse);
+router.get("/api/ideas/history", ideaActions.readHistory);
 router.get("/api/ideas/:id", ideaActions.read);
 router.post("/api/ideas", ideaActions.add);
 

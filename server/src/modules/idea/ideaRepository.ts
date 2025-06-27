@@ -171,6 +171,13 @@ class IdeaRepository {
     return result.affectedRows > 0;
   }
 
+  async readHistory() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT * FROM Idea WHERE statut_id IN (2, 3) ORDER BY timestamp DESC",
+    );
+    return rows;
+  }
+
   // Execute the SQL SELECT query to retrieve the original creator of an idea, given the ID of the idea
   async getCreatorOfThisIdea(id: number) {
     const [rows] = await databaseClient.query<Rows>(
