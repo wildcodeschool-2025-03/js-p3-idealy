@@ -30,6 +30,22 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
+// Info complètes de votes pour un utilisateur (affichage carte)
+const getVotesForIdea: RequestHandler = async (req, res, next) => {
+  try {
+    const ideaId = Number(req.params.id);
+    const userId = req.query.user_id ? Number(req.query.user_id) : undefined;
+
+    const voteData = await voteRepository.getVotesForIdeaWithUser(
+      ideaId,
+      userId,
+    );
+    res.json(voteData);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
   try {
@@ -73,4 +89,4 @@ const upsert: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, upsert };
+export default { browse, read, add, upsert, getVotesForIdea };
