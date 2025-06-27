@@ -7,7 +7,7 @@ import Messica from "../assets/images/Messica.png";
 
 function Apropos() {
   return (
-    <div className="flex flex-col items-center mt-12">
+    <div className="flex flex-col items-center pt-12 bg-greyBackground">
       <h2 className=" text-center text-2xl bg-yellowButton rounded-4xl w-60">
         Le projet
       </h2>
