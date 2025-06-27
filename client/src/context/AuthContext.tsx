@@ -48,9 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
     }
 
-
     setIsLoading(false); //  Fin du chargement
-
   }, []);
 
   const updateUser = (updatedUserData: User) => {
@@ -144,7 +142,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-
       value={{
         isAuthenticated,
         isLoading,
@@ -155,7 +152,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updateUser,
         refreshUser,
       }}
-
     >
       {children}
     </AuthContext.Provider>
