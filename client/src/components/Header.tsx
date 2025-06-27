@@ -90,13 +90,13 @@ function Header() {
               : "transform translate-x-full opacity-0"
           }`}
         >
-          <button
-            type="button"
-            onClick={handleAdmin}
-            className="block py-1 w-full bg-blackBackground rounded-2xl text-sm text-white cursor-pointer"
+          <Link
+            to="/admin"
+            className="block py-1 px-3 w-full bg-blackBackground rounded-2xl text-sm text-white "
+            onClick={() => setOpen(false)}
           >
             Administration
-          </button>
+          </Link>
           <Link
             to="/parcourir"
             className="block py-1 px-3 w-full bg-blackBackground rounded-2xl text-sm text-white "

@@ -31,7 +31,7 @@ function Home() {
   const handleLogin = async () => {
     try {
       await login(mail, password);
-      navigate("/parcourir");
+      navigate("/principal");
     } catch (error) {
       // Gérer l'erreur (afficher un message à l'utilisateur par exemple)
     }
