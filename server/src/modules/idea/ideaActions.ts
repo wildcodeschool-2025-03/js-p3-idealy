@@ -207,6 +207,15 @@ const deleteIdea: RequestHandler = async (req, res, next) => {
   }
 };
 
+const readHistory: RequestHandler = async (req, res, next) => {
+  try {
+    const ideas = await ideaRepository.readHistory();
+    res.json(ideas);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // Retrieve the original creator of an idea, given the ID of the idea
 const getCreatorOfThisIdea: RequestHandler = async (req, res, next) => {
   try {
@@ -268,4 +277,5 @@ export default {
   getCategoriesOfThisIdea,
   putValidationOrRefusal,
   deleteIdea,
+  readHistory,
 };
