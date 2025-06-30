@@ -113,7 +113,7 @@ function EditProfilModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-blackBackground absolute top-6 right-6"
+            className="text-blackBackground absolute top-6 right-6 cursor-pointer"
             aria-label="Fermer"
           >
             X
@@ -233,7 +233,7 @@ function EditProfilModal({
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-greenButton shadow-lg"
+                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-greenButton shadow-lg cursor-pointer"
               >
                 Enregistrer
               </button>
@@ -241,7 +241,7 @@ function EditProfilModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-redButton shadow-lg"
+                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-redButton shadow-lg cursor-pointer"
               >
                 Annuler
               </button>

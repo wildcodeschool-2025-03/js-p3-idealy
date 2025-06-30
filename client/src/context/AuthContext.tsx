@@ -16,7 +16,6 @@ export interface User {
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  isLoading: boolean;
   token: string | null;
   user: User | null;
   isLoading: boolean; // 🔸 Ajouté
@@ -24,6 +23,7 @@ interface AuthContextType {
   logout: () => void;
   updateUser: (user: User) => void;
   refreshUser: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,9 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
     }
 
-
     setIsLoading(false); //  Fin du chargement
-
   }, []);
 
   const updateUser = (updatedUserData: User) => {
@@ -142,9 +140,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    if (user?.id) {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/users/${user.id}`,
+          {
+            method: "DELETE",
+          },
+        );
+        if (response.ok) {
+          logout();
+        } else {
+          throw new Error("Erreur lors de la suppression");
+        }
+      } catch (error) {
+        console.error("Erreur suppression compte:", error);
+        throw error;
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
-
       value={{
         isAuthenticated,
         isLoading,
@@ -154,8 +172,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         logout,
         updateUser,
         refreshUser,
+        deleteAccount,
       }}
-
     >
       {children}
     </AuthContext.Provider>
