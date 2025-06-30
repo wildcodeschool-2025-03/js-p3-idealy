@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 function Footer() {
   return (
-    <footer className="text-white bg-[#1d1d1f] font-[atkinson] py-4 px-4 sm:px-6 lg:px-8">
+    <footer className="text-white bg-[#1d1d1f] font-[atkinson] py-4 px-4 sm:px-6 lg:px-8 w-full">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between flex-wrap gap-4">
         <div className="flex flex-col text-sm space-y-1 text-center sm:text-left">
           <Link to="/contact" className="hover:underline cursor-pointer">
