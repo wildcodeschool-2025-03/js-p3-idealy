@@ -28,20 +28,29 @@ interface Category {
 }
 
 function Parcourir() {
+  //-----------------------------------------VARIABLES----------------------------------------------------------------------------------------
+
   const location = useLocation(); // Pour la transmission d'info (par le header ici)
   const { firstname, lastname, t } = location.state || {};
 
+  // Affichage des idées
   const [ideas, setIdeas] = useState([] as Idea[]);
   const [categories, setCategories] = useState([] as string[]);
 
+  // States des tris, filtres et recherches
   const [selectedCategory, setSelectedCategory] = useState([] as string[]);
   const [selectedStatut, setSelectedStatut] = useState([] as number[]); // On va filtrer sur le number status_id plutôt que sur le string du statut en jointure
   const [selectedTimestamp, setSelectedTimestamp] = useState<string[]>([]);
-
   const [selectedSorting, setSelectedSorting] = useState(""); // State de l'ordonnement
-
-  // On initialise la barre de recherche avec prénom + nom s'ils existent
   const [search, setSearch] = useState("");
+
+  // Système de pagination des idées
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const numberOfDisplayMobile = 6;
+  const numberOfDisplayDesktop = 12;
+
+  //------------------------------------------FONCTIONS---------------------------------------------------------------------------------------------------------------------------------
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: contrairement à ce que dit biome, t est ABSOLUMENT NECESSAIRE ici pour forcer le reset de la recherche lors de la navigation
   useEffect(() => {
@@ -51,6 +60,39 @@ function Parcourir() {
       setSearch("");
     }
   }, [firstname, lastname, t]);
+
+  // Récupère la liste des catégories existantes depuis l'API (pour transmettre l'info au composant de filtre enfant)
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/categories`)
+      .then((response) => response.json())
+      .then((data) => {
+        setCategories(data.map((category: Category) => category.category));
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, []);
+
+  // Détecte si on est sur un format d'écran "desktop" ou "mobile" pour la pagination des idées
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      setItemsPerPage(
+        window.innerWidth < 768
+          ? numberOfDisplayMobile
+          : numberOfDisplayDesktop,
+      );
+    };
+
+    updateItemsPerPage();
+    window.addEventListener("resize", updateItemsPerPage);
+    return () => window.removeEventListener("resize", updateItemsPerPage);
+  }, []);
+
+  // Renvoie en haut de la fenêtre lors du changement de page
+  // biome-ignore lint/correctness/useExhaustiveDependencies: désolé biome, mais je t'assure qu'on a besoin de cette dépendance
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
 
   // Etape 0 : Récupérer la liste complète des idées depuis l'API au chargement du composant
   useEffect(() => {
@@ -94,18 +136,6 @@ function Parcourir() {
       })
       .catch((error) => {
         console.error("Error fetching ideas or categories:", error);
-      });
-  }, []);
-
-  // Récupère la liste des catégories existantes depuis l'API (pour transmettre l'info au composant de filtre enfant)
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/categories`)
-      .then((response) => response.json())
-      .then((data) => {
-        setCategories(data.map((category: Category) => category.category));
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
       });
   }, []);
 
@@ -177,6 +207,15 @@ function Parcourir() {
     sortedIdeas.sort((a, b) => b.disagree_count - a.disagree_count);
   }
 
+  // Découpe des idées à afficher
+  const totalPages = Math.ceil(sortedIdeas.length / itemsPerPage);
+  const paginatedIdeas = sortedIdeas.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  //-------------------------------DISPLAY-----------------------------------------------------------------------------------------
+
   return (
     <section className="bg-greyBackground min-h-lvh py-6 md:pt-10">
       <section className="flex items-center justify-center gap-1 md:gap-4 pb-6 md:pb-8 max-w-[370px] md:max-w-8/10 lg:max-w-5/10 mx-auto">
@@ -220,11 +259,61 @@ function Parcourir() {
         />
       </section>
 
+      {/* Boutons de pagination */}
+      <section className="flex justify-center items-center gap-4 mb-4">
+        <button
+          type="button"
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="bg-blackBackground text-white w-14 py-1 rounded-full disabled:opacity-50"
+        >
+          <i className="bi bi-chevron-left" />
+        </button>
+        <span className="w-10 text-center">
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          type="button"
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className="bg-blackBackground text-white w-14 py-1 rounded-full disabled:opacity-50"
+        >
+          <i className="bi bi-chevron-right" />
+        </button>
+      </section>
+
       {/* Affichage des idées filtrées */}
       <section className="gap-10 flex flex-col items-center md:flex-row flex-wrap justify-center">
-        {sortedIdeas.map((idea) => (
+        {paginatedIdeas.map((idea) => (
           <IdeaCard key={idea.id} idea={idea} />
         ))}
+      </section>
+
+      {/* Boutons de pagination */}
+      <section className="flex justify-center items-center gap-4 mt-8">
+        <button
+          type="button"
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="bg-blackBackground text-white w-26 py-1 rounded-full disabled:opacity-50"
+        >
+          Précédent
+        </button>
+        <span className="w-24 text-center">
+          Page {currentPage} / {totalPages}
+        </span>
+        <button
+          type="button"
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className="bg-blackBackground text-white w-26 py-1 rounded-full disabled:opacity-50"
+        >
+          Suivant
+        </button>
       </section>
     </section>
   );
