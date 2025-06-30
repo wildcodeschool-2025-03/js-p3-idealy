@@ -30,6 +30,10 @@ interface User {
 interface VoteInformation {
   agree_count: number;
   disagree_count: number;
+  user_vote?: {
+    agree: boolean;
+    disagree: boolean;
+  };
 }
 
 interface Category {
@@ -55,10 +59,6 @@ function IdeaCard({
   const [creator, setCreator] = useState({} as User);
   const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
   const [categories, setCategories] = useState([] as Category[]);
-  const [userVote, setUserVote] = useState<{
-    agree: boolean;
-    disagree: boolean;
-  } | null>(null);
   const { user } = useLogin();
 
   const handleLike = async () => {
@@ -85,11 +85,11 @@ function IdeaCard({
 
       // Refetch les votes pour avoir le bon total
       const voteRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`,
+        `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
+      console.log("Vote info updated:", voteDataUpdated);
       setVoteInfo(voteDataUpdated);
-      setUserVote({ agree: true, disagree: false });
     } catch (error) {
       console.error("Erreur de création :", error);
       alert("Une erreur est survenue lors du vote.");
@@ -120,11 +120,11 @@ function IdeaCard({
 
       // Refetch les votes pour avoir le bon total
       const voteRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`,
+        `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
+      console.log("Vote info updated:", voteDataUpdated);
       setVoteInfo(voteDataUpdated);
-      setUserVote({ agree: false, disagree: true });
     } catch (error) {
       console.error("Erreur de création :", error);
       alert("Une erreur est survenue lors du vote.");
@@ -150,12 +150,17 @@ function IdeaCard({
 
   // Info nb de votes
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`)
+    if (!user?.id) return;
+
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user.id}`,
+    )
       .then((response) => response.json())
       .then((data: VoteInformation) => {
+        console.log("Fetched vote info with user_id:", data);
         setVoteInfo(data);
       });
-  }, [idea]);
+  }, [idea, user]);
 
   // Récupère juste les catégories existantes
   useEffect(() => {
@@ -166,26 +171,6 @@ function IdeaCard({
         console.log("Fetched categories:", data);
       });
   }, [idea]);
-
-  // Récupère l'info si l'utilisateur avait voté pour ou contre
-  useEffect(() => {
-    if (user?.id) {
-      fetch(
-        `${import.meta.env.VITE_API_URL}/api/votes?idea_id=${idea.id}&user_id=${user.id}`,
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.length > 0) {
-            setUserVote({
-              agree: !!data[0].agree,
-              disagree: !!data[0].disagree,
-            });
-          } else {
-            setUserVote(null);
-          }
-        });
-    }
-  }, [idea, user]);
 
   // Fonction pour tronquer le texte (des descriptions pour assurer une taille cohérente) en s'arrêtant au dernier espaces
   //function truncateText remplacé par utils/sanitizeAndTruncate.ts pour affichage des balises de l'editeur de texte.
@@ -201,7 +186,7 @@ function IdeaCard({
   })();
 
   const { html, isTruncated } = sanitizeAndTruncate(idea.description, 255);
-
+  console.log("voteInfo in render:", voteInfo);
   return (
     <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full">
       {/* Haut de la carte */}
@@ -249,46 +234,49 @@ function IdeaCard({
         </p>
         {showVotes && (
           <section className="flex items-center justify-center gap-6">
-            <button
-              type="button"
-              onClick={handleLike}
-              className={`bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white ${
-                isVoteAllowed ? "cursor-pointer" : "cursor-not-allowed"
-              }`}
-              disabled={!isVoteAllowed}
-              title={!isVoteAllowed ? "Le délai de vote est dépassé" : ""}
-            >
-              <span className="inline-block text-center w-6">
-                {voteInfo.agree_count}
-              </span>
-              <i
-                className={
-                  userVote?.agree
-                    ? "bi bi-hand-thumbs-up-fill"
-                    : "bi bi-hand-thumbs-up"
-                }
-              />
-            </button>
-            <button
-              type="button"
-              onClick={handleDislike}
-              className={`bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white ${
-                isVoteAllowed ? "cursor-pointer" : "cursor-not-allowed"
-              }`}
-              disabled={!isVoteAllowed}
-              title={!isVoteAllowed ? "Le délai de vote est dépassé" : ""}
-            >
-              <span className="inline-block text-center w-6">
-                {voteInfo.disagree_count}
-              </span>
-              <i
-                className={
-                  userVote?.disagree
-                    ? "bi bi-hand-thumbs-down-fill"
-                    : "bi bi-hand-thumbs-down"
-                }
-              />
-            </button>
+            {isVoteAllowed ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleLike}
+                  className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+                >
+                  <span className="inline-block text-center w-6">
+                    {voteInfo.agree_count}
+                  </span>
+                  <i
+                    className={
+                      voteInfo.user_vote?.agree
+                        ? "bi bi-hand-thumbs-up-fill"
+                        : "bi bi-hand-thumbs-up"
+                    }
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDislike}
+                  className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+                >
+                  <span className="inline-block text-center w-6">
+                    {voteInfo.disagree_count}
+                  </span>
+                  <i
+                    className={
+                      voteInfo.user_vote?.disagree
+                        ? "bi bi-hand-thumbs-down-fill"
+                        : "bi bi-hand-thumbs-down"
+                    }
+                  />
+                </button>
+              </>
+            ) : (
+              <div
+                className="bg-blackBackground w-4/5 h-8 rounded-full flex items-center justify-center text-white opacity-60 cursor-not-allowed"
+                title="Le délai de vote est dépassé"
+              >
+                Délai de vote dépassé
+              </div>
+            )}
           </section>
         )}
       </div>

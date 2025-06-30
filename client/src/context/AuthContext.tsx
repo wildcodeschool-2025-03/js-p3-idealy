@@ -18,7 +18,6 @@ interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
   user: User | null;
-  isLoading: boolean; // 🔸 Ajouté
   login: (mail: string, password: string) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;

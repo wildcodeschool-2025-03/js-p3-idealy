@@ -55,7 +55,7 @@ const TextEditor = forwardRef<HTMLDivElement>((_props, ref) => {
       {isToolbarVisible && (
         <div
           ref={toolbarRef}
-          className="z-10 flex flex-wrap gap-2 mb-2 p-2 bg-gray-100 rounded dark:bg-gray-800"
+          className="z-10 flex flex-wrap gap-2 mb-2 p-2 bg-gray-100 rounded"
           onMouseLeave={handleMouseLeave}
         >
           {/* Boutons de mise en forme basiques */}
