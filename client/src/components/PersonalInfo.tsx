@@ -26,39 +26,35 @@ function PersonalInfo({ user, onEditClick }: PersonalInfoProps) {
           alt="Avatar utilisateur"
         />
       </div>
-      <div className="max-w-sm mx-auto p-12 bg-white shadow-md rounded-3xl">
-        <div className="mb-8">
-          <p className=" font-bold">Prénom</p>
-          <div className="flex justify-center relative items-center">
-            <p>{dataUser.firstname}</p>
-          </div>
+      <div className="max-w-lg mx-auto p-12 bg-white shadow-md rounded-3xl">
+        <div className="mb-8 md:flex md:justify-between md:items-center">
+          <p className="font-bold">Prénom</p>
+          <p>{dataUser.firstname}</p>
         </div>
-        <div className="mb-8">
-          <p className=" font-bold">Nom</p>
-          <div className="flex justify-center relative items-center">
-            <p>{dataUser.lastname}</p>
-          </div>
+
+        <div className="mb-8 md:flex md:justify-between md:items-center">
+          <p className="font-bold">Nom</p>
+          <p>{dataUser.lastname}</p>
         </div>
-        <div className="mb-8">
-          <p className=" font-bold">Adresse mail</p>
-          <div className="flex justify-center relative items-center">
-            <p>{dataUser.mail}</p>
-          </div>
+
+        <div className="mb-8 md:flex md:justify-between md:items-center">
+          <p className="font-bold">Adresse mail</p>
+          <p>{dataUser.mail}</p>
         </div>
-        <div className="mb-8">
-          <p className=" font-bold">Service</p>
-          <div className="flex justify-center relative items-center">
-            <p>{dataUser.service}</p>
-          </div>
+
+        <div className="mb-8 md:flex md:justify-between md:items-center">
+          <p className="font-bold">Service</p>
+          <p>{dataUser.service}</p>
         </div>
+
         <button
-          className="bg-greyBackground rounded-3xl px-4 p-1 mt-4 shadow-md border-2"
+          className="bg-greyBackground rounded-3xl px-4 p-1 mt-4 shadow-md border-2 cursor-pointer w-full"
           type="button"
           onClick={onEditClick}
         >
           Modifier mes informations
         </button>
-      </div>
+      </div>{" "}
     </>
   );
 }
