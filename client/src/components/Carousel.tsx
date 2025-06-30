@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Slide {
   id: string;
@@ -11,6 +11,13 @@ interface CarouselProps {
 
 const Carousel: React.FC<CarouselProps> = ({ slides }) => {
   const [current, setCurrent] = useState(0);
+
+  // Ajoute cet effet pour corriger l'index si slides change
+  useEffect(() => {
+    if (current > slides.length - 1) {
+      setCurrent(slides.length - 1 >= 0 ? slides.length - 1 : 0);
+    }
+  }, [slides.length, current]);
 
   if (!slides.length) {
     return null; // ou <div>Aucune idée à afficher</div>
@@ -26,7 +33,10 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
 
   return (
     <div className=" rounded-2xl  p-5 max-w-full w-full mx-auto flex flex-col items-center relative px-3">
-      <div className="w-full ">{slides[current].content}</div>
+      <div className="w-full ">
+        {" "}
+        {slides[current] ? slides[current].content : null}
+      </div>
 
       <button
         type="button"
