@@ -88,7 +88,7 @@ function IdeaCard({
         `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
-      console.log("Vote info updated:", voteDataUpdated); // 👈 AJOUTE CECI
+      console.log("Vote info updated:", voteDataUpdated);
       setVoteInfo(voteDataUpdated);
     } catch (error) {
       console.error("Erreur de création :", error);
@@ -123,7 +123,7 @@ function IdeaCard({
         `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
-      console.log("Vote info updated:", voteDataUpdated); // 👈 AJOUTE CECI
+      console.log("Vote info updated:", voteDataUpdated);
       setVoteInfo(voteDataUpdated);
     } catch (error) {
       console.error("Erreur de création :", error);
@@ -157,7 +157,7 @@ function IdeaCard({
     )
       .then((response) => response.json())
       .then((data: VoteInformation) => {
-        console.log("Fetched vote info with user_id:", data); // 👈 pour confirmation
+        console.log("Fetched vote info with user_id:", data);
         setVoteInfo(data);
       });
   }, [idea, user]);
@@ -234,46 +234,49 @@ function IdeaCard({
         </p>
         {showVotes && (
           <section className="flex items-center justify-center gap-6">
-            <button
-              type="button"
-              onClick={handleLike}
-              className={`bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white ${
-                isVoteAllowed ? "cursor-pointer" : "cursor-not-allowed"
-              }`}
-              disabled={!isVoteAllowed}
-              title={!isVoteAllowed ? "Le délai de vote est dépassé" : ""}
-            >
-              <span className="inline-block text-center w-6">
-                {voteInfo.agree_count}
-              </span>
-              <i
-                className={
-                  voteInfo.user_vote?.agree
-                    ? "bi bi-hand-thumbs-up-fill"
-                    : "bi bi-hand-thumbs-up"
-                }
-              />
-            </button>
-            <button
-              type="button"
-              onClick={handleDislike}
-              className={`bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white ${
-                isVoteAllowed ? "cursor-pointer" : "cursor-not-allowed"
-              }`}
-              disabled={!isVoteAllowed}
-              title={!isVoteAllowed ? "Le délai de vote est dépassé" : ""}
-            >
-              <span className="inline-block text-center w-6">
-                {voteInfo.disagree_count}
-              </span>
-              <i
-                className={
-                  voteInfo.user_vote?.disagree
-                    ? "bi bi-hand-thumbs-down-fill"
-                    : "bi bi-hand-thumbs-down"
-                }
-              />
-            </button>
+            {isVoteAllowed ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleLike}
+                  className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+                >
+                  <span className="inline-block text-center w-6">
+                    {voteInfo.agree_count}
+                  </span>
+                  <i
+                    className={
+                      voteInfo.user_vote?.agree
+                        ? "bi bi-hand-thumbs-up-fill"
+                        : "bi bi-hand-thumbs-up"
+                    }
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDislike}
+                  className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+                >
+                  <span className="inline-block text-center w-6">
+                    {voteInfo.disagree_count}
+                  </span>
+                  <i
+                    className={
+                      voteInfo.user_vote?.disagree
+                        ? "bi bi-hand-thumbs-down-fill"
+                        : "bi bi-hand-thumbs-down"
+                    }
+                  />
+                </button>
+              </>
+            ) : (
+              <div
+                className="bg-blackBackground w-4/5 h-8 rounded-full flex items-center justify-center text-white opacity-60 cursor-not-allowed"
+                title="Le délai de vote est dépassé"
+              >
+                Délai de vote dépassé
+              </div>
+            )}
           </section>
         )}
       </div>
