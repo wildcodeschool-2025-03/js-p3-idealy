@@ -3,6 +3,7 @@
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import { useLogin } from "../context/AuthContext";
+import { authFetch } from "../utils/authFetch";
 import { sanitizeAndTruncate } from "../utils/sanitizeAndTruncate";
 
 interface IdeaCardProps {
@@ -70,7 +71,7 @@ function IdeaCard({
         disagree: false,
       };
 
-      const response = await fetch(
+      const response = await authFetch(
         `${import.meta.env.VITE_API_URL}/api/votes/upsert`,
         {
           method: "POST",
@@ -84,7 +85,7 @@ function IdeaCard({
       }
 
       // Refetch les votes pour avoir le bon total
-      const voteRes = await fetch(
+      const voteRes = await authFetch(
         `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
@@ -105,7 +106,7 @@ function IdeaCard({
         disagree: true,
       };
 
-      const response = await fetch(
+      const response = await authFetch(
         `${import.meta.env.VITE_API_URL}/api/votes/upsert`,
         {
           method: "POST",
@@ -119,7 +120,7 @@ function IdeaCard({
       }
 
       // Refetch les votes pour avoir le bon total
-      const voteRes = await fetch(
+      const voteRes = await authFetch(
         `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
@@ -133,7 +134,7 @@ function IdeaCard({
 
   // Info créateur de l'idée
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`)
       .then((response) => response.json())
       .then((data: User) => {
         if (user && data.id === user.id) {
@@ -152,7 +153,7 @@ function IdeaCard({
   useEffect(() => {
     if (!user?.id) return;
 
-    fetch(
+    authFetch(
       `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user.id}`,
     )
       .then((response) => response.json())
@@ -164,7 +165,7 @@ function IdeaCard({
 
   // Récupère juste les catégories existantes
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/categories`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/categories`)
       .then((response) => response.json())
       .then((data: Category[]) => {
         setCategories(data);

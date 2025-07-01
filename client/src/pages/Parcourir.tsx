@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
+import { authFetch } from "../utils/authFetch";
 
 import IdeaCard from "../components/IdeaCard";
 import IdeaFilter from "../components/IdeaFilter";
@@ -63,7 +64,7 @@ function Parcourir() {
 
   // Récupère la liste des catégories existantes depuis l'API (pour transmettre l'info au composant de filtre enfant)
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/categories`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/categories`)
       .then((response) => response.json())
       .then((data) => {
         setCategories(data.map((category: Category) => category.category));
@@ -96,7 +97,7 @@ function Parcourir() {
 
   // Etape 0 : Récupérer la liste complète des idées depuis l'API au chargement du composant
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas`)
       .then((response) => response.json())
       .then(async (data: Idea[]) => {
         // Récupère les catégories, créateur, votes pour chaque idée
@@ -104,13 +105,13 @@ function Parcourir() {
         const ideasWithCategories = await Promise.all(
           data.map(async (idea) => {
             // Fetch des catégories de l'idée
-            const catRes = await fetch(
+            const catRes = await authFetch(
               `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/categories`,
             );
             const catData: { category: string }[] = await catRes.json();
 
             // Fetch du créateur de l'idée
-            const creatorRes = await fetch(
+            const creatorRes = await authFetch(
               `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`,
             );
             let creator = { firstname: "Inconnu", lastname: "" };
@@ -119,7 +120,7 @@ function Parcourir() {
             }
 
             // Fetch du nombre de likes et dislikes de l'idée
-            const voteRes = await fetch(
+            const voteRes = await authFetch(
               `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`,
             );
             const voteData = await voteRes.json();
