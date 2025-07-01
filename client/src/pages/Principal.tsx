@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import Carousel from "../components/Carousel";
 import IdeaCard from "../components/IdeaCard";
 import { useLogin } from "../context/AuthContext";
+import { authFetch } from "../utils/authFetch";
 
 interface Idea {
   id: number;
@@ -23,7 +24,7 @@ function Principal() {
   const { user } = useLogin();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas?sort=recent`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas?sort=recent`)
       .then((response) => response.json())
       .then((data: Idea[]) => {
         setRecentIdeas(data);
@@ -32,7 +33,7 @@ function Principal() {
 
   useEffect(() => {
     if (!user) return; // Si l'utilisateur n'est pas connecté, on ne fait pas la requête
-    fetch(
+    authFetch(
       `${import.meta.env.VITE_API_URL}/api/ideas?user_id=${user.id}&sort=recent`,
     )
       .then((res) => res.json())
@@ -41,7 +42,7 @@ function Principal() {
 
   // Idées validées
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas?statut=2&sort=recent`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas?statut=2&sort=recent`)
       .then((res) => res.json())
       .then(setValidatedIdeas);
   }, []);
