@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Carousel from "../components/Carousel";
 import IdeaCard from "../components/IdeaCard";
 import { useLogin } from "../context/AuthContext";
+import { authFetch } from "../utils/authFetch";
 
 interface Idea {
   id: number;
@@ -43,7 +44,7 @@ function Admin() {
   const [historyIdeas, setHistoryIdeas] = useState<Idea[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas?toValidate=1`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas?toValidate=1`)
       .then((response) => response.json())
       .then((data: Idea[]) => {
         setRecentIdeas(data);
@@ -60,7 +61,7 @@ function Admin() {
   }
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/users`)
       .then((res) => res.json())
       .then((data: User[]) => {
         setUsers(data);
@@ -68,7 +69,7 @@ function Admin() {
   }, []);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas/history`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas/history`)
       .then((res) => res.json())
       .then((data: Idea[]) => setHistoryIdeas(data));
   }, []);
@@ -93,7 +94,7 @@ function Admin() {
     }
 
     if (action === "supprimer") {
-      const response = await fetch(
+      const response = await authFetch(
         `${import.meta.env.VITE_API_URL}/api/ideas/${id}`,
         {
           method: "DELETE",
@@ -106,7 +107,7 @@ function Admin() {
       }
     } else {
       const nouveauStatut = action === "valider" ? 2 : 3;
-      await fetch(`${import.meta.env.VITE_API_URL}/api/ideas/${id}`, {
+      await authFetch(`${import.meta.env.VITE_API_URL}/api/ideas/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -129,7 +130,7 @@ function Admin() {
       "Attention, vous allez supprimer cet utilisateur. Continuer ?",
     );
     if (!confirm) return;
-    const response = await fetch(
+    const response = await authFetch(
       `${import.meta.env.VITE_API_URL}/api/users/${id}`,
       {
         method: "DELETE",
@@ -283,92 +284,96 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {recentIdeas.map((idea) => (
-                <tr key={idea.id} className="border-t">
-                  <td className="p-2 text-center font-bold border">
-                    {idea.id}
-                    <br />
-                    <span className="block text-xs font-normal">
-                      {idea.firstname} {idea.lastname}
-                    </span>
-                  </td>
-                  <td className="p-2 border">
-                    <IdeaCard idea={idea} />
-                    <div className="flex flex-row gap-2 mt-4 mb-4 md:mt-6">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          window.open(`/detail/${idea.id}`, "_blank")
-                        }
-                        className="bg-blackBackground w-2/5 h-8 rounded-full flex flex-row items-center justify-center gap-2 text-white"
-                      >
-                        Afficher
-                      </button>
-                      <a
-                        href={`mailto:${idea.email}`}
-                        className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
-                      >
-                        Contacter
-                      </a>
-                    </div>
-                  </td>
+              {Array.isArray(recentIdeas) &&
+                recentIdeas.map((idea) => (
+                  <tr key={idea.id} className="border-t">
+                    <td className="p-2 text-center font-bold border">
+                      {idea.id}
+                      <br />
+                      <span className="block text-xs font-normal">
+                        {idea.firstname} {idea.lastname}
+                      </span>
+                    </td>
+                    <td className="p-2 border">
+                      <IdeaCard idea={idea} />
+                      <div className="flex flex-row gap-2 mt-4 mb-4 md:mt-6">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            window.open(`/detail/${idea.id}`, "_blank")
+                          }
+                          className="bg-blackBackground w-2/5 h-8 rounded-full flex flex-row items-center justify-center gap-2 text-white"
+                        >
+                          Afficher
+                        </button>
+                        <a
+                          href={`mailto:${idea.email}`}
+                          className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+                        >
+                          Contacter
+                        </a>
+                      </div>
+                    </td>
 
-                  <td className="p-2 align-top border">
-                    <textarea
-                      rows={16}
-                      maxLength={250}
-                      placeholder="Justification"
-                      value={justifs[idea.id] || ""}
-                      onChange={(e) =>
-                        setJustifs({ ...justifs, [idea.id]: e.target.value })
-                      }
-                      className="w-full border rounded px-2 py-2 min-h-[120px] resize-y"
-                    />
-                    <div className="text-xs text-gray-500 mt-1 text-right">
-                      {`${(justifs[idea.id] || "").length}/250 caractères`}
-                      {(justifs[idea.id] || "").length >= 250 && (
-                        <span className="text-red-500 ml-2">
-                          Limite atteinte
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="p-2 align-top border">
-                    <div className="flex flex-col gap-2 items-center">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setConfirmAction({ id: idea.id, action: "valider" })
+                    <td className="p-2 align-top border">
+                      <textarea
+                        rows={16}
+                        maxLength={250}
+                        placeholder="Justification"
+                        value={justifs[idea.id] || ""}
+                        onChange={(e) =>
+                          setJustifs({ ...justifs, [idea.id]: e.target.value })
                         }
-                        className="text-green-600 text-2xl"
-                        title="Valider"
-                      >
-                        ✓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setConfirmAction({ id: idea.id, action: "refuser" })
-                        }
-                        className="text-red-600 text-2xl"
-                        title="Refuser"
-                      >
-                        ✗
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setConfirmAction({ id: idea.id, action: "supprimer" })
-                        }
-                        className="text-gray-600 text-2xl"
-                        title="Supprimer"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        className="w-full border rounded px-2 py-2 min-h-[120px] resize-y"
+                      />
+                      <div className="text-xs text-gray-500 mt-1 text-right">
+                        {`${(justifs[idea.id] || "").length}/250 caractères`}
+                        {(justifs[idea.id] || "").length >= 250 && (
+                          <span className="text-red-500 ml-2">
+                            Limite atteinte
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-2 align-top border">
+                      <div className="flex flex-col gap-2 items-center">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setConfirmAction({ id: idea.id, action: "valider" })
+                          }
+                          className="text-green-600 text-2xl"
+                          title="Valider"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setConfirmAction({ id: idea.id, action: "refuser" })
+                          }
+                          className="text-red-600 text-2xl"
+                          title="Refuser"
+                        >
+                          ✗
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setConfirmAction({
+                              id: idea.id,
+                              action: "supprimer",
+                            })
+                          }
+                          className="text-gray-600 text-2xl"
+                          title="Supprimer"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -395,24 +400,25 @@ function Admin() {
                 </tr>
               </thead>
               <tbody>
-                {users
-                  .filter((u) => u.id !== user.id)
-                  .map((user) => (
-                    <tr key={user.id} className="border-t">
-                      <td className="p-2 text-center border">{user.id}</td>
-                      <td className="p-2 border">{user.lastname}</td>
-                      <td className="p-2 border">{user.firstname}</td>
-                      <td className="p-2 text-center border">
-                        <button
-                          type="button"
-                          className="text-red-600 font-bold"
-                          onClick={() => handleDeleteUser(user.id)}
-                        >
-                          Supprimer
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {Array.isArray(users) &&
+                  users
+                    .filter((u) => u.id !== user.id)
+                    .map((user) => (
+                      <tr key={user.id} className="border-t">
+                        <td className="p-2 text-center border">{user.id}</td>
+                        <td className="p-2 border">{user.lastname}</td>
+                        <td className="p-2 border">{user.firstname}</td>
+                        <td className="p-2 text-center border">
+                          <button
+                            type="button"
+                            className="text-red-600 font-bold"
+                            onClick={() => handleDeleteUser(user.id)}
+                          >
+                            Supprimer
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
@@ -440,51 +446,52 @@ function Admin() {
                 </tr>
               </thead>
               <tbody>
-                {historyIdeas.map((idea) => (
-                  <tr key={idea.id} className="border-t">
-                    <td className="p-2 text-center border">{idea.id}</td>
-                    <td className="p-2 border">{idea.title}</td>
+                {Array.isArray(historyIdeas) &&
+                  historyIdeas.map((idea) => (
+                    <tr key={idea.id} className="border-t">
+                      <td className="p-2 text-center border">{idea.id}</td>
+                      <td className="p-2 border">{idea.title}</td>
 
-                    <td className="p-2 border">
-                      {idea.statut_id === 2 && (
-                        <span className="text-green-600">Validée</span>
-                      )}
-                      {idea.statut_id === 3 && (
-                        <span className="text-red-600">Refusée</span>
-                      )}
-                    </td>
-                    <td className="p-2 border">
-                      <select
-                        value={idea.statut_id}
-                        onChange={async (e) => {
-                          const newStatut = Number(e.target.value);
-                          await fetch(
-                            `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}`,
-                            {
-                              method: "PUT",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({
-                                ...idea,
-                                statut_id: newStatut,
-                              }),
-                            },
-                          );
-                          setHistoryIdeas((prev) =>
-                            prev.map((i) =>
-                              i.id === idea.id
-                                ? { ...i, statut_id: newStatut }
-                                : i,
-                            ),
-                          );
-                        }}
-                        className="border rounded px-2 py-1"
-                      >
-                        <option value={2}>Validée</option>
-                        <option value={3}>Refusée</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="p-2 border">
+                        {idea.statut_id === 2 && (
+                          <span className="text-green-600">Validée</span>
+                        )}
+                        {idea.statut_id === 3 && (
+                          <span className="text-red-600">Refusée</span>
+                        )}
+                      </td>
+                      <td className="p-2 border">
+                        <select
+                          value={idea.statut_id}
+                          onChange={async (e) => {
+                            const newStatut = Number(e.target.value);
+                            await authFetch(
+                              `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}`,
+                              {
+                                method: "PUT",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  ...idea,
+                                  statut_id: newStatut,
+                                }),
+                              },
+                            );
+                            setHistoryIdeas((prev) =>
+                              prev.map((i) =>
+                                i.id === idea.id
+                                  ? { ...i, statut_id: newStatut }
+                                  : i,
+                              ),
+                            );
+                          }}
+                          className="border rounded px-2 py-1"
+                        >
+                          <option value={2}>Validée</option>
+                          <option value={3}>Refusée</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
