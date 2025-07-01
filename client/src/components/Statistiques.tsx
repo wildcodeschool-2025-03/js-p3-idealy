@@ -1,6 +1,7 @@
 // client/src/components/Statistiques.tsx
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
+import { authFetch } from "../utils/authFetch"; // ✅ Utilise authFetch
 
 type Stats = {
   submittedThisMonth: number;
@@ -10,15 +11,15 @@ type Stats = {
 
 function Statistiques() {
   const [stats, setStats] = useState<Stats | null>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/statistics`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/statistics`) // ✅ Utilise authFetch pour sécuriser la requête
       .then((res) => {
         if (!res.ok) throw new Error("Erreur serveur");
         return res.json();
       })
-      .then((data) => {
+      .then((data: Stats) => {
         setStats({
           submittedThisMonth: data.submittedThisMonth,
           likesAdded: data.likesAdded,

@@ -6,6 +6,8 @@ import IdeaCard from "../components/IdeaCard";
 import Statistiques from "../components/Statistiques";
 <Statistiques />;
 
+import { authFetch } from "../utils/authFetch"; // ✅ Ajouté ici
+
 interface Idea {
   id: number;
   title: string;
@@ -27,19 +29,19 @@ function Information() {
 
   // Récupération des idées enrichies (catégories, créateur, votes)
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/ideas`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas`)
       .then((res) => res.json())
       .then(async (data: Idea[]) => {
         const enrichedIdeas = await Promise.all(
           data.map(async (idea) => {
             const [catRes, creatorRes, voteRes] = await Promise.all([
-              fetch(
+              authFetch(
                 `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/categories`,
               ),
-              fetch(
+              authFetch(
                 `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`,
               ),
-              fetch(
+              authFetch(
                 `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes`,
               ),
             ]);

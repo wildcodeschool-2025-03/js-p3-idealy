@@ -19,9 +19,9 @@ router.use(authenticateToken);
 // Service-related routes
 import serviceActions from "./modules/service/serviceActions";
 
+router.post("/api/services", serviceActions.add);
 router.get("/api/services", serviceActions.browse);
 router.get("/api/services/:id", serviceActions.read);
-router.post("/api/services", serviceActions.add);
 router.delete("/api/services/:id", serviceActions.destroy);
 router.put("/api/services/:id", serviceActions.edit);
 
