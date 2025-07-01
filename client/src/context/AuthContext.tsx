@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { authFetch } from "../utils/authFetch";
 
 export interface User {
   id: number;
@@ -16,6 +17,7 @@ export interface User {
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  isLoading: boolean;
   token: string | null;
   user: User | null;
   login: (mail: string, password: string) => Promise<void>;
@@ -99,13 +101,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (user?.id) {
       try {
         // requete 1 : recupere toutes les données dont l'id du service
-        const response = await fetch(
+        const response = await authFetch(
           `${import.meta.env.VITE_API_URL}/api/users/${user.id}?t=${Date.now()}`,
         ); // Date.now = évite le cache du navigateur
         const userData = await response.json();
 
         // requete 2 : recupere le nom du service depuis l'id
-        const serviceResponse = await fetch(
+        const serviceResponse = await authFetch(
           `${import.meta.env.VITE_API_URL}/api/users/${user.id}/service`,
         );
         const serviceData = await serviceResponse.json();
@@ -125,7 +127,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const deleteAccount = async () => {
     if (user?.id) {
       try {
-        const response = await fetch(
+        const response = await authFetch(
           `${import.meta.env.VITE_API_URL}/api/users/${user.id}`,
           {
             method: "DELETE",

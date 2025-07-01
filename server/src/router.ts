@@ -7,8 +7,11 @@ const router = express.Router();
 // Define Your API Routes Here
 /* ************************************************************************* */
 
+// ===== ROUTES PUBLIQUES (pas de JWT requis) =====
 import userActions from "./modules/user/userActions";
+
 router.post("/api/users/login", userActions.login);
+router.post("/api/users", userActions.add);
 
 // Mur d'authentification : tout ce qui suit nécessite un JWT valide
 router.use(authenticateToken);
@@ -25,7 +28,6 @@ router.put("/api/services/:id", serviceActions.edit);
 // User-related routes
 router.get("/api/users", userActions.browse);
 router.get("/api/users/:id", userActions.read);
-router.post("/api/users", userActions.add);
 router.delete("/api/users/:id", userActions.destroy);
 
 router.get("/api/users/:id/service", userActions.getServiceOfThisUser);

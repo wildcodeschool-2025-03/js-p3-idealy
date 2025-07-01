@@ -174,7 +174,7 @@ class UserRepository {
   async authenticate(mail: string, password: string) {
     // Execute the SQL SELECT query to authenticate a user by mail and password
     const [rows] = await databaseClient.query<Rows>(
-      "select * from User where mail = ? and password = ?",
+      "SELECT u.*, s.statut as service FROM User u LEFT JOIN Service s ON u.service_id = s.id WHERE u.mail = ? AND u.password = ?",
       [mail, password],
     );
 
