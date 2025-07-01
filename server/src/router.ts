@@ -1,10 +1,17 @@
 import express from "express";
+import { authenticateToken } from "./modules/auth/authMiddleware";
 
 const router = express.Router();
 
 /* ************************************************************************* */
 // Define Your API Routes Here
 /* ************************************************************************* */
+
+import userActions from "./modules/user/userActions";
+router.post("/api/users/login", userActions.login);
+
+// Mur d'authentification : tout ce qui suit nécessite un JWT valide
+router.use(authenticateToken);
 
 // Service-related routes
 import serviceActions from "./modules/service/serviceActions";
@@ -16,10 +23,6 @@ router.delete("/api/services/:id", serviceActions.destroy);
 router.put("/api/services/:id", serviceActions.edit);
 
 // User-related routes
-import userActions from "./modules/user/userActions";
-
-router.post("/api/users/login", userActions.login);
-
 router.get("/api/users", userActions.browse);
 router.get("/api/users/:id", userActions.read);
 router.post("/api/users", userActions.add);

@@ -71,29 +71,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error("Identifiants invalides");
       }
 
-      const userFromApi = await response.json(); // recupere les données utilisateurs depuis l'API
-
-      // recupere le nom du service depuis l'id utilisateur
-      const serviceResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/${userFromApi.id}/service`,
-      );
-      const serviceData = await serviceResponse.json(); // extrait le nom du service
-
-      // Combine les données utilisateur + le nom du service
-      const completeUser = {
-        ...userFromApi, // garde toutes les données : firstname, lastname etc...
-        service: serviceData.service_name, // ajoute le nom du service
-      };
-
-      const newToken = "fake-token"; // A remplacer par la logique de génération de token réelle
-
-      setToken(newToken);
-      setUser(completeUser);
+      const data = await response.json(); // { user, token }
+      setToken(data.token);
+      setUser(data.user);
       setIsAuthenticated(true);
-
-      // Sauvegarde dans local storage si l'utilisateur veux rester connecté.
-      localStorage.setItem("token", newToken);
-      localStorage.setItem("user", JSON.stringify(completeUser));
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
     } catch (error) {
       // Gère l'erreur (affiche un message, etc.)
       console.error(error);

@@ -4,6 +4,7 @@ import DecoDelButton from "../components/Deco_Del_Button";
 import EditProfilModal from "../components/EditProfilModal";
 import PersonalInfo from "../components/PersonalInfo";
 import { type User, useLogin } from "../context/AuthContext";
+import { authFetch } from "../utils/authFetch";
 
 function Compte() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -25,7 +26,7 @@ function Compte() {
   // Envoi les données modifiées au backend / Recharge les données
   const handleSaveProfile = async (updatedData: User) => {
     try {
-      const response = await fetch(
+      const response = await authFetch(
         `${import.meta.env.VITE_API_URL}/api/users/${user?.id}`,
         {
           method: "PUT", // PUT = modifie quelque chose qui existe deja
