@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { RequestHandler } from "express";
 import formidable from "formidable";
+import jwt from "jsonwebtoken";
 import serviceRepository from "../service/serviceRepository";
 // Import access to data
 import userRepository from "./userRepository";
@@ -311,7 +312,20 @@ const login: RequestHandler = async (req, res, next) => {
       // If authentication succeeds, respond with the user data
       // Supprime le champ password avant d'envoyer l'utilisateur
       const { password, ...userWithoutPassword } = user;
-      res.json(userWithoutPassword);
+
+      // Génère un token JWT pour l'utilisateur
+      const jwtSecret = process.env.JWT_SECRET;
+      if (!jwtSecret) {
+        res.status(500).json({ error: "JWT secret not configured" });
+        return;
+      }
+      // Ici, jwtSecret est forcément string
+      const token = jwt.sign(
+        { id: userWithoutPassword.id, isAdmin: userWithoutPassword.isAdmin },
+        jwtSecret as string,
+        { expiresIn: "24h" },
+      );
+      res.json({ user: userWithoutPassword, token });
     }
   } catch (err) {
     // Pass any errors to the error-handling middleware

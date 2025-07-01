@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { User } from "../context/AuthContext";
+import { authFetch } from "../utils/authFetch";
 
 interface serviceInterface {
   id: number;
@@ -50,7 +51,7 @@ function EditProfilModal({
 
   useEffect(() => {
     if (isOpen) {
-      fetch(`${import.meta.env.VITE_API_URL}/api/services`)
+      authFetch(`${import.meta.env.VITE_API_URL}/api/services`)
         .then((response) => response.json())
         .then((data) => {
           setServices(data);
@@ -77,7 +78,7 @@ function EditProfilModal({
       const fileFormData = new FormData(); // crée un conteneur - FormData car JSON ne prend pas les types files
       fileFormData.append("picture", selectedFile); // remplis le conteneur avec "picture" + fichier
 
-      await fetch(
+      await authFetch(
         `${import.meta.env.VITE_API_URL}/api/users/${userData.id}/picture`,
         {
           method: "PATCH", // Pas de PUT car modification uniquement de la photo
