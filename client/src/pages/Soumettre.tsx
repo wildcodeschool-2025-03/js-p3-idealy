@@ -9,6 +9,7 @@ import PieceJointeButton from "../components/ui/PieceJointeButton";
 import SoumissionFeedback from "../components/ui/SoumissionFeedback";
 import { categoryColors } from "../constants/categoryColors";
 import { useLogin } from "../context/AuthContext";
+import { authFetch } from "../utils/authFetch";
 
 type Category = { id: number; category: string };
 type Participant = { id: number; firstname: string; lastname: string };
@@ -65,11 +66,11 @@ const Soumettre = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/categories`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/categories`)
       .then((res) => res.json())
       .then((data) => setCategoryOptions(data));
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/users`)
+    authFetch(`${import.meta.env.VITE_API_URL}/api/users`)
       .then((res) => res.json())
       .then((data) => setParticipantOptions(data));
   }, []);
@@ -128,7 +129,7 @@ const Soumettre = () => {
 
     try {
       setIsLoading(true);
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ideas`, {
+      const res = await authFetch(`${import.meta.env.VITE_API_URL}/api/ideas`, {
         method: "POST",
         body: formData,
       });
