@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { authFetch } from "../utils/authFetch";
+import { isTokenExpired } from "../utils/isTokenExpired";
 
 export interface User {
   id: number;
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   const navigate = useNavigate();
 
@@ -51,6 +53,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     setIsLoading(false); //  Fin du chargement
   }, []);
+
+  // Vérifie régulièrement si le token a été supprimé manuellement ou s'il est expiré
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const storedToken = localStorage.getItem("token");
+
+      if (!storedToken || isTokenExpired(storedToken)) {
+        if (isAuthenticated) {
+          console.warn("Token manquant ou expiré, affichage d'une alerte");
+          setIsSessionExpired(true); // Affiche une alerte visuelle
+          setTimeout(() => {
+            logout(); // Déconnexion après 3 secondes
+          }, 3000);
+        }
+      }
+    }, 5000); // vérifie toutes les 5 secondes
+
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
 
   const updateUser = (updatedUserData: User) => {
     setUser(updatedUserData); // Met à jour le state
@@ -159,6 +180,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         deleteAccount,
       }}
     >
+      {isSessionExpired && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded shadow-md z-50 transition-opacity duration-300">
+          Votre session a expiré. Déconnexion en cours...
+        </div>
+      )}
+
       {children}
     </AuthContext.Provider>
   );
