@@ -13,15 +13,16 @@ import userActions from "./modules/user/userActions";
 router.post("/api/users/login", userActions.login);
 router.post("/api/users", userActions.add);
 
+import serviceActions from "./modules/service/serviceActions";
+
+router.get("/api/services", serviceActions.browse);
+router.get("/api/services/:id", serviceActions.read);
+
 // Mur d'authentification : tout ce qui suit nécessite un JWT valide
 router.use(authenticateToken);
 
 // Service-related routes
-import serviceActions from "./modules/service/serviceActions";
-
 router.post("/api/services", serviceActions.add);
-router.get("/api/services", serviceActions.browse);
-router.get("/api/services/:id", serviceActions.read);
 router.delete("/api/services/:id", serviceActions.destroy);
 router.put("/api/services/:id", serviceActions.edit);
 
