@@ -13,6 +13,7 @@ import { authFetch } from "../utils/authFetch";
 
 type Category = { id: number; category: string };
 type Participant = { id: number; firstname: string; lastname: string };
+type FeedbackType = "success" | "error" | "confirm";
 
 const Soumettre = () => {
   const { user } = useLogin();
@@ -30,6 +31,7 @@ const Soumettre = () => {
   const participantDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
+  const [editorContent, setEditorContent] = useState<string>("votre texte ici");
   const [title, setTitle] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [categories, setCategories] = useState<number[]>([]);
@@ -40,9 +42,10 @@ const Soumettre = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState<{
-    type: "success" | "error";
+    type: FeedbackType;
     message: string;
   } | null>(null);
+  const [savedHtml, setSavedHtml] = useState<string>("");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -94,7 +97,8 @@ const Soumettre = () => {
       return;
     }
 
-    const rawHtml = editorRef.current?.innerHTML.trim() || "";
+    const rawHtml = editorContent.trim();
+    setSavedHtml(rawHtml);
     const description = DOMPurify.sanitize(rawHtml, {
       USE_PROFILES: { html: true },
     });
@@ -106,6 +110,21 @@ const Soumettre = () => {
       });
       return;
     }
+
+    setFeedback({
+      type: "confirm",
+      message:
+        "⚠️ Avant de soumettre votre idée, veuillez vérifier les champs obligatoires et relire les avertissements. Cette action est définitive.",
+    });
+  };
+
+  const sendForm = async () => {
+    if (!deadlineDates || !user?.id) return;
+
+    const rawHtml = editorContent.trim();
+    const description = DOMPurify.sanitize(rawHtml, {
+      USE_PROFILES: { html: true },
+    });
 
     const formData = new FormData();
     formData.append("title", title);
@@ -141,7 +160,7 @@ const Soumettre = () => {
         setCategories([]);
         setParticipants([]);
         setDeadlineDates(null);
-        if (editorRef.current) editorRef.current.innerHTML = "";
+        setEditorContent(""); // Vide l'éditeur
         setFeedback({
           type: "success",
           message: "Votre idée a été soumise avec succès.",
@@ -172,8 +191,19 @@ const Soumettre = () => {
             navigate("/principal");
           } else {
             setFeedback(null);
+            if (savedHtml) {
+              setEditorContent(savedHtml); // Restaure le texte dans l'éditeur
+            }
           }
         }}
+        onConfirm={
+          feedback.type === "confirm"
+            ? () => {
+                setFeedback(null);
+                sendForm();
+              }
+            : undefined
+        }
       />
     );
   }
@@ -186,6 +216,12 @@ const Soumettre = () => {
       </div>
     );
   }
+
+  const handleFocus = () => {
+    if (editorContent === "votre texte ici") {
+      setEditorContent("");
+    }
+  };
 
   return (
     <div className="bg-greyBackground pt-10 pb-10">
@@ -360,7 +396,12 @@ const Soumettre = () => {
 
           {/* Description + PJ */}
           <div className="flex flex-col w-11/12 md:w-1/2 lg:w-1/3 gap-2">
-            <TextEditor ref={editorRef} />
+            <TextEditor
+              ref={editorRef}
+              value={editorContent}
+              onChange={setEditorContent}
+              onFocus={handleFocus}
+            />
             <PieceJointeButton
               multiple
               onChange={(e) => {
