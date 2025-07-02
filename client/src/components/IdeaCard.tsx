@@ -2,6 +2,7 @@
 
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useLogin } from "../context/AuthContext";
 import { authFetch } from "../utils/authFetch";
 import { sanitizeAndTruncate } from "../utils/sanitizeAndTruncate";
@@ -61,6 +62,11 @@ function IdeaCard({
   const [voteInfo, setVoteInfo] = useState({} as VoteInformation);
   const [categories, setCategories] = useState([] as Category[]);
   const { user } = useLogin();
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/detail/${idea.id}`);
+  };
 
   const handleLike = async () => {
     try {
@@ -189,7 +195,15 @@ function IdeaCard({
   const { html, isTruncated } = sanitizeAndTruncate(idea.description, 255);
   console.log("voteInfo in render:", voteInfo);
   return (
-    <article className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full">
+    <article
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === "") {
+          handleCardClick();
+        }
+      }}
+      className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full"
+    >
       {/* Haut de la carte */}
       <div>
         {/* Avatar et titre */}
