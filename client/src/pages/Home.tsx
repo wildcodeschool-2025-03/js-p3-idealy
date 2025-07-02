@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import ParcourirPlaceHolder from "../components/ParcourirPlaceHolder";
 import { useLogin } from "../context/AuthContext";
-import Parcourir from "./Parcourir";
 
 type Service = {
   id: number;
@@ -84,9 +84,9 @@ function Home() {
   }, []);
 
   return (
-    <section className="min-h-lvh relative">
+    <section className="relative">
       {/*Fond de la page-------A REMPLACER PAR DE FAUSSES DONNEES !!*/}
-      <Parcourir />
+      <ParcourirPlaceHolder />
 
       {/* Blur sur tout l'écran */}
       <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-10" />
