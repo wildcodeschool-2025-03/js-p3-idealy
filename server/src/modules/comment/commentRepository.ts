@@ -44,6 +44,14 @@ class CommentRepository {
     return rows as Comment[];
   }
 
+  async getCommentsForIdea(ideaId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT * FROM Comment WHERE idea_id = ? ORDER BY created_at DESC", // selectionne tout depuis la table Comment ou l'id de l'idée = placeholder (remplacé par [ideaID]) ordonné par timestamp décroissant
+      [ideaId],
+    );
+    return rows as Comment[]; // renvoi le tableau complet
+  }
+
   // The U of CRUD - Update operation
   // TODO: Implement the update operation to modify an existing comment
 

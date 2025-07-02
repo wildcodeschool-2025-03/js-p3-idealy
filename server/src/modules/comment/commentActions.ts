@@ -82,6 +82,18 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
+const getCommentsForIdea: RequestHandler = async (req, res, next) => {
+  try {
+    const ideaId = Number(req.params.id); // recupere l'ID depuis l'URL et convertit l'id en number
+
+    const comments = await commentRepository.getCommentsForIdea(ideaId); // stock les commentaires dans un tableau d'objet [{}]
+
+    res.json(comments);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const destroy: RequestHandler = async (req, res, next) => {
   try {
     // Delete a specific category based on the provided ID
@@ -97,4 +109,4 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy };
+export default { browse, read, add, edit, destroy, getCommentsForIdea };
