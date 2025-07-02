@@ -9,9 +9,10 @@ const router = express.Router();
 
 // ===== ROUTES PUBLIQUES (pas de JWT requis) =====
 import userActions from "./modules/user/userActions";
+import userMiddleware from "./modules/user/userMiddleware";
 
-router.post("/api/users/login", userActions.login);
-router.post("/api/users", userActions.add);
+router.post("/api/users/login", userMiddleware.validate, userActions.login);
+router.post("/api/users", userMiddleware.validate, userActions.add);
 
 import serviceActions from "./modules/service/serviceActions";
 
@@ -27,14 +28,13 @@ router.delete("/api/services/:id", serviceActions.destroy);
 router.put("/api/services/:id", serviceActions.edit);
 
 // User-related routes
+
 router.get("/api/users", userActions.browse);
 router.get("/api/users/:id", userActions.read);
 router.delete("/api/users/:id", userActions.destroy);
-
-router.get("/api/users/:id/service", userActions.getServiceOfThisUser);
-
 router.put("/api/users/:id", userActions.update);
 
+router.get("/api/users/:id/service", userActions.getServiceOfThisUser);
 router.patch("/api/users/:id/firstname", userActions.editFirstname);
 router.patch("/api/users/:id/lastname", userActions.editLastname);
 router.patch("/api/users/:id/mail", userActions.editMail);
