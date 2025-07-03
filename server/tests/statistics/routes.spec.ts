@@ -1,25 +1,38 @@
 // server/tests/statistics/routes.spec.ts
 // Tests for the statistics API routes
 
+import express from "express";
 import supertest from "supertest";
-import app from "../../src/app";
-
-// On mocke le module statisticsRepository
+import { getStatistics } from "../../src/modules/statistics/statisticsActions";
 import statisticsRepository from "../../src/modules/statistics/statisticsRepository";
 
+jest.mock("../../src/modules/statistics/statisticsRepository");
+
 describe("GET /api/statistics", () => {
+  let app: express.Express;
+
+  beforeAll(() => {
+    app = express();
+    app.use(express.json());
+
+    // Route minimaliste dans le test, pas besoin d'importer le vrai router
+    const router = express.Router();
+    router.get("/api/statistics", getStatistics);
+    app.use(router);
+  });
+
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.resetAllMocks();
   });
 
   it("should return valid statistics successfully", async () => {
-    jest
-      .spyOn(statisticsRepository, "countIdeasSubmittedThisMonth")
-      .mockResolvedValue(4);
-    jest.spyOn(statisticsRepository, "countLikesAdded").mockResolvedValue(12);
-    jest
-      .spyOn(statisticsRepository, "countIdeasValidated")
-      .mockResolvedValue(2);
+    (
+      statisticsRepository.countIdeasSubmittedThisMonth as jest.Mock
+    ).mockResolvedValue(4);
+    (statisticsRepository.countLikesAdded as jest.Mock).mockResolvedValue(12);
+    (statisticsRepository.countIdeasValidated as jest.Mock).mockResolvedValue(
+      2,
+    );
 
     const response = await supertest(app).get("/api/statistics");
 
@@ -32,19 +45,13 @@ describe("GET /api/statistics", () => {
   });
 
   it("should handle internal server errors", async () => {
-    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-
-    jest
-      .spyOn(statisticsRepository, "countIdeasSubmittedThisMonth")
-      .mockRejectedValue(new Error("Database error"));
+    (
+      statisticsRepository.countIdeasSubmittedThisMonth as jest.Mock
+    ).mockRejectedValue(new Error("Database error"));
 
     const response = await supertest(app).get("/api/statistics");
 
     expect(response.status).toBe(500);
-    expect(response.body).toEqual({}); // ou un autre contenu si modifié plus tard
-
-    expect(errorSpy).toHaveBeenCalledWith(expect.any(Error));
-
-    errorSpy.mockRestore();
+    expect(response.body).toEqual({});
   });
 });

@@ -1,5 +1,6 @@
 import express from "express";
 import { authenticateToken } from "./modules/auth/authMiddleware";
+import { validateIdeaSchema } from "./modules/idea/validateIdeaSchema";
 
 const router = express.Router();
 
@@ -48,7 +49,7 @@ import ideaActions from "./modules/idea/ideaActions";
 router.get("/api/ideas", ideaActions.browse);
 router.get("/api/ideas/history", ideaActions.readHistory);
 router.get("/api/ideas/:id", ideaActions.read);
-router.post("/api/ideas", ideaActions.add);
+router.post("/api/ideas", validateIdeaSchema, ideaActions.add);
 
 //admin page idea actions
 router.put("/api/ideas/:id", ideaActions.putValidationOrRefusal);
