@@ -39,7 +39,8 @@ const SoumissionFeedback = ({
         {isConfirm && (
           <ul className="list-disc list-inside text-sm space-y-1 text-gray-800">
             <li>
-              Les champs Titre, Description et Catégorie sont obligatoires.
+              Les champs Titre, Description, Catégorie et Deadline sont
+              obligatoires.
             </li>
             <li>
               La soumission est définitive et ne pourra pas être modifiée.

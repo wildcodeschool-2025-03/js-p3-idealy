@@ -10,6 +10,7 @@ import SoumissionFeedback from "../components/ui/SoumissionFeedback";
 import { categoryColors } from "../constants/categoryColors";
 import { useLogin } from "../context/AuthContext";
 import { authFetch } from "../utils/authFetch";
+import { validateFiles } from "../utils/validateFiles";
 
 type Category = { id: number; category: string };
 type Participant = { id: number; firstname: string; lastname: string };
@@ -405,13 +406,17 @@ const Soumettre = () => {
             <PieceJointeButton
               multiple
               onChange={(e) => {
-                const newFiles = Array.from(e.target.files ?? []);
-                setFiles((prev) => [...prev, ...newFiles]);
+                const inputFiles = Array.from(e.target.files ?? []);
+                const { validFiles, errors } = validateFiles(inputFiles);
+                if (errors.length) alert(errors.join("\n"));
+                setFiles((prev) => [...prev, ...validFiles]);
               }}
               onDropFiles={(droppedFiles) => {
+                const { validFiles, errors } = validateFiles(droppedFiles);
+                if (errors.length) alert(errors.join("\n"));
                 setFiles((prev) => {
                   const existingNames = new Set(prev.map((file) => file.name));
-                  const uniqueNewFiles = droppedFiles.filter(
+                  const uniqueNewFiles = validFiles.filter(
                     (file) => !existingNames.has(file.name),
                   );
                   return [...prev, ...uniqueNewFiles];
@@ -449,8 +454,18 @@ const Soumettre = () => {
           </h2>
           <ul className="list-disc list-inside space-y-1 text-sm">
             <li>
-              Les champs <strong>Titre</strong>, <strong>Description</strong> et{" "}
-              <strong>Catégorie</strong> sont obligatoires.
+              Les champs <strong>Titre</strong>, <strong>Description</strong>,{" "}
+              <strong>Catégorie</strong> et <strong>Deadline</strong> sont
+              obligatoires.
+            </li>
+            <li>
+              📝 La description peut contenir du <strong>texte enrichi</strong>{" "}
+              (gras, italique, liens, etc.).
+            </li>
+            <li>
+              🕒 La date de <strong>deadline</strong> doit être définie avant la
+              soumission, et doit être postérieure à la date de création de
+              l'idée.
             </li>
             <li>
               Vous pouvez ajouter des <strong>participants</strong> à votre
@@ -458,6 +473,10 @@ const Soumettre = () => {
             </li>
             <li>
               La pièce jointe est <strong>facultative</strong>.
+            </li>
+            <li>
+              📎 Fichiers autorisés : <strong>PDF, JPG, PNG</strong> (max. 5 Mo
+              par fichier)
             </li>
             <li className="text-red-500 font-semibold">
               ⚠️ Attention : La soumission d'une idée est{" "}
