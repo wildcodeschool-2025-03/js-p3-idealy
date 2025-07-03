@@ -54,6 +54,7 @@ const PieceJointeButton = ({
 
       <input
         type="file"
+        accept="image/png,image/jpeg,application/pdf"
         className="hidden"
         onChange={onChange}
         multiple={multiple}
