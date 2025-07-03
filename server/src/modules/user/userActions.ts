@@ -85,13 +85,18 @@ const add: RequestHandler = async (req, res, next) => {
 // The D of BREAD - Delete operation
 const destroy: RequestHandler = async (req, res, next) => {
   try {
+    console.log("req.user", req.user); // Ajoute ceci
     // Delete a specific service based on the provided ID
     const userId = Number(req.params.id);
 
-    await userRepository.delete(userId);
+    if (req.user?.isAdmin || req.user?.id === userId) {
+      await userRepository.delete(userId);
 
-    // Respond with HTTP 204 (No Content) anyway
-    res.sendStatus(204);
+      // Respond with HTTP 204 (No Content) anyway
+      res.sendStatus(204);
+    } else {
+      res.status(403).json({ error: "Non autorisé" });
+    }
   } catch (err) {
     // Pass any errors to the error-handling middleware
     next(err);

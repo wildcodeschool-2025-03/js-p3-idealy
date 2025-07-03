@@ -32,7 +32,7 @@ router.put("/api/services/:id", serviceActions.edit);
 // User-related routes
 router.get("/api/users", userActions.browse);
 router.get("/api/users/:id", userActions.read);
-router.delete("/api/users/:id", authenticateAdmin, userActions.destroy);
+router.delete("/api/users/:id", userActions.destroy);
 
 router.get("/api/users/:id/service", userActions.getServiceOfThisUser);
 
