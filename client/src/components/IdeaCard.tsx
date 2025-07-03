@@ -68,7 +68,8 @@ function IdeaCard({
     navigate(`/detail/${idea.id}`);
   };
 
-  const handleLike = async () => {
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       const voteData = {
         idea_id: idea.id,
@@ -103,7 +104,8 @@ function IdeaCard({
     }
   };
 
-  const handleDislike = async () => {
+  const handleDislike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       const voteData = {
         idea_id: idea.id,
@@ -202,7 +204,7 @@ function IdeaCard({
           handleCardClick();
         }
       }}
-      className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full"
+      className="bg-card rounded-3xl w-[370px] py-5 px-5 relative shadow-md flex flex-col justify-between min-h-[23rem] md:h-[23rem] max-w-full cursor-pointer"
     >
       {/* Haut de la carte */}
       <div>

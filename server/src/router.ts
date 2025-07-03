@@ -58,6 +58,10 @@ router.delete("/api/ideas/:id", ideaActions.deleteIdea);
 router.get("/api/ideas/:id/creator", ideaActions.getCreatorOfThisIdea); // Get the creator (the user marked as "isCreator = true" on the joint) of a specific given idea
 router.get("/api/ideas/:id/categories", ideaActions.getCategoriesOfThisIdea); // Get the categories (a table of all key words associated) of a specific given idea
 router.get("/api/ideas/:id/comments", commentActions.getCommentsForIdea); // Récupère tous les commentaires d'une idée spécifique
+router.get(
+  "/api/ideas/:id/participants",
+  ideaActions.getParticipantsOfThisIdea,
+);
 
 // Define votes-related routes
 import voteActions from "./modules/vote/voteActions";

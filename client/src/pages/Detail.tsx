@@ -1,5 +1,8 @@
+import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import CommentModal from "../components/CommentModal";
+import WorkflowModal from "../components/WorkflowModal";
 import { categoryColors } from "../constants/categoryColors";
 import { authFetch } from "../utils/authFetch";
 
@@ -33,6 +36,28 @@ function Detail() {
   const [creator, setCreator] = useState<User | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [commentUsers, setCommentUsers] = useState<{ [key: number]: User }>({});
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [isWorkflowModalOpen, setIsWorkflowModalOpen] = useState(false);
+  const [voteInfo, setVoteInfo] = useState<{
+    agree_count: number;
+    disagree_count: number;
+  } | null>(null);
+
+  const handleOpenCommentModal = () => {
+    setIsCommentModalOpen(true);
+  };
+
+  const handleCloseCommentModal = () => {
+    setIsCommentModalOpen(false);
+  };
+
+  const handleOpenWorkflowModal = () => {
+    setIsWorkflowModalOpen(true);
+  };
+
+  const handleCloseWorkflowModal = () => {
+    setIsWorkflowModalOpen(false);
+  };
 
   const { id } = useParams<{ id: string }>(); // extrait l'id de l'URL et le stock dans la variable id
 
@@ -97,10 +122,30 @@ function Detail() {
       });
   }, [id]);
 
+  useEffect(() => {
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas/${id}/votes`)
+      .then((response) => response.json())
+      .then((data) => {
+        setVoteInfo(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching votes:", error);
+      });
+  }, [id]);
+
+  const refreshComments = () => {
+    authFetch(`${import.meta.env.VITE_API_URL}/api/ideas/${id}/comments`)
+      .then((response) => response.json())
+      .then(async (data) => {
+        setComments(data);
+      });
+  };
+
   return (
     <>
       <div className="flex flex-col justify-center p-8 gap-8 bg-greyBackground">
         <button
+          onClick={handleOpenWorkflowModal}
           className="bg-yellowButton rounded-3xl py-1 cursor-pointer"
           type="button"
         >
@@ -134,7 +179,9 @@ function Detail() {
           </section>
 
           {/* Description */}
-          <p>{idea?.description}</p>
+          <div className="prose prose-sm max-w-none break-words">
+            {idea?.description && parse(idea.description)}
+          </div>
 
           {/* Nom / Prénom */}
           <p className="text-right font-bold mb-2 mt-6">
@@ -143,6 +190,7 @@ function Detail() {
         </div>
 
         <button
+          onClick={handleOpenCommentModal}
           className="bg-greenButton rounded-3xl py-1 cursor-pointer"
           type="button"
         >
@@ -169,6 +217,20 @@ function Detail() {
           </section>
         ))}
       </div>
+      <CommentModal
+        isOpen={isCommentModalOpen} // doit etre ouvert
+        onClose={handleCloseCommentModal} // pour fermer faire ca
+        ideaId={Number(id)} // travaille sur tel ID
+        onCommentAdded={refreshComments} // a l'ajout d'un commentaire refresh
+      />
+      {idea && voteInfo && (
+        <WorkflowModal
+          isOpen={isWorkflowModalOpen}
+          onClose={handleCloseWorkflowModal}
+          idea={idea}
+          voteData={voteInfo}
+        />
+      )}
     </>
   );
 }
