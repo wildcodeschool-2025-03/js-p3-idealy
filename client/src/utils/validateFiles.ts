@@ -1,9 +1,5 @@
 export const MAX_FILE_SIZE_MB = 5;
-export const ALLOWED_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "application/pdf",
-];
+export const ALLOWED_TYPES = ["image/png", "image/jpeg", "application/pdf"];
 
 export function validateFiles(files: File[]) {
   const validFiles: File[] = [];
