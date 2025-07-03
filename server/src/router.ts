@@ -1,5 +1,9 @@
 import express from "express";
 import { authenticateToken } from "./modules/auth/authMiddleware";
+import { authenticateAdmin } from "./modules/auth/authMiddleware";
+import { validateIdeaQuery } from "./modules/idea/ideaValidation";
+import { validateIdeaUpdate } from "./modules/idea/ideaValidation";
+import { validateIdParam } from "./modules/idea/ideaValidation";
 
 const router = express.Router();
 
@@ -45,14 +49,25 @@ router.patch("/api/users/:id/service", userActions.editService);
 // Define idea-related routes
 import ideaActions from "./modules/idea/ideaActions";
 
-router.get("/api/ideas", ideaActions.browse);
+router.get("/api/ideas", validateIdeaQuery, ideaActions.browse);
 router.get("/api/ideas/history", ideaActions.readHistory);
 router.get("/api/ideas/:id", ideaActions.read);
 router.post("/api/ideas", ideaActions.add);
 
 //admin page idea actions
-router.put("/api/ideas/:id", ideaActions.putValidationOrRefusal);
-router.delete("/api/ideas/:id", ideaActions.deleteIdea);
+router.put(
+  "/api/ideas/:id",
+  authenticateAdmin,
+  validateIdParam,
+  validateIdeaUpdate,
+  ideaActions.putValidationOrRefusal,
+);
+router.delete(
+  "/api/ideas/:id",
+  authenticateAdmin,
+  validateIdParam,
+  ideaActions.deleteIdea,
+);
 
 //router.get("/api/ideas/to-validate", ideaActions.browseToValidate);
 

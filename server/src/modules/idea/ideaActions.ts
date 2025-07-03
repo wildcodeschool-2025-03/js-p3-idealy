@@ -172,6 +172,7 @@ const getFiles = (
 });*/
 
 const putValidationOrRefusal: RequestHandler = async (req, res, next) => {
+  console.log("BODY REÇU POUR LA VALIDATION/REFUS :", req.body);
   try {
     const deadline = String(req.body.deadline).split("T")[0];
     const idea = {
@@ -180,6 +181,7 @@ const putValidationOrRefusal: RequestHandler = async (req, res, next) => {
       description: String(req.body.description),
       deadline,
       statut_id: Number(req.body.statut_id),
+      justification: req.body.justification,
     };
     console.log("PUT idea", idea);
 
