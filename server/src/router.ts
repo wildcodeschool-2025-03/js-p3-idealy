@@ -7,14 +7,19 @@ const router = express.Router();
 // Define Your API Routes Here
 /* ************************************************************************* */
 
+import categoryActions from "./modules/category/categoryActions";
+import commentActions from "./modules/comment/commentActions";
+import ideaActions from "./modules/idea/ideaActions";
+import mediaActions from "./modules/media/mediaActions";
+import serviceActions from "./modules/service/serviceActions";
+import statutActions from "./modules/statut/statutActions";
 // ===== ROUTES PUBLIQUES (pas de JWT requis) =====
 import userActions from "./modules/user/userActions";
 import userMiddleware from "./modules/user/userMiddleware";
+import voteActions from "./modules/vote/voteActions";
 
 router.post("/api/users/login", userMiddleware.validate, userActions.login);
 router.post("/api/users", userMiddleware.validate, userActions.add);
-
-import serviceActions from "./modules/service/serviceActions";
 
 router.get("/api/services", serviceActions.browse);
 router.get("/api/services/:id", serviceActions.read);
@@ -43,7 +48,6 @@ router.patch("/api/users/:id/picture", userActions.editPicture);
 router.patch("/api/users/:id/service", userActions.editService);
 
 // Define idea-related routes
-import ideaActions from "./modules/idea/ideaActions";
 
 router.get("/api/ideas", ideaActions.browse);
 router.get("/api/ideas/history", ideaActions.readHistory);
@@ -61,7 +65,6 @@ router.get("/api/ideas/:id/categories", ideaActions.getCategoriesOfThisIdea); //
 router.get("/api/ideas/:id/comments", commentActions.getCommentsForIdea); // Récupère tous les commentaires d'une idée spécifique
 
 // Define votes-related routes
-import voteActions from "./modules/vote/voteActions";
 
 router.get("/api/votes", voteActions.browse);
 router.get("/api/votes/:id", voteActions.read);
@@ -71,7 +74,6 @@ router.get("/api/ideas/:id/votes", voteActions.getVotesForIdea); // Get votes in
 router.post("/api/votes/upsert", voteActions.upsert); // Create OR Update at the same time
 
 // Define category-related routes
-import categoryActions from "./modules/category/categoryActions";
 
 router.get("/api/categories", categoryActions.browse);
 router.get("/api/categories/:id", categoryActions.read);
@@ -80,7 +82,6 @@ router.put("/api/categories/:id", categoryActions.edit);
 router.delete("/api/categories/:id", categoryActions.destroy);
 
 // Define statut-related routes
-import statutActions from "./modules/statut/statutActions";
 
 router.get("/api/status", statutActions.browse);
 router.get("/api/status/:id", statutActions.read);
@@ -89,7 +90,6 @@ router.put("/api/status/:id", statutActions.edit);
 router.delete("/api/status/:id", statutActions.destroy);
 
 // Define media-related routes
-import mediaActions from "./modules/media/mediaActions";
 
 router.get("/api/medias", mediaActions.browse);
 router.get("/api/medias/:id", mediaActions.read);
@@ -98,7 +98,6 @@ router.put("/api/medias/:id", mediaActions.edit);
 router.delete("/api/medias/:id", mediaActions.destroy);
 
 // Define comment-related routes
-import commentActions from "./modules/comment/commentActions";
 
 router.get("/api/comments", commentActions.browse);
 router.get("/api/comments/:id", commentActions.read);
