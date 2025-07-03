@@ -40,3 +40,15 @@ export const authenticateToken = (
     return;
   }
 };
+
+export const authenticateAdmin = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.user?.isAdmin) {
+    res.status(403).json({ message: "Accès réservé à l'administrateur." });
+    return;
+  }
+  next();
+};
