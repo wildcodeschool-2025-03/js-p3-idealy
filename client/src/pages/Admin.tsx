@@ -87,9 +87,9 @@ function Admin() {
       (action === "valider" ||
         action === "refuser" ||
         action === "supprimer") &&
-      (!justification || justification.trim() === "")
+      (!justification || justification.trim().length < 5)
     ) {
-      alert("Merci de saisir une justification avant de continuer.");
+      alert("Merci de justifier avec au minimum 5 caractères.");
       return;
     }
 
@@ -471,8 +471,12 @@ function Admin() {
                                 method: "PUT",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
-                                  ...idea,
+                                  title: idea.title,
+                                  description: idea.description,
+                                  deadline: idea.deadline,
                                   statut_id: newStatut,
+                                  justification:
+                                    "Changement de statut via l'historique",
                                 }),
                               },
                             );

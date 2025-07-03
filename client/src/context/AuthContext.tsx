@@ -58,8 +58,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       const storedToken = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
 
-      if (!storedToken || isTokenExpired(storedToken)) {
+      if (!storedToken || isTokenExpired(storedToken) || !storedUser) {
         if (isAuthenticated) {
           console.warn("Token manquant ou expiré, affichage d'une alerte");
           setIsSessionExpired(true); // Affiche une alerte visuelle
@@ -112,6 +113,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setToken(null);
     setUser(null);
     setIsAuthenticated(false);
+    setIsSessionExpired(false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/");
