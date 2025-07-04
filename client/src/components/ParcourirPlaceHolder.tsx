@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import IdeaCardPlaceholder from "./IdeaCardPlaceholder";
 
 function ParcourirPlaceHolder() {
@@ -47,4 +47,4 @@ function ParcourirPlaceHolder() {
   );
 }
 
-export default ParcourirPlaceHolder;
+export default React.memo(ParcourirPlaceHolder);

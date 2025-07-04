@@ -1,10 +1,10 @@
 import express from "express";
 import { authenticateToken } from "./modules/auth/authMiddleware";
-import { validateIdeaSchema } from "./modules/idea/validateIdeaSchema";
 import { authenticateAdmin } from "./modules/auth/authMiddleware";
 import { validateIdeaQuery } from "./modules/idea/ideaValidation";
 import { validateIdeaUpdate } from "./modules/idea/ideaValidation";
 import { validateIdParam } from "./modules/idea/ideaValidation";
+import { validateIdeaSchema } from "./modules/idea/validateIdeaSchema";
 
 const router = express.Router();
 
