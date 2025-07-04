@@ -270,6 +270,16 @@ const getCategoriesOfThisIdea: RequestHandler = async (req, res, next) => {
   }
 };
 
+const getParticipantsOfThisIdea: RequestHandler = async (req, res, next) => {
+  try {
+    const ideaId = Number(req.params.id);
+    const participants = await ideaRepository.getParticipantsOfThisIdea(ideaId);
+    res.json(participants);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   browse,
   read,
@@ -277,6 +287,7 @@ export default {
   getCreatorOfThisIdea,
   getVotesInformationsOfThisIdea,
   getCategoriesOfThisIdea,
+  getParticipantsOfThisIdea,
   putValidationOrRefusal,
   deleteIdea,
   readHistory,

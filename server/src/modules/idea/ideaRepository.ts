@@ -216,6 +216,14 @@ class IdeaRepository {
     // Return the array of categories
     return rows as Category[];
   }
+
+  async getParticipantsOfThisIdea(ideaId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT User.firstname, User.lastname, User.picture FROM User_idea JOIN User ON User_idea.user_id = User.id WHERE User_idea.idea_id = ?",
+      [ideaId],
+    );
+    return rows as User[];
+  }
 }
 
 export default new IdeaRepository();
