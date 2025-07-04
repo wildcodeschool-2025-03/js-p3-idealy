@@ -33,6 +33,7 @@ const browse: RequestHandler = async (req, res, next) => {
     });
     res.json(ideas);
   } catch (err) {
+    console.error("Erreur dans GET /api/ideas :", err);
     next(err);
   }
 };
