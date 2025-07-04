@@ -9,23 +9,30 @@
     "start": "tsx ./src/main",
     "test": "jest --verbose",
     "test:deadline": "jest --verbose --testPathPattern=deadlineUtils",
-    "test:stats": "jest tests/statistics/routes.spec.ts --verbose"
+    "test:stats": "jest tests/statistics/routes.spec.ts --verbose",
+    "test:ideavalidate": "jest tests/idea/validateIdeaSchema.spec.ts --verbose",
+    "test:ideavalidate:int": "jest tests/idea/validateIdeaSchema.int.spec.ts --verbose"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.14.0"
+    "mysql2": "^3.14.0",
+    "sanitize-html": "^2.17.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.6.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/hapi__joi": "^17.1.15",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/sanitize-html": "^2.16.0",
     "@types/supertest": "^6.0.3",
     "jest": "^29.7.0",
+    "node-mocks-http": "^1.17.2",
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.0",
     "tsx": "^4.19.3",
