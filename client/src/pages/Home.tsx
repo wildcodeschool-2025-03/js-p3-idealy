@@ -140,14 +140,14 @@ function Home() {
                 <button
                   type="button"
                   onClick={handleLogin}
-                  className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10"
+                  className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10 cursor-pointer"
                 >
                   Se connecter
                 </button>
                 <button
                   type="button"
                   onClick={() => setLoginPanel(!loginPanel)}
-                  className="bg-redButton text-black rounded-3xl w-50 py-2 mb-10"
+                  className="bg-redButton text-black rounded-3xl w-50 py-2 mb-10 cursor-pointer"
                 >
                   Je n'ai pas de compte
                 </button>
@@ -203,14 +203,14 @@ function Home() {
                 <button
                   type="button"
                   onClick={handleCreateAccount}
-                  className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10"
+                  className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10 cursor-pointer"
                 >
                   Créer mon compte
                 </button>
                 <button
                   type="button"
                   onClick={() => setLoginPanel(!loginPanel)}
-                  className="bg-redButton text-black rounded-3xl w-50 py-2 mb-10"
+                  className="bg-redButton text-black rounded-3xl w-50 py-2 mb-10 cursor-pointer"
                 >
                   Retour menu connexion
                 </button>
