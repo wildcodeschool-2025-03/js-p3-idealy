@@ -2,7 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import type { RequestHandler } from "express";
 import type { Request } from "express";
-import formidable, { type Fields, type Files } from "formidable";
+import type { Fields, File, Files } from "formidable";
+import type formidable from "formidable";
 
 import databaseClient from "../../../database/client";
 import type { Result } from "../../../database/client";
@@ -13,6 +14,10 @@ import ideaRepository from "./ideaRepository";
 
 interface RequestWithId extends Request {
   id?: number;
+}
+
+interface RequestWithFiles extends Request {
+  files?: File[];
 }
 
 // Crée un dossier temporaire si besoin pour stocker les fichiers
@@ -56,79 +61,69 @@ const read: RequestHandler = async (req, res, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
-const add: RequestHandler = (req, res, next) => {
-  const form = formidable({
-    multiples: true,
-    keepExtensions: true,
-    uploadDir,
-  });
+const add: RequestHandler = async (req, res, next) => {
+  try {
+    // Utilise les données déjà validées et parsées par validateIdeaSchema
+    const {
+      title,
+      description,
+      deadline,
+      timestamp,
+      statut_id,
+      creator_id,
+      categories,
+      participants,
+    } = req.body;
 
-  form.parse(req, async (err: Error | null, fields: Fields, files: Files) => {
-    if (err) {
-      console.error("Erreur lors du parsing du formulaire :", err);
-      return res.status(500).json({ error: "Erreur serveur" });
+    // Cast req pour accéder à files
+    const reqWithFiles = req as RequestWithFiles;
+    const uploadedFiles = reqWithFiles.files || [];
+
+    // Création de l'idée
+    const newIdea = {
+      title,
+      description,
+      deadline,
+      timestamp,
+      statut_id,
+    };
+
+    const ideaId = await ideaRepository.create(newIdea);
+
+    // Catégories (array)
+    for (const catId of categories) {
+      await categoryIdeaRepository.link(Number(catId), ideaId);
     }
 
-    try {
-      const rawDeadline = getField(fields.deadline);
-      const deadline = new Date(rawDeadline).toISOString().split("T")[0]; // "2025-07-17"
-
-      // Création de l'idée
-      const newIdea = {
-        title: getField(fields.title),
-        description: getField(fields.description),
-        deadline, // format corrigé
-        timestamp: getField(fields.timestamp),
-        statut_id: Number(getField(fields.statut_id)),
-      };
-
-      const ideaId = await ideaRepository.create(newIdea);
-
-      // Catégories (array)
-      const categoryIds = getArray(fields.categories);
-      for (const catId of categoryIds) {
-        await categoryIdeaRepository.link(Number(catId), ideaId);
-      }
-
-      // Participants (array)
-      const participantIds = getArray(fields.participants); // co-auteurs uniquement
-
-      const creatorId = Number(getField(fields.creator_id)) || 1; // le user connecté ou l'admin par défaut
-
-      // Ajoute le créateur
+    // Participants (array)
+    for (const participantId of participants) {
       await databaseClient.query(
         "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
-        [creatorId, ideaId, 1],
+        [participantId, ideaId, 0],
       );
-
-      // Ajoute les co-auteurs (si présents)
-      for (const coAuthorId of participantIds) {
-        // Évite d'ajouter deux fois l'admin si jamais il est aussi dans les co-auteurs
-        if (Number(coAuthorId) !== creatorId) {
-          await databaseClient.query(
-            "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
-            [coAuthorId, ideaId, 0],
-          );
-        }
-      }
-
-      // Médias (fichiers)
-      const uploadedFiles = getFiles(files.files);
-      for (const file of uploadedFiles) {
-        const type = file.mimetype?.startsWith("video") ? "video" : "image";
-        const filename = path.basename(file.filepath);
-        await mediaRepository.create({
-          url: `/uploads/${filename}`,
-          type,
-          idea_id: ideaId,
-        });
-      }
-
-      res.status(201).json({ insertId: ideaId });
-    } catch (error) {
-      next(error);
     }
-  });
+
+    // Ajoute le créateur
+    await databaseClient.query(
+      "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
+      [creator_id, ideaId, 1],
+    );
+
+    // Médias (fichiers)
+    for (const file of uploadedFiles) {
+      const type = file.mimetype?.startsWith("video") ? "video" : "image";
+      const filename = path.basename(file.filepath);
+      await mediaRepository.create({
+        url: `/uploads/${filename}`,
+        type,
+        idea_id: ideaId,
+      });
+    }
+
+    res.status(201).json({ insertId: ideaId });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Helpers

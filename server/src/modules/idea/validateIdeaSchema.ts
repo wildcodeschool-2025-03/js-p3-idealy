@@ -99,7 +99,7 @@ export const validateIdeaSchema: RequestHandler = (req, res, next) => {
       }
 
       // Vérifie l'authentification
-      const loggedUserId = reqTyped.id;
+      const loggedUserId = req.user?.id;
       if (value.creator_id !== loggedUserId) {
         return res
           .status(403)

@@ -27,7 +27,7 @@ describe("validateIdeaSchema middleware", () => {
   let next: NextFunction;
 
   beforeEach(() => {
-    req = { id: 42 } as unknown as Request;
+    req = { user: { id: 42 } } as unknown as Request;
     res = httpMocks.createResponse();
     next = jest.fn();
   });

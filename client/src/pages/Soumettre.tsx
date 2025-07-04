@@ -112,6 +112,14 @@ const Soumettre = () => {
       return;
     }
 
+    if (categories.length === 0) {
+      setFeedback({
+        type: "error",
+        message: "Vous devez sélectionner au moins une catégorie.",
+      });
+      return;
+    }
+
     setFeedback({
       type: "confirm",
       message:

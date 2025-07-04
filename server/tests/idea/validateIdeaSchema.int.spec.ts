@@ -20,7 +20,10 @@ const app = express();
 
 // Middleware simulant une authentification, ajoute req.id = 42
 const authMiddleware: RequestHandler = (req, _res, next) => {
-  (req as RequestWithId).id = 42;
+  (req as Request & { user?: { id: number; isAdmin: boolean } }).user = {
+    id: 42,
+    isAdmin: false,
+  };
   next();
 };
 
