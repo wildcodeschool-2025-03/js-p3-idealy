@@ -19,7 +19,7 @@ const SoumissionFeedback = ({
 
   return (
     <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-xl text-left space-y-6 overflow-y-auto max-h-[90vh]">
+      <div className="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-xl text-left space-y-6 overflow-y-auto max-h-[90vh]">
         <h2
           className={`text-xl font-bold text-center ${
             isConfirm
@@ -57,14 +57,14 @@ const SoumissionFeedback = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded border text-gray-700 hover:bg-gray-100"
+                className="bg-redButton px-4 py-2 rounded-3xl border text-gray-700 hover:bg-red-600 cursor-pointer"
               >
                 Revenir
               </button>
               <button
                 type="button"
                 onClick={onConfirm}
-                className="px-4 py-2 rounded bg-yellowButton text-black font-semibold hover:bg-yellow-400"
+                className="px-4 py-2 rounded-3xl bg-yellowButton text-black font-semibold hover:bg-yellow-300 cursor-pointer"
               >
                 Soumettre définitivement
               </button>
@@ -73,7 +73,7 @@ const SoumissionFeedback = ({
             <button
               type="button"
               onClick={onClose}
-              className={`px-4 py-2 rounded text-white font-semibold ${
+              className={`px-4 py-2 rounded-3xl text-white font-semibold ${
                 isSuccess
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-red-600 hover:bg-red-700"

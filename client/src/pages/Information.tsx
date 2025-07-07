@@ -6,7 +6,7 @@ import IdeaCard from "../components/IdeaCard";
 import Statistiques from "../components/Statistiques";
 <Statistiques />;
 
-import { authFetch } from "../utils/authFetch"; // ✅ Ajouté ici
+import { authFetch } from "../utils/authFetch";
 
 interface Idea {
   id: number;
@@ -84,8 +84,8 @@ function Information() {
     .slice(0, 3);
 
   return (
-    <section className="bg-greyBackground flex flex-col items-center justify-center min-h-lvh gap-8 px-4 py-8">
-      <article className="w-full max-w-6xl px-2 md:px-8">
+    <section className="bg-greyBackground flex flex-col items-center justify-center min-h-lvh gap-10 px-4 py-8">
+      <article className="w-full max-w-6xl px-2 md:px-8 mt-10">
         <button
           type="button"
           aria-label="Statistiques"
@@ -93,7 +93,7 @@ function Information() {
         >
           Statistiques
         </button>
-        {/* appel du composant Statitiques */}
+        {/* appel du composant Statistiques */}
         <Statistiques />
       </article>
 
@@ -101,11 +101,11 @@ function Information() {
         <button
           type="button"
           aria-label="Idées récemment validées"
-          className="block mx-auto bg-greenButton rounded-full p-2 font-semibold text-lg cursor-default"
+          className="block mx-auto bg-greenButton rounded-full p-2 font-semibold text-lg cursor-default mt-10"
         >
           Idées récemment validées
         </button>
-        <div className="flex flex-col md:flex-row md:justify-center items-stretch mt-4 gap-4">
+        <div className="flex flex-col md:flex-row md:justify-center items-stretch mt-10 gap-4">
           {recentValidIdeas.map((idea) => (
             <IdeaCard
               key={idea.id}
@@ -117,15 +117,15 @@ function Information() {
         </div>
       </article>
 
-      <article className="w-full max-w-6xl px-2 md:px-8">
+      <article className="w-full max-w-6xl px-2 md:px-8 mb-10">
         <button
           type="button"
           aria-label="Idées récemment refusées"
-          className="block mx-auto bg-redButton rounded-full p-2 font-semibold text-lg cursor-default"
+          className="block mx-auto bg-redButton rounded-full p-2 font-semibold text-lg cursor-default mt-10"
         >
           Idées récemment refusées
         </button>
-        <div className="flex flex-col md:flex-row md:justify-center items-stretch mt-4 gap-4">
+        <div className="flex flex-col md:flex-row md:justify-center items-stretch mt-10 gap-4">
           {recentRefusedIdeas.map((idea) => (
             <IdeaCard
               key={idea.id}

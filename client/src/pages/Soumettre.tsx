@@ -47,6 +47,7 @@ const Soumettre = () => {
     message: string;
   } | null>(null);
   const [savedHtml, setSavedHtml] = useState<string>("");
+  const [titleFocused, setTitleFocused] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -250,7 +251,7 @@ const Soumettre = () => {
               <button
                 type="button"
                 onClick={() => setParticipantDropdownOpen((prev) => !prev)}
-                className="border rounded w-full bg-card text-left h-[50px] px-2"
+                className="border rounded w-full bg-card text-left h-[50px] px-2 cursor-pointer"
               >
                 {participants.length > 0
                   ? `${participants.length} participant(s)`
@@ -320,21 +321,30 @@ const Soumettre = () => {
             </div>
 
             {/* Input Titre */}
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Titre de l'idée"
-              className="placeholder-black border rounded w-full h-[50px] px-2"
-              required
-            />
+            <div className="w-full">
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onFocus={() => setTitleFocused(true)}
+                onBlur={() => setTitleFocused(false)}
+                placeholder="Titre de l'idée"
+                className="placeholder-black border rounded w-full h-[50px] px-2"
+                required
+              />
+              {(titleFocused || (title.length > 0 && title.length < 3)) && (
+                <p className="text-xs text-gray-600 mt-1">
+                  Minimum 3 caractères requis.
+                </p>
+              )}
+            </div>
 
             {/* Select Catégorie */}
             <div className="relative w-full" ref={categoryDropdownRef}>
               <button
                 type="button"
                 onClick={() => setCategoryDropdownOpen((prev) => !prev)}
-                className="border rounded w-full bg-card text-left h-[50px] px-2"
+                className="border rounded w-full bg-card text-left h-[50px] px-2 cursor-pointer"
               >
                 {categories.length > 0
                   ? `${categories.length} catégorie(s)`
@@ -410,6 +420,7 @@ const Soumettre = () => {
               value={editorContent}
               onChange={setEditorContent}
               onFocus={handleFocus}
+              minLength={10}
             />
             <PieceJointeButton
               multiple
@@ -462,9 +473,10 @@ const Soumettre = () => {
           </h2>
           <ul className="list-disc list-inside space-y-1 text-sm">
             <li>
-              Les champs <strong>Titre</strong>, <strong>Description</strong>,{" "}
-              <strong>Catégorie</strong> et <strong>Deadline</strong> sont
-              obligatoires.
+              Les champs <strong>Titre</strong> (min.{" "}
+              <strong>3 caractères</strong>), <strong>Description</strong> (min.{" "}
+              <strong>10 caractères</strong>), <strong>Catégorie</strong> et{" "}
+              <strong>Deadline</strong> sont obligatoires.
             </li>
             <li>
               📝 La description peut contenir du <strong>texte enrichi</strong>{" "}
@@ -512,7 +524,7 @@ const Soumettre = () => {
         <div className="flex justify-center">
           <button
             type="button"
-            className="bg-redButton px-4 py-2 rounded mr-4"
+            className="bg-redButton hover:bg-red-600 px-4 py-2 rounded-3xl mr-4 cursor-pointer"
             onClick={() => setIsDeadlineModalOpen(true)}
           >
             Deadline prise de décision
@@ -525,7 +537,10 @@ const Soumettre = () => {
               setIsDeadlineModalOpen(false);
             }}
           />
-          <button type="submit" className="bg-yellowButton px-4 py-2 rounded">
+          <button
+            type="submit"
+            className="bg-yellowButton hover:bg-yellow-300 px-4 py-2 rounded-3xl cursor-pointer"
+          >
             Soumettre
           </button>
         </div>

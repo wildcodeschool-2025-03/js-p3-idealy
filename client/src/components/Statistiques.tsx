@@ -51,19 +51,23 @@ function Statistiques() {
         <p className="text-6xl md:text-8xl font-bold">
           <CountUp end={stats.submittedThisMonth} duration={1.5} />
         </p>
-        <p className="font-bold">Idées soumises ce mois-ci</p>
+        <p className="font-bold">
+          {stats.submittedThisMonth === 0 && "Aucune idée soumise ce mois-ci"}
+          {stats.submittedThisMonth === 1 && "idée soumise ce mois-ci"}
+          {stats.submittedThisMonth > 1 && "idées soumises ce mois-ci"}
+        </p>
       </div>
       <div className="p-6">
         <p className="text-6xl md:text-8xl font-bold">
           <CountUp end={stats.likesAdded} duration={1.5} />
         </p>
-        <p className="font-bold">Likes ajoutés</p>
+        <p className="font-bold">Likes ajoutés cette année</p>
       </div>
       <div className="p-6">
         <p className="text-6xl md:text-8xl font-bold">
           <CountUp end={stats.ideasValidated} duration={1.5} />
         </p>
-        <p className="font-bold">Idées validées au total</p>
+        <p className="font-bold">Idées validées cette année</p>
       </div>
       {error && (
         <p className="col-span-full text-sm text-red-600 mt-2">
