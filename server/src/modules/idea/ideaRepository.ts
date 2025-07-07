@@ -224,6 +224,14 @@ class IdeaRepository {
     );
     return rows as User[];
   }
+
+  async getMediasOfThisIdea(ideaId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT * FROM Media WHERE idea_id = ?",
+      [ideaId],
+    );
+    return rows;
+  }
 }
 
 export default new IdeaRepository();

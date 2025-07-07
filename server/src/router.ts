@@ -1,3 +1,4 @@
+import path from "node:path";
 import express from "express";
 import { authenticateToken } from "./modules/auth/authMiddleware";
 import { authenticateAdmin } from "./modules/auth/authMiddleware";
@@ -116,6 +117,8 @@ router.get("/api/medias/:id", mediaActions.read);
 router.post("/api/medias", mediaActions.add);
 router.put("/api/medias/:id", mediaActions.edit);
 router.delete("/api/medias/:id", mediaActions.destroy);
+
+router.get("/api/ideas/:id/medias", ideaActions.getMediasOfThisIdea); // Récupère les médias d'une idée
 
 // Define comment-related routes
 

@@ -4,7 +4,6 @@ import type { RequestHandler } from "express";
 import type { Request } from "express";
 import type { Fields, File, Files } from "formidable";
 import type formidable from "formidable";
-
 import databaseClient from "../../../database/client";
 import type { Result } from "../../../database/client";
 import categoryIdeaRepository from "../categoryIdea/categoryIdeaRepository";
@@ -62,6 +61,9 @@ const read: RequestHandler = async (req, res, next) => {
 
 // The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
+  console.log("=== DEBUG ADD ===");
+  console.log("req.body:", req.body);
+  console.log("req.headers['content-type']:", req.headers["content-type"]);
   try {
     // Utilise les données déjà validées et parsées par validateIdeaSchema
     const {
@@ -276,6 +278,16 @@ const getParticipantsOfThisIdea: RequestHandler = async (req, res, next) => {
   }
 };
 
+const getMediasOfThisIdea: RequestHandler = async (req, res, next) => {
+  try {
+    const ideaId = Number(req.params.id);
+    const medias = await ideaRepository.getMediasOfThisIdea(ideaId);
+    res.json(medias);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   browse,
   read,
@@ -284,6 +296,7 @@ export default {
   getVotesInformationsOfThisIdea,
   getCategoriesOfThisIdea,
   getParticipantsOfThisIdea,
+  getMediasOfThisIdea,
   putValidationOrRefusal,
   deleteIdea,
   readHistory,
