@@ -17,11 +17,12 @@ function Home() {
   const [existingServices, setExistingServices] = useState<Service[]>([]);
   const [loginPanel, setLoginPanel] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Partie login
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useLogin();
+  const { login, isAuthenticated, isLoading: authLoading } = useLogin();
 
   // Partie création de compte
   const [firstname, setFirstname] = useState("");
@@ -30,6 +31,13 @@ function Home() {
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   );
   const [service_id, setService_id] = useState(1);
+
+  // Redirection si déjà authentifié
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate("/principal");
+    }
+  }, [isAuthenticated, authLoading, navigate]);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -144,13 +152,26 @@ function Home() {
                     onChange={(e) => setMail(e.target.value)}
                     className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1 mb-2"
                   />
-                  <input
-                    value={password}
-                    placeholder="Mot de passe"
-                    type="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1 mb-2"
-                  />
+                  <div className="relative">
+                    <input
+                      value={password}
+                      placeholder="Mot de passe"
+                      type={showPassword ? "text" : "password"}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1 mb-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/6"
+                    >
+                      {showPassword ? (
+                        <i className="bi bi-eye-slash" />
+                      ) : (
+                        <i className="bi bi-eye" />
+                      )}
+                    </button>
+                  </div>
                   <button
                     type="submit"
                     disabled={isLoading}
@@ -199,14 +220,27 @@ function Home() {
                     className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
                     required
                   />
-                  <input
-                    value={password}
-                    type="password"
-                    placeholder="Votre mot de passe"
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      value={password}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Votre mot de passe"
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      {showPassword ? (
+                        <i className="bi bi-eye-slash" />
+                      ) : (
+                        <i className="bi bi-eye" />
+                      )}
+                    </button>
+                  </div>
                   <input
                     value={picture}
                     placeholder="Lien de l'image de profil"
