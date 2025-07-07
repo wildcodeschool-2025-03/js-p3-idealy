@@ -2,8 +2,10 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { authFetch } from "../utils/authFetch";
 import { isTokenExpired } from "../utils/isTokenExpired";
+import "react-toastify/dist/ReactToastify.css";
 
 export interface User {
   id: number;
@@ -168,6 +170,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  useEffect(() => {
+    if (isSessionExpired) {
+      toast.error(
+        "Votre session a expiré, redirection vers la page de connexion...",
+      );
+    }
+  }, [isSessionExpired]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -182,12 +192,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         deleteAccount,
       }}
     >
-      {isSessionExpired && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded shadow-md z-50 transition-opacity duration-300">
-          Votre session a expiré. Déconnexion en cours...
-        </div>
-      )}
-
       {children}
     </AuthContext.Provider>
   );

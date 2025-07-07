@@ -3,9 +3,11 @@
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { useLogin } from "../context/AuthContext";
 import { authFetch } from "../utils/authFetch";
 import { sanitizeAndTruncate } from "../utils/sanitizeAndTruncate";
+import "react-toastify/dist/ReactToastify.css";
 
 interface IdeaCardProps {
   idea: Idea;
@@ -96,11 +98,10 @@ function IdeaCard({
         `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
-      console.log("Vote info updated:", voteDataUpdated);
+      toast.success("Vote enregistré avec succès !");
       setVoteInfo(voteDataUpdated);
     } catch (error) {
-      console.error("Erreur de création :", error);
-      alert("Une erreur est survenue lors du vote.");
+      toast.error("Erreur lors du vote");
     }
   };
 
@@ -132,11 +133,10 @@ function IdeaCard({
         `${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/votes?user_id=${user?.id}`,
       );
       const voteDataUpdated = await voteRes.json();
-      console.log("Vote info updated:", voteDataUpdated);
+      toast.success("Vote enregistré avec succès !");
       setVoteInfo(voteDataUpdated);
     } catch (error) {
-      console.error("Erreur de création :", error);
-      alert("Une erreur est survenue lors du vote.");
+      toast.error("Erreur lors du vote");
     }
   };
 
@@ -166,7 +166,6 @@ function IdeaCard({
     )
       .then((response) => response.json())
       .then((data: VoteInformation) => {
-        console.log("Fetched vote info with user_id:", data);
         setVoteInfo(data);
       });
   }, [idea, user]);
@@ -177,7 +176,6 @@ function IdeaCard({
       .then((response) => response.json())
       .then((data: Category[]) => {
         setCategories(data);
-        console.log("Fetched categories:", data);
       });
   }, [idea]);
 
@@ -195,7 +193,6 @@ function IdeaCard({
   })();
 
   const { html, isTruncated } = sanitizeAndTruncate(idea.description, 255);
-  console.log("voteInfo in render:", voteInfo);
   return (
     <article
       onClick={handleCardClick}
