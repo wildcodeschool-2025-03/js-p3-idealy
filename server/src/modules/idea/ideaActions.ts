@@ -61,9 +61,6 @@ const read: RequestHandler = async (req, res, next) => {
 
 // The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
-  console.log("=== DEBUG ADD ===");
-  console.log("req.body:", req.body);
-  console.log("req.headers['content-type']:", req.headers["content-type"]);
   try {
     // Utilise les données déjà validées et parsées par validateIdeaSchema
     const {
