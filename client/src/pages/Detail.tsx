@@ -5,6 +5,7 @@ import { useParams } from "react-router";
 import CommentModal from "../components/CommentModal";
 import MediaModal from "../components/MediaModal";
 import WorkflowModal from "../components/WorkflowModal";
+import WorkflowSidebar from "../components/WorkflowSideBar";
 import { categoryColors } from "../constants/categoryColors";
 import { useLogin } from "../context/AuthContext";
 import { authFetch } from "../utils/authFetch";
@@ -316,126 +317,154 @@ function Detail() {
 
   return (
     <>
-      <div className="flex flex-col justify-center p-8 gap-8 bg-greyBackground">
-        <button
-          onClick={handleOpenWorkflowModal}
-          className="bg-yellowButton rounded-3xl py-1 cursor-pointer"
-          type="button"
-        >
-          Afficher le Workflow
-        </button>
+      <div className="flex flex-col md:flex-row bg-greyBackground md:min-h-[calc(100vh-200px)]">
+        <div className="flex flex-col p-8 gap-8 md:w-2/3">
+          <button
+            onClick={handleOpenWorkflowModal}
+            className="bg-yellowButton rounded-3xl py-1 cursor-pointer md:hidden"
+            type="button"
+          >
+            Afficher le Workflow
+          </button>
 
-        <div className="bg-card rounded-3xl p-4">
-          {/* Photo + Titre */}
-          <section className="flex items-center mb-4">
-            <img
-              className="rounded-full w-10 mr-5"
-              src={
-                creator?.picture?.startsWith("http")
-                  ? creator.picture
-                  : `${import.meta.env.VITE_API_URL}${creator?.picture}`
-              }
-              alt="profil du créateur"
-            />
-            <h1>{idea?.title}</h1>
-            {medias.length > 0 && (
-              <FiPaperclip
-                className="ml-2 text-gray-600 cursor-pointer text-lg hover:text-gray-800"
-                title={`${medias.length} fichier(s) joint(s)`}
-                onClick={() => setIsMediaModalOpen(true)}
+          <div className="bg-card rounded-3xl p-4">
+            {/* Photo + Titre */}
+            <section className="flex items-center mb-4">
+              <img
+                className="rounded-full w-10 mr-5"
+                src={
+                  creator?.picture?.startsWith("http")
+                    ? creator.picture
+                    : `${import.meta.env.VITE_API_URL}${creator?.picture}`
+                }
+                alt="profil du créateur"
               />
-            )}
-          </section>
+              <h1>{idea?.title}</h1>
+              {medias.length > 0 && (
+                <FiPaperclip
+                  className="ml-2 text-gray-600 cursor-pointer text-lg hover:text-gray-800"
+                  title={`${medias.length} fichier(s) joint(s)`}
+                  onClick={() => setIsMediaModalOpen(true)}
+                />
+              )}
+            </section>
 
-          {/* Catégories */}
-          <section className="flex items-center gap-2 mb-4">
-            {categories.map((cat) => (
-              <span
-                key={cat.category}
-                title={cat.category}
-                className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
-              />
-            ))}
-          </section>
+            {/* Catégories */}
+            <section className="flex items-center gap-2 mb-4">
+              {categories.map((cat) => (
+                <span
+                  key={cat.category}
+                  title={cat.category}
+                  className={`block h-2 w-1/5 rounded-md ${categoryColors[cat.category] || "bg-gray-300"}`}
+                />
+              ))}
+            </section>
 
-          {/* Description */}
-          <div className="prose prose-sm max-w-none break-words">
-            {idea?.description && parse(idea.description)}
+            {/* Description */}
+            <div className="prose prose-sm max-w-none break-words">
+              {idea?.description && parse(idea.description)}
+            </div>
+
+            {/* Nom / Prénom */}
+            <p className="text-right font-bold mb-8 mt-6">
+              {creator?.firstname} {creator?.lastname}
+            </p>
+
+            <section className="flex items-center justify-center gap-6">
+              {isVoteAllowed ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleLike}
+                    className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+                  >
+                    <span className="inline-block text-center w-6">
+                      {userVoteData.agree_count}
+                    </span>
+                    <i
+                      className={
+                        userVoteData.user_vote?.agree
+                          ? "bi bi-hand-thumbs-up-fill"
+                          : "bi bi-hand-thumbs-up"
+                      }
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDislike}
+                    className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
+                  >
+                    <span className="inline-block text-center w-6">
+                      {userVoteData.disagree_count}
+                    </span>
+                    <i
+                      className={
+                        userVoteData.user_vote?.disagree
+                          ? "bi bi-hand-thumbs-down-fill"
+                          : "bi bi-hand-thumbs-down"
+                      }
+                    />
+                  </button>
+                </>
+              ) : (
+                <div
+                  className="bg-blackBackground w-4/5 h-8 rounded-full flex items-center justify-center text-white opacity-60 cursor-not-allowed"
+                  title="Le délai de vote est dépassé"
+                >
+                  Délai de vote dépassé
+                </div>
+              )}
+            </section>
           </div>
 
-          {/* Nom / Prénom */}
-          <p className="text-right font-bold mb-8 mt-6">
-            {creator?.firstname} {creator?.lastname}
-          </p>
+          {isCommentAllowed ? (
+            <button
+              onClick={handleOpenCommentModal}
+              className="bg-greenButton rounded-3xl py-1 cursor-pointer"
+              type="button"
+            >
+              Ajouter un commentaire
+            </button>
+          ) : (
+            <button
+              className="bg-gray-400 rounded-3xl py-1 cursor-not-allowed opacity-60"
+              title="Le délai de commentaire est dépassé"
+              type="button"
+              disabled
+            >
+              Délai de commentaire dépassé
+            </button>
+          )}
 
-          <section className="flex items-center justify-center gap-6">
-            {isVoteAllowed ? (
-              <>
-                <button
-                  type="button"
-                  onClick={handleLike}
-                  className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
-                >
-                  <span className="inline-block text-center w-6">
-                    {userVoteData.agree_count}
-                  </span>
-                  <i
-                    className={
-                      userVoteData.user_vote?.agree
-                        ? "bi bi-hand-thumbs-up-fill"
-                        : "bi bi-hand-thumbs-up"
-                    }
-                  />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDislike}
-                  className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white cursor-pointer"
-                >
-                  <span className="inline-block text-center w-6">
-                    {userVoteData.disagree_count}
-                  </span>
-                  <i
-                    className={
-                      userVoteData.user_vote?.disagree
-                        ? "bi bi-hand-thumbs-down-fill"
-                        : "bi bi-hand-thumbs-down"
-                    }
-                  />
-                </button>
-              </>
-            ) : (
-              <div
-                className="bg-blackBackground w-4/5 h-8 rounded-full flex items-center justify-center text-white opacity-60 cursor-not-allowed"
-                title="Le délai de vote est dépassé"
-              >
-                Délai de vote dépassé
-              </div>
-            )}
-          </section>
+          <div className="hidden md:flex md:flex-col gap-4">
+            {comments?.map((comment) => (
+              <section key={comment.id} className="bg-card rounded-3xl p-4">
+                {/* Date */}
+                <p className="text-sm text-gray-500">
+                  {new Date(comment.created_at).toLocaleDateString("fr-FR")}
+                </p>
+
+                {/* Nom de l'auteur */}
+                <p className="font-bold mt-1">
+                  {commentUsers[comment.user_id]?.firstname}{" "}
+                  {commentUsers[comment.user_id]?.lastname}
+                </p>
+
+                {/* Contenu */}
+                <p className="mt-2 break-words">{comment.content}</p>
+              </section>
+            ))}
+          </div>
         </div>
 
-        {isCommentAllowed ? (
-          <button
-            onClick={handleOpenCommentModal}
-            className="bg-greenButton rounded-3xl py-1 cursor-pointer"
-            type="button"
-          >
-            Ajouter un commentaire
-          </button>
-        ) : (
-          <button
-            className="bg-gray-400 rounded-3xl py-1 cursor-not-allowed opacity-60"
-            title="Le délai de commentaire est dépassé"
-            type="button"
-            disabled
-          >
-            Délai de commentaire dépassé
-          </button>
-        )}
+        <div className="hidden md:flex md:w-1/3 p-4">
+          {idea && voteInfo && (
+            <WorkflowSidebar idea={idea} voteData={voteInfo} />
+          )}
+        </div>
       </div>
 
-      <div className="flex flex-col p-4 gap-4 bg-greyBackground">
+      <div className="flex flex-col p-4 gap-4 bg-greyBackground md:hidden">
         {comments?.map((comment) => (
           <section key={comment.id} className="bg-card rounded-3xl p-4">
             {/* Date */}
@@ -450,15 +479,16 @@ function Detail() {
             </p>
 
             {/* Contenu */}
-            <p className="mt-2">{comment.content}</p>
+            <p className="mt-2 break-words">{comment.content}</p>
           </section>
         ))}
       </div>
+
       <CommentModal
-        isOpen={isCommentModalOpen} // doit etre ouvert
-        onClose={handleCloseCommentModal} // pour fermer faire ca
-        ideaId={Number(id)} // travaille sur tel ID
-        onCommentAdded={refreshComments} // a l'ajout d'un commentaire refresh
+        isOpen={isCommentModalOpen}
+        onClose={handleCloseCommentModal}
+        ideaId={Number(id)}
+        onCommentAdded={refreshComments}
       />
       {idea && voteInfo && (
         <WorkflowModal
