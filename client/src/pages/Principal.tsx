@@ -65,7 +65,7 @@ function Principal() {
   return (
     <main className="flex bg-greyBackground flex-col items-center justify-center font-[atkinson] pb-4 pt-4 md:px-8 md:py-8 md:pb-8 md:pt-8 ">
       <Link
-        to="/parcourir"
+        to="/parcourir?sort=chrono"
         className="text-1xl md:text-2xl  font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#ff5f57] rounded-3xl px-6 py-2 text-center w-fit mx-auto"
       >
         Idées les plus récentes
@@ -84,7 +84,7 @@ function Principal() {
       </ul>
 
       <Link
-        to="/parcourir"
+        to={`/parcourir?search=${encodeURIComponent(`${user?.firstname} ${user?.lastname}`)}`}
         className="text-1xl md:text-2xl font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#ffbd2e] rounded-3xl px-6 py-2 text-center w-fit mx-auto"
       >
         Vos idées
@@ -110,7 +110,7 @@ function Principal() {
       )}
 
       <Link
-        to="/parcourir"
+        to="/parcourir?statut=2"
         className="text-1xl md:text-2xl font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#28c940] rounded-3xl px-6 py-2 text-center w-fit mx-auto"
       >
         Idées validées
