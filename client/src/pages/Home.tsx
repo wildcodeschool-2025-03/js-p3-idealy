@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import ParcourirPlaceHolder from "../components/ParcourirPlaceHolder";
 import { useLogin } from "../context/AuthContext";
+import "react-toastify/dist/ReactToastify.css";
 
 type Service = {
   id: number;
@@ -14,11 +16,13 @@ function Home() {
   const navigate = useNavigate();
   const [existingServices, setExistingServices] = useState<Service[]>([]);
   const [loginPanel, setLoginPanel] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Partie login
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useLogin();
+  const { login, isAuthenticated, isLoading: authLoading } = useLogin();
 
   // Partie création de compte
   const [firstname, setFirstname] = useState("");
@@ -28,12 +32,24 @@ function Home() {
   );
   const [service_id, setService_id] = useState(1);
 
+  // Redirection si déjà authentifié
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate("/principal");
+    }
+  }, [isAuthenticated, authLoading, navigate]);
+
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
       await login(mail, password);
       navigate("/principal");
+
+      toast.success("Connexion réussie ! Bienvenue sur idealy.");
     } catch (error) {
-      // Gérer l'erreur (afficher un message à l'utilisateur par exemple)
+      toast.error("Erreur de connexion, veuillez vérifier vos identifiants.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,8 +85,7 @@ function Home() {
 
       await handleLogin();
     } catch (error) {
-      console.error("Erreur de création :", error);
-      alert("Une erreur est survenue lors de l'inscription.");
+      toast.error("Une erreur est survenue lors de l'inscription.");
     }
   };
 
@@ -123,29 +138,51 @@ function Home() {
 
             {loginPanel ? (
               <section className="flex flex-col items-center gap-2">
-                <input
-                  value={mail}
-                  placeholder="Mail"
-                  type="mail"
-                  onChange={(e) => setMail(e.target.value)}
-                  className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1"
-                />
-                <input
-                  value={password}
-                  placeholder="Mot de passe"
-                  type="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1"
-                />
-                <button
-                  type="button"
-                  onClick={handleLogin}
-                  className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10 cursor-pointer"
+                <form
+                  className="flex flex-col items-center"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleLogin();
+                  }}
                 >
-                  Se connecter
-                </button>
+                  <input
+                    value={mail}
+                    placeholder="Mail"
+                    type="email"
+                    onChange={(e) => setMail(e.target.value)}
+                    className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1 mb-2"
+                  />
+                  <div className="relative">
+                    <input
+                      value={password}
+                      placeholder="Mot de passe"
+                      type={showPassword ? "text" : "password"}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1 mb-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/6"
+                    >
+                      {showPassword ? (
+                        <i className="bi bi-eye-slash" />
+                      ) : (
+                        <i className="bi bi-eye" />
+                      )}
+                    </button>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10 cursor-pointer"
+                  >
+                    Se connecter
+                  </button>
+                </form>
                 <button
                   type="button"
+                  disabled={isLoading}
                   onClick={() => setLoginPanel(!loginPanel)}
                   className="bg-redButton text-black rounded-3xl w-50 py-2 mb-10 cursor-pointer"
                 >
@@ -154,61 +191,88 @@ function Home() {
               </section>
             ) : (
               <section className="flex flex-col justify-center items-center gap-2">
-                <input
-                  value={firstname}
-                  placeholder="Votre prénom"
-                  onChange={(e) => setFirstname(e.target.value)}
-                  className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
-                />
-                <input
-                  value={lastname}
-                  placeholder="Votre nom de famille"
-                  onChange={(e) => setLastname(e.target.value)}
-                  className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
-                />
-                <input
-                  value={mail}
-                  placeholder="Votre adresse mail"
-                  type="email"
-                  onChange={(e) => setMail(e.target.value)}
-                  className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
-                />
-                <input
-                  value={password}
-                  type="password"
-                  placeholder="Votre mot de passe"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
-                />
-                <input
-                  value={picture}
-                  placeholder="Lien de l'image de profil"
-                  onChange={(e) => setPicture(e.target.value)}
-                  className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
-                />
-                <select
-                  id="service"
-                  name="service"
-                  value={service_id}
-                  onChange={(e) => setService_id(Number(e.target.value))}
-                  className="bg-greyBackground rounded-3xl focus:outline-none w-60 text-center py-1"
+                <form
+                  className="flex flex-col items-center gap-2"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleCreateAccount();
+                  }}
                 >
-                  <option value="">Choisir un service</option>
-                  {existingServices.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.statut}
-                    </option>
-                  ))}
-                </select>
+                  <input
+                    value={firstname}
+                    placeholder="Votre prénom"
+                    onChange={(e) => setFirstname(e.target.value)}
+                    className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
+                    required
+                  />
+                  <input
+                    value={lastname}
+                    placeholder="Votre nom de famille"
+                    onChange={(e) => setLastname(e.target.value)}
+                    className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
+                    required
+                  />
+                  <input
+                    value={mail}
+                    placeholder="Votre adresse mail"
+                    type="email"
+                    onChange={(e) => setMail(e.target.value)}
+                    className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
+                    required
+                  />
+                  <div className="relative">
+                    <input
+                      value={password}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Votre mot de passe"
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      {showPassword ? (
+                        <i className="bi bi-eye-slash" />
+                      ) : (
+                        <i className="bi bi-eye" />
+                      )}
+                    </button>
+                  </div>
+                  <input
+                    value={picture}
+                    placeholder="Lien de l'image de profil"
+                    onChange={(e) => setPicture(e.target.value)}
+                    className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
+                  />
+                  <select
+                    id="service"
+                    name="service"
+                    value={service_id}
+                    onChange={(e) => setService_id(Number(e.target.value))}
+                    className="bg-greyBackground rounded-3xl focus:outline-none w-60 text-center py-1"
+                    required
+                  >
+                    <option value="">Choisir un service</option>
+                    {existingServices.map((service) => (
+                      <option key={service.id} value={service.id}>
+                        {service.statut}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10 cursor-pointer"
+                  >
+                    Créer mon compte
+                  </button>
+                </form>
                 <button
                   type="button"
-                  onClick={handleCreateAccount}
-                  className="bg-greenButton text-black rounded-3xl w-50 py-2 mt-10 cursor-pointer"
-                >
-                  Créer mon compte
-                </button>
-                <button
-                  type="button"
+                  disabled={isLoading}
                   onClick={() => setLoginPanel(!loginPanel)}
                   className="bg-redButton text-black rounded-3xl w-50 py-2 mb-10 cursor-pointer"
                 >
