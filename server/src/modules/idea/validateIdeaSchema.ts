@@ -1,6 +1,7 @@
 // server/src/modules/idea/validateIdeaSchema.ts
 // Ce fichier contient le middleware de validation des idées
 
+import path from "node:path";
 import type { Request, RequestHandler, Response } from "express";
 import formidable from "formidable";
 import type { Fields, File, Files } from "formidable";
@@ -44,6 +45,15 @@ export const validateIdeaSchema: RequestHandler = (req, res, next) => {
   const form = formidable({
     multiples: true,
     maxFileSize: MAX_FILE_SIZE_BYTES,
+    uploadDir: path.join(__dirname, "../../../public/uploads"),
+    keepExtensions: false,
+    filename: (name, ext, part) => {
+      const randomName =
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+      const originalExt = part.originalFilename?.split(".").pop() || "";
+      return originalExt ? `${randomName}.${originalExt}` : randomName;
+    },
   });
 
   form.parse(req, async (err: Error | null, fields: Fields, files: Files) => {
