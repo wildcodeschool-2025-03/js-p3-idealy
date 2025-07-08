@@ -100,7 +100,7 @@ function Home() {
 
   return (
     <section className="relative">
-      {/*Fond de la page-------A REMPLACER PAR DE FAUSSES DONNEES !!*/}
+      {/*Fond de la page*/}
       <ParcourirPlaceHolder />
 
       {/* Blur sur tout l'écran */}
@@ -146,17 +146,23 @@ function Home() {
                   }}
                 >
                   <input
+                    id="login-email"
+                    name="login-email"
                     value={mail}
                     placeholder="Mail"
                     type="email"
+                    autoComplete="email"
                     onChange={(e) => setMail(e.target.value)}
                     className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1 mb-2"
                   />
                   <div className="relative">
                     <input
+                      id="login-password"
+                      name="login-password"
                       value={password}
                       placeholder="Mot de passe"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
                       onChange={(e) => setPassword(e.target.value)}
                       className="rounded-3xl text-center bg-greyBackground w-60 focus:outline-none py-1 mb-2"
                     />
@@ -199,32 +205,44 @@ function Home() {
                   }}
                 >
                   <input
+                    id="register-firstname"
+                    name="register-firstname"
                     value={firstname}
                     placeholder="Votre prénom"
+                    autoComplete="given-name"
                     onChange={(e) => setFirstname(e.target.value)}
                     className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
                     required
                   />
                   <input
+                    id="register-lastname"
+                    name="register-lastname"
                     value={lastname}
                     placeholder="Votre nom de famille"
+                    autoComplete="family-name"
                     onChange={(e) => setLastname(e.target.value)}
                     className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
                     required
                   />
                   <input
+                    id="register-email"
+                    name="register-email"
                     value={mail}
                     placeholder="Votre adresse mail"
                     type="email"
+                    autoComplete="email"
                     onChange={(e) => setMail(e.target.value)}
                     className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
                     required
                   />
                   <div className="relative">
                     <input
+                      id="register-password"
+                      name="register-password"
                       value={password}
                       type={showPassword ? "text" : "password"}
                       placeholder="Votre mot de passe"
+                      autoComplete="new-password"
                       onChange={(e) => setPassword(e.target.value)}
                       className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
                       required
@@ -242,8 +260,11 @@ function Home() {
                     </button>
                   </div>
                   <input
+                    id="register-picture"
+                    name="register-picture"
                     value={picture}
                     placeholder="Lien de l'image de profil"
+                    autoComplete="photo"
                     onChange={(e) => setPicture(e.target.value)}
                     className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
                   />
