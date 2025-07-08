@@ -28,7 +28,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     if (isLoading) return;
 
     if (location.pathname === "/admin" && (!user || !user.isAdmin)) {
-      navigate("/forbidden");
+      navigate("/forbidden", { replace: true });
     }
   }, [location.pathname, user, isLoading, navigate]);
 

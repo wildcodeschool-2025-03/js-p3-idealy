@@ -179,9 +179,6 @@ function IdeaCard({
       });
   }, [idea]);
 
-  // Fonction pour tronquer le texte (des descriptions pour assurer une taille cohérente) en s'arrêtant au dernier espaces
-  //function truncateText remplacé par utils/sanitizeAndTruncate.ts pour affichage des balises de l'editeur de texte.
-
   // Calcul du délai de vote autorisé
   const isVoteAllowed = (() => {
     if (!idea.deadline || !idea.timestamp) return true;
@@ -191,6 +188,9 @@ function IdeaCard({
     const allowedDuration = (deadline - created) * (2 / 3);
     return now - created <= allowedDuration;
   })();
+
+  // Fonction pour tronquer le texte (des descriptions pour assurer une taille cohérente) en s'arrêtant au dernier espaces
+  //function truncateText remplacé par utils/sanitizeAndTruncate.ts pour affichage des balises de l'editeur de texte.
 
   const { html, isTruncated } = sanitizeAndTruncate(idea.description, 255);
   return (
@@ -231,7 +231,11 @@ function IdeaCard({
         </section>
 
         {/* Contenu de l'idée */}
-        <div className="relative max-h-[10rem] overflow-hidden mt-6 text-justify">
+        <div
+          className={`relative mt-6 text-justify ${
+            isTruncated ? "max-h-[12rem] overflow-hidden" : ""
+          }`}
+        >
           <div className="prose prose-sm max-w-none">{parse(html)}</div>
           {isTruncated && (
             <span className="absolute bottom-1 right-2 text-gray-500 text-sm font-semibold">

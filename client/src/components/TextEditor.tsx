@@ -12,10 +12,11 @@ type TextEditorProps = {
   value: string;
   onChange: (value: string) => void;
   onFocus?: () => void;
+  minLength?: number;
 };
 
 const TextEditor = forwardRef<HTMLDivElement, TextEditorProps>(
-  ({ value, onChange, onFocus }, ref) => {
+  ({ value, onChange, onFocus, minLength }, ref) => {
     const localEditorRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
     const [isToolbarVisible, setIsToolbarVisible] = useState(false);
@@ -125,6 +126,14 @@ const TextEditor = forwardRef<HTMLDivElement, TextEditorProps>(
               <option value="6">XL</option>
               <option value="7">XXL</option>
             </select>
+            {/* Message indicatif sur la longueur minimale */}
+            {isToolbarVisible &&
+              value.replace(/<[^>]+>/g, "").trim().length <
+                (minLength || 0) && (
+                <p className="w-full text-xs text-gray-600 mt-2">
+                  Minimum {minLength} caractères requis.
+                </p>
+              )}
           </div>
         )}
 
