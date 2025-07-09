@@ -297,9 +297,13 @@ const transferIdea: RequestHandler = async (req, res, next) => {
 
     await ideaRepository.transferToUser2(userId);
 
-    res
-      .status(200)
-      .json({ message: "Ideas transferred to user_id=2 successfully" });
+    // Also fix any orphaned ideas that might exist
+    const fixedCount = await ideaRepository.fixOrphanedIdeas();
+
+    res.status(200).json({
+      message: "Ideas transferred to user_id=2 successfully",
+      orphanedIdeasFixed: fixedCount,
+    });
   } catch (err) {
     console.error("Error transferring ideas to user_id=2:", err);
     next(err);
