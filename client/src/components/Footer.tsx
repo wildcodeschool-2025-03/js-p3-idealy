@@ -19,13 +19,28 @@ function Footer() {
         </div>
 
         <div className="flex space-x-4">
-          <a href="https://www.facebook.com" className="cursor-pointer">
+          <a
+            href="https://www.facebook.com"
+            className="cursor-pointer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img src="/Facebook.svg" alt="Facebook" className="w-5 h-5" />
           </a>
-          <a href="https://www.instagram.com" className="cursor-pointer">
+          <a
+            href="https://www.instagram.com"
+            className="cursor-pointer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img src="/Instagram.svg" alt="Instagram" className="w-5 h-5" />
           </a>
-          <a href="https://www.linkedin.com" className="cursor-pointer">
+          <a
+            href="https://www.linkedin.com"
+            className="cursor-pointer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img src="/Linkedin.svg" alt="LinkedIn" className="w-5 h-5" />
           </a>
         </div>
