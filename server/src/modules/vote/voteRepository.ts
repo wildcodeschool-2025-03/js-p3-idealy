@@ -95,6 +95,11 @@ class VoteRepository {
   // The U of CRUD - Update operation
 
   // The D of CRUD - Delete operation
+
+  // Delete all votes of a user
+  async deleteByUserId(userId: number) {
+    await databaseClient.query("DELETE FROM Vote WHERE user_id = ?", [userId]);
+  }
 }
 
 export default new VoteRepository();

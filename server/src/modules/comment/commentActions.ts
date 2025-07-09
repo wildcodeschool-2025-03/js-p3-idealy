@@ -109,4 +109,33 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy, getCommentsForIdea };
+// Transfer comments from a user to admin (user_id = 1)
+const transferToAdmin: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      res.status(400).json({ error: "Missing userId" });
+      return;
+    }
+
+    await commentRepository.transferToAdmin(userId);
+
+    res
+      .status(200)
+      .json({ message: "Comments transferred to admin successfully" });
+  } catch (err) {
+    console.error("Error transferring comments to admin:", err);
+    next(err);
+  }
+};
+
+export default {
+  browse,
+  read,
+  add,
+  edit,
+  destroy,
+  getCommentsForIdea,
+  transferToAdmin,
+};

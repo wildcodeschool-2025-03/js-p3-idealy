@@ -120,6 +120,23 @@ router.delete("/api/medias/:id", mediaActions.destroy);
 
 router.get("/api/ideas/:id/medias", ideaActions.getMediasOfThisIdea); // Récupère les médias d'une idée
 
+// Routes pour transfert vers admin lors de suppression d'utilisateur
+router.post(
+  "/api/ideas/transfer-to-admin",
+  authenticateAdmin,
+  ideaActions.transferToAdmin,
+);
+router.post(
+  "/api/comments/transfer-to-admin",
+  authenticateAdmin,
+  commentActions.transferToAdmin,
+);
+router.post(
+  "/api/votes/delete-user-votes",
+  authenticateAdmin,
+  voteActions.deleteUserVotes,
+);
+
 // Define comment-related routes
 
 router.get("/api/comments", commentActions.browse);

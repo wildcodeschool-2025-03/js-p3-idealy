@@ -234,6 +234,15 @@ class IdeaRepository {
     );
     return rows;
   }
+
+  // Transfer all ideas from a user to admin (user_id = 1)
+  async transferToAdmin(fromUserId: number) {
+    // Update the user_id in the User_idea table where the user is creator
+    await databaseClient.query(
+      "UPDATE User_idea SET user_id = 1 WHERE user_id = ? AND isCreator = TRUE",
+      [fromUserId],
+    );
+  }
 }
 
 export default new IdeaRepository();

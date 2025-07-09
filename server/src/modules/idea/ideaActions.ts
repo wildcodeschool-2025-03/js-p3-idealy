@@ -285,6 +285,27 @@ const getMediasOfThisIdea: RequestHandler = async (req, res, next) => {
   }
 };
 
+// Transfer ideas from a user to admin (user_id = 1)
+const transferToAdmin: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      res.status(400).json({ error: "Missing userId" });
+      return;
+    }
+
+    await ideaRepository.transferToAdmin(userId);
+
+    res
+      .status(200)
+      .json({ message: "Ideas transferred to admin successfully" });
+  } catch (err) {
+    console.error("Error transferring ideas to admin:", err);
+    next(err);
+  }
+};
+
 export default {
   browse,
   read,
@@ -297,4 +318,5 @@ export default {
   putValidationOrRefusal,
   deleteIdea,
   readHistory,
+  transferToAdmin,
 };

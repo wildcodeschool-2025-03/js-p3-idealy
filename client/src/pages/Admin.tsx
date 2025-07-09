@@ -127,19 +127,60 @@ function Admin() {
 
   const handleDeleteUser = async (id: number) => {
     const confirm = window.confirm(
-      "Attention, vous allez supprimer cet utilisateur. Continuer ?",
+      "Attention, vous allez supprimer cet utilisateur. Ses idées, commentaires et médias seront transférés à l'admin. Continuer ?",
     );
     if (!confirm) return;
-    const response = await authFetch(
-      `${import.meta.env.VITE_API_URL}/api/users/${id}`,
-      {
-        method: "DELETE",
-      },
-    );
-    if (response.status === 204) {
-      setUsers((prev) => prev.filter((u) => u.id !== id));
-    } else {
-      alert("Erreur lors de la suppression !");
+
+    try {
+      // Transfer ideas to admin
+      await authFetch(
+        `${import.meta.env.VITE_API_URL}/api/ideas/transfer-to-admin`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: id }),
+        },
+      );
+
+      // Transfer comments to admin
+      await authFetch(
+        `${import.meta.env.VITE_API_URL}/api/comments/transfer-to-admin`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: id }),
+        },
+      );
+
+      // Delete user votes
+      await authFetch(
+        `${import.meta.env.VITE_API_URL}/api/votes/delete-user-votes`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: id }),
+        },
+      );
+
+      // Finally, delete the user
+      const response = await authFetch(
+        `${import.meta.env.VITE_API_URL}/api/users/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (response.status === 204) {
+        setUsers((prev) => prev.filter((u) => u.id !== id));
+        alert(
+          "Utilisateur supprimé et ses données transférées à l'admin avec succès !",
+        );
+      } else {
+        alert("Erreur lors de la suppression de l'utilisateur !");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      alert("Erreur lors de la suppression de l'utilisateur !");
     }
   };
 

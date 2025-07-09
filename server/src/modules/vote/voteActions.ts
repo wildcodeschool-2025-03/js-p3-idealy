@@ -89,4 +89,23 @@ const upsert: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, upsert, getVotesForIdea };
+// Delete all votes of a user
+const deleteUserVotes: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      res.status(400).json({ error: "Missing userId" });
+      return;
+    }
+
+    await voteRepository.deleteByUserId(userId);
+
+    res.status(200).json({ message: "User votes deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting user votes:", err);
+    next(err);
+  }
+};
+
+export default { browse, read, add, upsert, getVotesForIdea, deleteUserVotes };
