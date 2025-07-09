@@ -118,8 +118,37 @@ export const validateIdeaSchema: RequestHandler = (req, res, next) => {
 
       // Sanitize la description HTML
       value.description = sanitizeHtml(value.description, {
-        allowedTags: ["b", "i", "em", "strong", "a", "ul", "ol", "li", "br"],
-        allowedAttributes: { a: ["href", "target"] },
+        allowedTags: [
+          "b",
+          "i",
+          "u",
+          "em",
+          "strong",
+          "a",
+          "ul",
+          "ol",
+          "li",
+          "br",
+          "span",
+          "font",
+        ],
+        allowedAttributes: {
+          a: ["href", "target"],
+          span: ["style"],
+          font: ["color", "size"],
+          "*": ["style"],
+        },
+        allowedStyles: {
+          "*": {
+            color: [
+              /^#[0-9a-fA-F]{3,6}$/,
+              /^rgb\((\d{1,3},\s*){2}\d{1,3}\)$/,
+              /^rgba\((\d{1,3},\s*){3}\d?(\.\d+)?\)?$/,
+            ],
+            "font-size": [/^\d+(px|em|rem|%)$/],
+            "text-decoration": [/^underline$/],
+          },
+        },
       });
 
       // Vérifie les fichiers joints et adapte le type mimetype

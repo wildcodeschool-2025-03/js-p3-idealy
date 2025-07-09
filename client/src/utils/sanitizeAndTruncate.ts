@@ -4,7 +4,7 @@ import DOMPurify from "dompurify";
 
 /**
  * Tronque proprement un HTML enrichi à un nombre de caractères visibles donné.
- * Conserve le formatage de base (gras, italique, etc.) sans casser le HTML.
+ * Conserve le formatage (gras, italique, couleur, taille, etc.) sans casser le HTML.
  *
  * @param html HTML enrichi (potentiellement sale)
  * @param limit Nombre maximal de caractères visibles
@@ -15,7 +15,24 @@ export function sanitizeAndTruncate(
   limit: number,
 ): { html: string; isTruncated: boolean } {
   const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = DOMPurify.sanitize(html);
+
+  tempDiv.innerHTML = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      "b",
+      "i",
+      "u",
+      "em",
+      "strong",
+      "a",
+      "ul",
+      "ol",
+      "li",
+      "br",
+      "span",
+      "font",
+    ],
+    ALLOWED_ATTR: ["href", "target", "style", "color", "size"],
+  });
 
   let textCount = 0;
   let wasTruncated = false;
@@ -31,7 +48,6 @@ export function sanitizeAndTruncate(
     if (textCount + length > limit) {
       node.nodeValue = node.nodeValue.slice(0, remaining).trimEnd();
       wasTruncated = true;
-
       break;
     }
 
