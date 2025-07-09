@@ -18,7 +18,18 @@ export function sanitizeAndTruncate(
 
   tempDiv.innerHTML = DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
-      "b", "i", "u", "em", "strong", "a", "ul", "ol", "li", "br", "span", "font"
+      "b",
+      "i",
+      "u",
+      "em",
+      "strong",
+      "a",
+      "ul",
+      "ol",
+      "li",
+      "br",
+      "span",
+      "font",
     ],
     ALLOWED_ATTR: ["href", "target", "style", "color", "size"],
   });
