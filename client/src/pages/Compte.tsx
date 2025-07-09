@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import DecoDelButton from "../components/Deco_Del_Button";
 import EditProfilModal from "../components/EditProfilModal";
 import PersonalInfo from "../components/PersonalInfo";
 import { type User, useLogin } from "../context/AuthContext";
 import { authFetch } from "../utils/authFetch";
+import "react-toastify/dist/ReactToastify.css";
 
 function Compte() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -41,9 +43,10 @@ function Compte() {
         // Recharge automatiquement toutes les données utilisateur
         await refreshUser(); // on attend que le refresh soit fini
         setIsEditModalOpen(false); // puis on ferme la modale
+        toast.success("Modifications enregistrées !");
       }
     } catch (error) {
-      console.error("Erreur:", error);
+      toast.error("Erreur lors de la modification du profil");
     }
   };
 
