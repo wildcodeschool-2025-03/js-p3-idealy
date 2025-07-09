@@ -154,6 +154,9 @@ function IdeaCard({
         } else {
           setCreator(data); // sinon utilisés les données de l'API
         }
+      })
+      .catch((err) => {
+        console.error("Erreur lors du fetch du créateur :", err);
       });
   }, [idea, user]); // se déclenche quand user change (après refreshUser)
 

@@ -87,23 +87,25 @@ class IdeaRepository {
            JOIN User u ON u.id = ui.user_id`;
       where.push("Idea.statut_id = 1");
       where.push("Idea.deadline <= CURDATE()");
+    } else if (user_id) {
+      sql = `SELECT Idea.* FROM Idea
+           JOIN User_idea ui ON ui.idea_id = Idea.id`;
+      where.push("ui.user_id = ?");
+      params.push(user_id);
+      where.push("ui.isCreator = TRUE");
     } else {
       sql = "SELECT * FROM Idea";
-      if (user_id) {
-        sql += " JOIN User_idea ui ON ui.idea_id = Idea.id";
-        where.push("ui.user_id = ?");
-        params.push(user_id);
-        where.push("ui.isCreator = TRUE");
-      }
-      if (statut) {
-        where.push("statut_id = ?");
-        params.push(statut);
-      }
+    }
+
+    if (statut) {
+      where.push("Idea.statut_id = ?");
+      params.push(statut);
     }
 
     if (where.length > 0) {
       sql += ` WHERE ${where.join(" AND ")}`;
     }
+
     if (sort === "recent") {
       sql += " ORDER BY timestamp DESC LIMIT 3";
     } else if (toValidate) {

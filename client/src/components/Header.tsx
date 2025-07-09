@@ -34,7 +34,6 @@ function Header() {
         if (user.isAdmin === true) {
           navigate("/admin");
         } else {
-          console.log("vous n'êtes pas admin");
         }
       } catch (e) {
         // Optionnel : gérer l'erreur de parsing

@@ -94,8 +94,11 @@ const add: RequestHandler = async (req, res, next) => {
       await categoryIdeaRepository.link(Number(catId), ideaId);
     }
 
-    // Participants (array)
-    for (const participantId of participants) {
+    // Ajoute les participants (hors créateur)
+    const uniqueParticipants = participants.filter(
+      (id: number) => id !== creator_id,
+    );
+    for (const participantId of uniqueParticipants) {
       await databaseClient.query(
         "INSERT INTO user_idea (user_id, idea_id, isCreator) VALUES (?, ?, ?)",
         [participantId, ideaId, 0],
@@ -167,7 +170,6 @@ const getFiles = (
 });*/
 
 const putValidationOrRefusal: RequestHandler = async (req, res, next) => {
-  console.log("BODY REÇU POUR LA VALIDATION/REFUS :", req.body);
   try {
     const deadline = String(req.body.deadline).split("T")[0];
     const idea = {
@@ -178,7 +180,6 @@ const putValidationOrRefusal: RequestHandler = async (req, res, next) => {
       statut_id: Number(req.body.statut_id),
       justification: req.body.justification,
     };
-    console.log("PUT idea", idea);
 
     const affectedRows = await ideaRepository.putValidationOrRefusal(idea);
 
@@ -196,7 +197,6 @@ const deleteIdea: RequestHandler = async (req, res, next) => {
   try {
     const ideaId = Number(req.params.id);
     await ideaRepository.deleteIdea(ideaId);
-    console.log("DELETE idea", ideaId);
 
     res.sendStatus(204);
   } catch (err) {
