@@ -286,7 +286,7 @@ const getMediasOfThisIdea: RequestHandler = async (req, res, next) => {
 };
 
 // Transfer ideas from a user to user_id=2
-const transferToAdmin: RequestHandler = async (req, res, next) => {
+const transferIdea: RequestHandler = async (req, res, next) => {
   try {
     const { userId } = req.body;
 
@@ -318,5 +318,5 @@ export default {
   putValidationOrRefusal,
   deleteIdea,
   readHistory,
-  transferToAdmin,
+  transferIdea,
 };

@@ -245,19 +245,4 @@ class IdeaRepository {
   }
 }
 
-export default {
-  ...new IdeaRepository(),
-  transferToUser2: IdeaRepository.prototype.transferToUser2,
-  read: IdeaRepository.prototype.read,
-  readAll: IdeaRepository.prototype.readAll,
-  create: IdeaRepository.prototype.create,
-  deleteIdea: IdeaRepository.prototype.deleteIdea,
-  putValidationOrRefusal: IdeaRepository.prototype.putValidationOrRefusal,
-  readHistory: IdeaRepository.prototype.readHistory,
-  getCreatorOfThisIdea: IdeaRepository.prototype.getCreatorOfThisIdea,
-  getVotesInformationsOfThisIdea:
-    IdeaRepository.prototype.getVotesInformationsOfThisIdea,
-  getCategoriesOfThisIdea: IdeaRepository.prototype.getCategoriesOfThisIdea,
-  getParticipantsOfThisIdea: IdeaRepository.prototype.getParticipantsOfThisIdea,
-  getMediasOfThisIdea: IdeaRepository.prototype.getMediasOfThisIdea,
-};
+export default new IdeaRepository();

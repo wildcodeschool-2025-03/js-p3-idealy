@@ -110,7 +110,7 @@ const destroy: RequestHandler = async (req, res, next) => {
 };
 
 // Transfer comments from a user to user_id=2
-const transferToAdmin: RequestHandler = async (req, res, next) => {
+const transferComment: RequestHandler = async (req, res, next) => {
   try {
     const { userId } = req.body;
 
@@ -137,5 +137,5 @@ export default {
   edit,
   destroy,
   getCommentsForIdea,
-  transferToAdmin,
+  transferComment,
 };

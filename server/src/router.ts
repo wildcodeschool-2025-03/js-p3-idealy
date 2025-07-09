@@ -93,6 +93,11 @@ router.post("/api/votes", voteActions.add);
 
 router.get("/api/ideas/:id/votes", voteActions.getVotesForIdea); // Get votes informations for cards
 router.post("/api/votes/upsert", voteActions.upsert); // Create OR Update at the same time
+router.post(
+  "/api/votes/delete-user-votes",
+  authenticateAdmin,
+  voteActions.deleteUserVotes,
+);
 
 // Define category-related routes
 
@@ -119,22 +124,10 @@ router.put("/api/medias/:id", mediaActions.edit);
 router.delete("/api/medias/:id", mediaActions.destroy);
 
 router.get("/api/ideas/:id/medias", ideaActions.getMediasOfThisIdea); // Récupère les médias d'une idée
-
-// Routes pour transfert vers admin lors de suppression d'utilisateur
 router.post(
   "/api/ideas/transfer-to-user-2",
   authenticateAdmin,
-  ideaActions.transferToAdmin,
-);
-router.post(
-  "/api/comments/transfer-to-user-2",
-  authenticateAdmin,
-  commentActions.transferToAdmin,
-);
-router.post(
-  "/api/votes/delete-user-votes",
-  authenticateAdmin,
-  voteActions.deleteUserVotes,
+  ideaActions.transferIdea,
 );
 
 // Define comment-related routes
@@ -144,6 +137,11 @@ router.get("/api/comments/:id", commentActions.read);
 router.post("/api/comments", commentActions.add);
 router.put("/api/comments/:id", commentActions.edit);
 router.delete("/api/comments/:id", commentActions.destroy);
+router.post(
+  "/api/comments/transfer-to-user-2",
+  authenticateAdmin,
+  commentActions.transferComment,
+);
 
 // Definie statistics routes
 import { getStatistics } from "./modules/statistics/statisticsActions";
