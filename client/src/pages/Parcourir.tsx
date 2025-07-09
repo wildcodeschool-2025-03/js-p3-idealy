@@ -57,6 +57,11 @@ function Parcourir() {
   useEffect(() => {
     if (firstname || lastname) {
       setSearch([firstname, lastname].filter(Boolean).join(" "));
+      // Reset tous les filtres et tris quand on clique sur "mes idées"
+      setSelectedCategory([]);
+      setSelectedStatut([]);
+      setSelectedTimestamp([]);
+      setSelectedSorting("");
     } else {
       setSearch("");
     }
@@ -94,6 +99,18 @@ function Parcourir() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
+
+  // Remet la page à 1 quand les critères de recherche changent
+  // biome-ignore lint/correctness/useExhaustiveDependencies: ces dépendances sont nécessaires pour remettre la page à 1 lors des changements de filtres
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    search,
+    selectedCategory,
+    selectedStatut,
+    selectedTimestamp,
+    selectedSorting,
+  ]);
 
   // Etape 0 : Récupérer la liste complète des idées depuis l'API au chargement du composant
   useEffect(() => {
@@ -193,6 +210,16 @@ function Parcourir() {
     return categoryOk && statutOk && timestampOk;
   });
 
+  // Fonction pour vérifier si le vote est encore autorisé (identique à IdeaCard)
+  const isVoteAllowed = (idea: Idea) => {
+    if (!idea.deadline || !idea.timestamp) return true;
+    const created = new Date(idea.timestamp).getTime();
+    const deadline = new Date(idea.deadline).getTime();
+    const now = Date.now();
+    const allowedDuration = (deadline - created) * (2 / 3);
+    return now - created <= allowedDuration;
+  };
+
   // Etape 3 : ordonner les idées filtrées en fonction du tri sélectionné
   const sortedIdeas = [...filteredIdeas];
   if (selectedSorting === "alpha") {
@@ -203,9 +230,35 @@ function Parcourir() {
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
     );
   } else if (selectedSorting === "most") {
-    sortedIdeas.sort((a, b) => b.agree_count - a.agree_count);
+    // Filtrer d'abord les idées dont le délai de vote n'est pas dépassé
+    const votableIdeas = sortedIdeas.filter(isVoteAllowed);
+    const nonVotableIdeas = sortedIdeas.filter((idea) => !isVoteAllowed(idea));
+
+    // Trier les idées votables par nombre de likes décroissant
+    votableIdeas.sort((a, b) => b.agree_count - a.agree_count);
+
+    // Concaténer : idées votables triées + idées non-votables à la fin
+    sortedIdeas.splice(
+      0,
+      sortedIdeas.length,
+      ...votableIdeas,
+      ...nonVotableIdeas,
+    );
   } else if (selectedSorting === "least") {
-    sortedIdeas.sort((a, b) => b.disagree_count - a.disagree_count);
+    // Filtrer d'abord les idées dont le délai de vote n'est pas dépassé
+    const votableIdeas = sortedIdeas.filter(isVoteAllowed);
+    const nonVotableIdeas = sortedIdeas.filter((idea) => !isVoteAllowed(idea));
+
+    // Trier les idées votables par nombre de dislikes décroissant
+    votableIdeas.sort((a, b) => b.disagree_count - a.disagree_count);
+
+    // Concaténer : idées votables triées + idées non-votables à la fin
+    sortedIdeas.splice(
+      0,
+      sortedIdeas.length,
+      ...votableIdeas,
+      ...nonVotableIdeas,
+    );
   }
 
   // Découpe des idées à afficher
