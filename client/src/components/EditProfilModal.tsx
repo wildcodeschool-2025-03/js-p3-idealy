@@ -32,6 +32,7 @@ function EditProfilModal({
 
   const [services, setServices] = useState<serviceInterface[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (isOpen && userData && services.length > 0) {
@@ -95,6 +96,7 @@ function EditProfilModal({
       firstname: formData.firstname,
       lastname: formData.lastname,
       mail: formData.mail,
+      ...(formData.password && { password: formData.password }), //Ajoute la propriété password à l'objet uniquement si formData.password n'est pas vide
       // Utilise l'ID du nouveau service ou garde l'ancien si pas trouvé
       service_id: selectedService ? selectedService.id : userData.service_id,
       service: formData.service,
@@ -197,17 +199,30 @@ function EditProfilModal({
                 htmlFor="password"
                 className="block text-sm font-medium mb-1"
               >
-                Mot de passe
+                Mot de passe à modifier
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center"
-                placeholder="Mot de passe"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center"
+                  placeholder="Mot de passe"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/4 cursor-pointer"
+                >
+                  {showPassword ? (
+                    <i className="bi bi-eye-slash" />
+                  ) : (
+                    <i className="bi bi-eye" />
+                  )}
+                </button>
+              </div>
             </div>
             <div>
               <label
