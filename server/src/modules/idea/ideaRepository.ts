@@ -37,6 +37,7 @@ type IdeaUpdate = {
   description: string;
   deadline: string;
   statut_id: number;
+  justification?: string;
 };
 
 class IdeaRepository {
@@ -159,8 +160,15 @@ class IdeaRepository {
 
   async putValidationOrRefusal(idea: IdeaUpdate) {
     const [result] = await databaseClient.query<Result>(
-      "UPDATE Idea SET title = ?, description = ?, deadline = ?, statut_id = ? WHERE id = ?",
-      [idea.title, idea.description, idea.deadline, idea.statut_id, idea.id],
+      "UPDATE Idea SET title = ?, description = ?, deadline = ?, statut_id = ?, justification = ? WHERE id = ?",
+      [
+        idea.title,
+        idea.description,
+        idea.deadline,
+        idea.statut_id,
+        idea.justification,
+        idea.id,
+      ],
     );
     return result.affectedRows > 0;
   }

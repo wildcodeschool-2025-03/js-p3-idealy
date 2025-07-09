@@ -15,6 +15,7 @@ interface Idea {
   lastname: string;
   email: string;
   user_id: number;
+  justification?: string;
 }
 
 interface User {
@@ -74,6 +75,22 @@ function Admin() {
       .then((data: Idea[]) => setHistoryIdeas(data));
   }, []);
 
+  const fetchRecentIdeas = async () => {
+    const res = await authFetch(
+      `${import.meta.env.VITE_API_URL}/api/ideas?toValidate=1`,
+    );
+    const data = await res.json();
+    setRecentIdeas(data);
+  };
+
+  const fetchHistoryIdeas = async () => {
+    const res = await authFetch(
+      `${import.meta.env.VITE_API_URL}/api/ideas/history`,
+    );
+    const data = await res.json();
+    setHistoryIdeas(data);
+  };
+
   const handleDecision = async (
     id: number,
     action: "valider" | "refuser" | "supprimer",
@@ -101,7 +118,8 @@ function Admin() {
         },
       );
       if (response.status === 204) {
-        setRecentIdeas((prev) => prev.filter((i) => i.id !== id));
+        fetchRecentIdeas();
+        fetchHistoryIdeas();
       } else {
         alert("Erreur lors de la suppression !");
       }
@@ -119,7 +137,8 @@ function Admin() {
         }),
       }).then((response) => {
         if (response.status === 204) {
-          setRecentIdeas((prev) => prev.filter((i) => i.id !== id));
+          fetchRecentIdeas();
+          fetchHistoryIdeas();
         }
       });
     }
@@ -206,15 +225,16 @@ function Admin() {
             Afficher
           </button>
           <a
-            href={`mailto:${idea.email}`}
-            className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+            href={`mailto:${idea.email}?subject=${encodeURIComponent(`À propos de votre idée n°${idea.id}`)}&body=${encodeURIComponent(justifs[idea.id] || "")}`}
+            className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
           >
             Contacter
           </a>
+
           <textarea
             rows={2}
             maxLength={150}
-            placeholder="Justification"
+            placeholder="Justification obligatoire min 5 caractères"
             value={justifs[idea.id] || ""}
             onChange={(e) =>
               setJustifs({ ...justifs, [idea.id]: e.target.value })
@@ -348,8 +368,8 @@ function Admin() {
                           Afficher
                         </button>
                         <a
-                          href={`mailto:${idea.email}`}
-                          className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+                          href={`mailto:${idea.email}?subject=${encodeURIComponent(`À propos de votre idée n°${idea.id}`)}&body=${encodeURIComponent(justifs[idea.id] || "")}`}
+                          className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
                         >
                           Contacter
                         </a>
@@ -357,10 +377,16 @@ function Admin() {
                     </td>
 
                     <td className="p-2 align-top border">
+                      <label
+                        htmlFor={`justification-${idea.id}`}
+                        className="block text-xs font-semibold mb-1"
+                      >
+                        Justification <span className="text-red-500">*</span>
+                      </label>
                       <textarea
                         rows={16}
                         maxLength={250}
-                        placeholder="Justification"
+                        placeholder="Justification obligatoire min 5 caractères"
                         value={justifs[idea.id] || ""}
                         onChange={(e) =>
                           setJustifs({ ...justifs, [idea.id]: e.target.value })
@@ -380,9 +406,21 @@ function Admin() {
                       <div className="flex flex-col gap-2 items-center">
                         <button
                           type="button"
-                          onClick={() =>
-                            setConfirmAction({ id: idea.id, action: "valider" })
-                          }
+                          onClick={() => {
+                            if (
+                              !justifs[idea.id] ||
+                              justifs[idea.id].trim().length < 5
+                            ) {
+                              alert(
+                                "Merci de justifier avec au minimum 5 caractères.",
+                              );
+                              return;
+                            }
+                            setConfirmAction({
+                              id: idea.id,
+                              action: "valider",
+                            });
+                          }}
                           className="text-green-600 text-2xl"
                           title="Valider"
                         >
@@ -390,9 +428,21 @@ function Admin() {
                         </button>
                         <button
                           type="button"
-                          onClick={() =>
-                            setConfirmAction({ id: idea.id, action: "refuser" })
-                          }
+                          onClick={() => {
+                            if (
+                              !justifs[idea.id] ||
+                              justifs[idea.id].trim().length < 5
+                            ) {
+                              alert(
+                                "Merci de justifier avec au minimum 5 caractères.",
+                              );
+                              return;
+                            }
+                            setConfirmAction({
+                              id: idea.id,
+                              action: "refuser",
+                            });
+                          }}
                           className="text-red-600 text-2xl"
                           title="Refuser"
                         >
@@ -400,12 +450,21 @@ function Admin() {
                         </button>
                         <button
                           type="button"
-                          onClick={() =>
+                          onClick={() => {
+                            if (
+                              !justifs[idea.id] ||
+                              justifs[idea.id].trim().length < 5
+                            ) {
+                              alert(
+                                "Merci de justifier avec au minimum 5 caractères.",
+                              );
+                              return;
+                            }
                             setConfirmAction({
                               id: idea.id,
                               action: "supprimer",
-                            })
-                          }
+                            });
+                          }}
                           className="text-gray-600 text-2xl"
                           title="Supprimer"
                         >
@@ -476,14 +535,14 @@ function Admin() {
         </button>
         {showHistory && (
           <div className="w-full overflow-x-auto">
-            <table className="min-w-[350px] w-full bg-white rounded-lg shadow mb-8 text-xs text-center md:text-base">
+            <table className="min-w-max w-full bg-white rounded-lg shadow mb-8 text-xs text-center md:text-base">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="p-2 border">ID</th>
-                  <th className="p-2 border">Idée</th>
-
-                  <th className="p-2 border">Statut</th>
-                  <th className="p-2 border">Modifier</th>
+                  <th className="p-2 border w-4">ID</th>
+                  <th className="p-2 border w-24">Idée</th>
+                  <th className="p-2 border w-8">Statut</th>
+                  <th className="p-2 border w-20">Justification</th>
+                  <th className="p-2 border w-20">Modifier</th>
                 </tr>
               </thead>
               <tbody>
@@ -500,6 +559,11 @@ function Admin() {
                         {idea.statut_id === 3 && (
                           <span className="text-red-600">Refusée</span>
                         )}
+                      </td>
+                      <td className="p-2 border max-w-[100px] align-top">
+                        <div className="max-h-16 overflow-y-auto whitespace-pre-line break-words text-xs">
+                          {idea.justification}
+                        </div>
                       </td>
                       <td className="p-2 border">
                         <select

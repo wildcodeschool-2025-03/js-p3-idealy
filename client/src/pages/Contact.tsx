@@ -108,6 +108,7 @@ function Contact() {
               type="text"
               placeholder="Votre nom"
               required
+              minLength={2}
               autoComplete="name"
               className="w-full border rounded px-3 py-2"
               value={name}
@@ -125,6 +126,7 @@ function Contact() {
               type="text"
               placeholder="Votre prénom"
               required
+              minLength={2}
               autoComplete="name"
               className="w-full border rounded px-3 py-2"
               value={lastName}
@@ -158,6 +160,7 @@ function Contact() {
               name="message"
               placeholder="Votre message"
               required
+              minLength={10}
               rows={5}
               className="w-full border rounded px-3 py-2"
               value={message}

@@ -33,6 +33,7 @@ CREATE TABLE Idea (
     description TEXT NOT NULL,
     deadline DATE NOT NULL,
     timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    justification TEXT,
     statut_id INT NOT NULL,
     FOREIGN KEY (statut_id) REFERENCES Statut (id) ON DELETE CASCADE
 );
