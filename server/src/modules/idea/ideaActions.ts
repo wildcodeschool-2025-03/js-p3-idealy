@@ -285,7 +285,7 @@ const getMediasOfThisIdea: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Transfer ideas from a user to admin (user_id = 1)
+// Transfer ideas from a user to user_id=2
 const transferToAdmin: RequestHandler = async (req, res, next) => {
   try {
     const { userId } = req.body;
@@ -295,13 +295,13 @@ const transferToAdmin: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    await ideaRepository.transferToAdmin(userId);
+    await ideaRepository.transferToUser2(userId);
 
     res
       .status(200)
-      .json({ message: "Ideas transferred to admin successfully" });
+      .json({ message: "Ideas transferred to user_id=2 successfully" });
   } catch (err) {
-    console.error("Error transferring ideas to admin:", err);
+    console.error("Error transferring ideas to user_id=2:", err);
     next(err);
   }
 };

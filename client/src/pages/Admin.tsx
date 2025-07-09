@@ -127,14 +127,14 @@ function Admin() {
 
   const handleDeleteUser = async (id: number) => {
     const confirm = window.confirm(
-      "Attention, vous allez supprimer cet utilisateur. Ses idées, commentaires et médias seront transférés à l'admin. Continuer ?",
+      "Attention, vous allez supprimer cet utilisateur. Ses idées et commentaires seront transférés à l'utilisateur avec l'ID 2. Continuer ?",
     );
     if (!confirm) return;
 
     try {
-      // Transfer ideas to admin
+      // Transfer ideas to user_id=2
       await authFetch(
-        `${import.meta.env.VITE_API_URL}/api/ideas/transfer-to-admin`,
+        `${import.meta.env.VITE_API_URL}/api/ideas/transfer-to-user-2`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -142,9 +142,9 @@ function Admin() {
         },
       );
 
-      // Transfer comments to admin
+      // Transfer comments to user_id=2
       await authFetch(
-        `${import.meta.env.VITE_API_URL}/api/comments/transfer-to-admin`,
+        `${import.meta.env.VITE_API_URL}/api/comments/transfer-to-user-2`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -173,7 +173,7 @@ function Admin() {
       if (response.status === 204) {
         setUsers((prev) => prev.filter((u) => u.id !== id));
         alert(
-          "Utilisateur supprimé et ses données transférées à l'admin avec succès !",
+          "Utilisateur supprimé et ses données transférées à au user à l'id n°2 !",
         );
       } else {
         alert("Erreur lors de la suppression de l'utilisateur !");

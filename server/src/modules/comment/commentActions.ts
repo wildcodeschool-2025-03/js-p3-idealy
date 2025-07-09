@@ -109,7 +109,7 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Transfer comments from a user to admin (user_id = 1)
+// Transfer comments from a user to user_id=2
 const transferToAdmin: RequestHandler = async (req, res, next) => {
   try {
     const { userId } = req.body;
@@ -119,13 +119,13 @@ const transferToAdmin: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    await commentRepository.transferToAdmin(userId);
+    await commentRepository.transferToUser2(userId);
 
     res
       .status(200)
-      .json({ message: "Comments transferred to admin successfully" });
+      .json({ message: "Comments transferred to user_id=2 successfully" });
   } catch (err) {
-    console.error("Error transferring comments to admin:", err);
+    console.error("Error transferring comments to user_id=2:", err);
     next(err);
   }
 };

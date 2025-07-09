@@ -221,7 +221,7 @@ class IdeaRepository {
 
   async getParticipantsOfThisIdea(ideaId: number) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT User.firstname, User.lastname, User.picture FROM User_idea JOIN User ON User_idea.user_id = User.id WHERE User_idea.idea_id = ?",
+      "SELECT User.firstname, User.lastname, User.picture FROM User_idea JOIN User ON User_idea.user_id = User.id WHERE User_idea.idea_id = ? AND User.id != 2",
       [ideaId],
     );
     return rows as User[];
@@ -235,14 +235,29 @@ class IdeaRepository {
     return rows;
   }
 
-  // Transfer all ideas from a user to admin (user_id = 1)
-  async transferToAdmin(fromUserId: number) {
+  // Transfer all ideas from a user to user_id=2
+  async transferToUser2(fromUserId: number) {
     // Update the user_id in the User_idea table where the user is creator
     await databaseClient.query(
-      "UPDATE User_idea SET user_id = 1 WHERE user_id = ? AND isCreator = TRUE",
+      "UPDATE User_idea SET user_id = 2 WHERE user_id = ? AND isCreator = TRUE",
       [fromUserId],
     );
   }
 }
 
-export default new IdeaRepository();
+export default {
+  ...new IdeaRepository(),
+  transferToUser2: IdeaRepository.prototype.transferToUser2,
+  read: IdeaRepository.prototype.read,
+  readAll: IdeaRepository.prototype.readAll,
+  create: IdeaRepository.prototype.create,
+  deleteIdea: IdeaRepository.prototype.deleteIdea,
+  putValidationOrRefusal: IdeaRepository.prototype.putValidationOrRefusal,
+  readHistory: IdeaRepository.prototype.readHistory,
+  getCreatorOfThisIdea: IdeaRepository.prototype.getCreatorOfThisIdea,
+  getVotesInformationsOfThisIdea:
+    IdeaRepository.prototype.getVotesInformationsOfThisIdea,
+  getCategoriesOfThisIdea: IdeaRepository.prototype.getCategoriesOfThisIdea,
+  getParticipantsOfThisIdea: IdeaRepository.prototype.getParticipantsOfThisIdea,
+  getMediasOfThisIdea: IdeaRepository.prototype.getMediasOfThisIdea,
+};

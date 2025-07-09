@@ -122,12 +122,12 @@ router.get("/api/ideas/:id/medias", ideaActions.getMediasOfThisIdea); // RÃ©cupÃ
 
 // Routes pour transfert vers admin lors de suppression d'utilisateur
 router.post(
-  "/api/ideas/transfer-to-admin",
+  "/api/ideas/transfer-to-user-2",
   authenticateAdmin,
   ideaActions.transferToAdmin,
 );
 router.post(
-  "/api/comments/transfer-to-admin",
+  "/api/comments/transfer-to-user-2",
   authenticateAdmin,
   commentActions.transferToAdmin,
 );
