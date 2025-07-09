@@ -157,6 +157,26 @@ function Parcourir() {
       });
   }, []);
 
+  // pour lire les redirections de la page principale
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    // Tri idées récentes
+    const sort = params.get("sort");
+    if (sort) setSelectedSorting(sort);
+
+    // Statut validé de l idée
+    const statut = params.get("statut");
+    if (statut) setSelectedStatut([Number(statut)]);
+
+    // User : les idées de l utilisateur
+    const searchParam = params.get("search");
+    if (searchParam) {
+      setSearch(searchParam);
+    }
+  }, [location.search]);
+
   // Etape 1 : Afficher les idées en fonction de la barre de recherche
   const searchedIdeas = ideas.filter((idea) => {
     const searchableText = [
