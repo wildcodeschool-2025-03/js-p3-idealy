@@ -26,7 +26,7 @@ function MediaModal({ isOpen, onClose, medias }: MediaModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-xl hover:text-red-500"
+            className="text-xl hover:text-red-500 cursor-pointer"
           >
             <FiX />
           </button>
