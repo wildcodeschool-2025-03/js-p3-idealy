@@ -11,7 +11,8 @@
     "test:deadline": "jest --verbose --testPathPattern=deadlineUtils",
     "test:stats": "jest tests/statistics/routes.spec.ts --verbose",
     "test:ideavalidate": "jest tests/idea/validateIdeaSchema.spec.ts --verbose",
-    "test:ideavalidate:int": "jest tests/idea/validateIdeaSchema.int.spec.ts --verbose"
+    "test:ideavalidate:int": "jest tests/idea/validateIdeaSchema.int.spec.ts --verbose",
+    "test:user": "jest tests/unit/user.test.ts --verbose"
   },
   "dependencies": {
     "cors": "^2.8.5",
