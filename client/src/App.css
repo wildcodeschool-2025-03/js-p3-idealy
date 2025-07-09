@@ -1,3 +1,5 @@
+/* client/src/App.css */
+
 @import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap");
 
@@ -48,4 +50,11 @@ body {
 }
 font[size="7"] {
   font-size: 2.25rem !important; /* taille 7 */
+}
+
+.idea-truncate * {
+  font-size: 1rem !important;
+  line-height: 1.25rem !important;
+  max-width: 100%;
+  word-break: break-word;
 }

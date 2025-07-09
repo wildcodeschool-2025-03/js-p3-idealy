@@ -239,7 +239,9 @@ function IdeaCard({
             isTruncated ? "max-h-[12rem] overflow-hidden" : ""
           }`}
         >
-          <div className="prose prose-sm max-w-none">{parse(html)}</div>
+          <div className="prose prose-sm max-w-none idea-truncate">
+            {parse(html)}
+          </div>
           {isTruncated && (
             <span className="absolute bottom-1 right-2 text-gray-500 text-sm font-semibold">
               [...]
