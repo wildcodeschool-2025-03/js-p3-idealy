@@ -145,8 +145,8 @@ function IdeaCard({
     authFetch(`${import.meta.env.VITE_API_URL}/api/ideas/${idea.id}/creator`)
       .then((response) => response.json())
       .then((data: User) => {
-        if (user && data.id === user.id) {
-          // si le créateur de l'idée est l'utilisateur connecté
+        if (user && data.id === user.id && !user.isAdmin) {
+          // si le créateur de l'idée est l'utilisateur connecté et n'est pas admin
           setCreator({
             ...data, // garde les infos du créateur
             picture: user.picture, // utilise la photo depuis le contexte

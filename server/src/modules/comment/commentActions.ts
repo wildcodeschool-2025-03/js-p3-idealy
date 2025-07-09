@@ -109,4 +109,33 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy, getCommentsForIdea };
+// Transfer comments from a user to user_id=2
+const transferComment: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      res.status(400).json({ error: "Missing userId" });
+      return;
+    }
+
+    await commentRepository.transferToUser2(userId);
+
+    res
+      .status(200)
+      .json({ message: "Comments transferred to user_id=2 successfully" });
+  } catch (err) {
+    console.error("Error transferring comments to user_id=2:", err);
+    next(err);
+  }
+};
+
+export default {
+  browse,
+  read,
+  add,
+  edit,
+  destroy,
+  getCommentsForIdea,
+  transferComment,
+};

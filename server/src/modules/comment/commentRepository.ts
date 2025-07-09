@@ -77,6 +77,14 @@ class CommentRepository {
     // Return how many rows were affected
     return result.affectedRows;
   }
+
+  // Transfer all comments from a user to user_id=2
+  async transferToUser2(fromUserId: number) {
+    await databaseClient.query(
+      "UPDATE Comment SET user_id = 2 WHERE user_id = ?",
+      [fromUserId],
+    );
+  }
 }
 
 export default new CommentRepository();
