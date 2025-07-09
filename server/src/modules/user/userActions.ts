@@ -3,7 +3,6 @@ import path from "node:path";
 import type { RequestHandler } from "express";
 import formidable from "formidable";
 import jwt from "jsonwebtoken";
-import serviceRepository from "../service/serviceRepository";
 // Import access to data
 import userRepository from "./userRepository";
 

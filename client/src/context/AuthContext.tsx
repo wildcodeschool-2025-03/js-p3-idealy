@@ -152,12 +152,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const deleteAccount = async () => {
     if (user?.id) {
       try {
+        // Transfer ideas to user_id=2
+        await authFetch(
+          `${import.meta.env.VITE_API_URL}/api/ideas/transfer-to-user-2`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id }),
+          },
+        );
+
+        // Transfer comments to user_id=2
+        await authFetch(
+          `${import.meta.env.VITE_API_URL}/api/comments/transfer-to-user-2`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id }),
+          },
+        );
+
+        // Delete user votes
+        await authFetch(
+          `${import.meta.env.VITE_API_URL}/api/votes/delete-user-votes`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id }),
+          },
+        );
+
+        // Finally, delete the user
         const response = await authFetch(
           `${import.meta.env.VITE_API_URL}/api/users/${user.id}`,
           {
             method: "DELETE",
           },
         );
+
         if (response.ok) {
           logout();
         } else {

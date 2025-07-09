@@ -245,11 +245,60 @@ class IdeaRepository {
 
   // Transfer all ideas from a user to user_id=2
   async transferToUser2(fromUserId: number) {
-    // Update the user_id in the User_idea table where the user is creator
-    await databaseClient.query(
-      "UPDATE User_idea SET user_id = 2 WHERE user_id = ? AND isCreator = TRUE",
+    // First, get all ideas where the user is creator
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT idea_id FROM User_idea WHERE user_id = ? AND isCreator = TRUE",
       [fromUserId],
     );
+
+    // For each idea, ensure user_id=2 has a creator link
+    for (const row of rows) {
+      // Check if user_id=2 already has a link with this idea
+      const [existingRows] = await databaseClient.query<Rows>(
+        "SELECT id FROM User_idea WHERE user_id = 2 AND idea_id = ?",
+        [row.idea_id],
+      );
+
+      if (existingRows.length === 0) {
+        // Create new creator link for user_id=2
+        await databaseClient.query(
+          "INSERT INTO User_idea (user_id, idea_id, isCreator) VALUES (2, ?, TRUE)",
+          [row.idea_id],
+        );
+      } else {
+        // Update existing link to make user_id=2 the creator
+        await databaseClient.query(
+          "UPDATE User_idea SET isCreator = TRUE WHERE user_id = 2 AND idea_id = ?",
+          [row.idea_id],
+        );
+      }
+    }
+
+    // Note: The original user's links will be automatically deleted when the user is deleted
+    // due to the ON DELETE CASCADE constraint
+  }
+
+  // Utility method to fix orphaned ideas (ideas without a creator)
+  async fixOrphanedIdeas() {
+    // Find all ideas that don't have a creator
+    const [orphanedIdeas] = await databaseClient.query<Rows>(`
+      SELECT i.id 
+      FROM Idea i 
+      LEFT JOIN User_idea ui ON i.id = ui.idea_id AND ui.isCreator = TRUE 
+      WHERE ui.id IS NULL
+    `);
+
+    let fixedCount = 0;
+    for (const idea of orphanedIdeas) {
+      // Assign user_id=2 as creator for orphaned ideas
+      await databaseClient.query(
+        "INSERT INTO User_idea (user_id, idea_id, isCreator) VALUES (2, ?, TRUE)",
+        [idea.id],
+      );
+      fixedCount++;
+    }
+
+    return fixedCount;
   }
 }
 
