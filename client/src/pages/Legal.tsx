@@ -4,7 +4,9 @@ function Legal() {
   return (
     <section className="bg-greyBackground min-h-lvh py-6 md:pt-10">
       <section className="bg-card rounded-3xl max-w-full shadow-md py-4 px-4 md:px-20 md:py-10 md:w-2/3 m-auto space-y-4 mb-4 md:mb-8">
-        <h1 className="text-xl font-bold text-center">Mentions légales</h1>
+        <h1 className="text-xl md:text-2xl text-center mb-6 px-6 py-2 rounded-full w-58 m-auto bg-yellowButton ">
+          Mentions légales
+        </h1>
 
         <div>
           <h2 className="font-semibold">1. Éditeur du site</h2>
