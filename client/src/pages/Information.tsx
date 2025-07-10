@@ -1,8 +1,8 @@
 // client/src/pages/Information.tsx
 
 import { useEffect, useState } from "react";
-import IdeaCard from "../components/IdeaCard";
 import { toast } from "react-toastify";
+import IdeaCard from "../components/IdeaCard";
 import "react-toastify/dist/ReactToastify.css";
 import Statistiques from "../components/Statistiques";
 <Statistiques />;
