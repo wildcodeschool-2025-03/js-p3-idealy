@@ -244,14 +244,15 @@ const Soumettre = () => {
         className="space-y-4 mt-8"
         encType="multipart/form-data"
       >
-        <div className="flex flex-col items-center gap-6 bg-card border p-4 rounded-lg shadow-lg md:w-1/2 mx-1.5 md:mx-auto">
+        <div className="flex flex-col items-center gap-6 bg-card border p-4 rounded-3xl shadow-md md:w-1/2 mx-1.5 md:mx-auto">
           <div className="flex flex-col lg:flex-row gap-6 w-full">
             {/* Sélecteur de participants */}
             <div className="relative w-full" ref={participantDropdownRef}>
               <button
                 type="button"
+                aria-label="Sélectionner des participants"
                 onClick={() => setParticipantDropdownOpen((prev) => !prev)}
-                className="border rounded w-full bg-card text-left h-[50px] px-2 cursor-pointer"
+                className="border rounded-3xl shadow-md w-full bg-card text-center h-[50px] px-2 cursor-pointer"
               >
                 {participants.length > 0
                   ? `${participants.length} participant(s)`
@@ -259,7 +260,7 @@ const Soumettre = () => {
               </button>
 
               {participantDropdownOpen && (
-                <div className="absolute z-10 mt-1 w-full bg-card border rounded shadow-lg max-h-60 overflow-auto">
+                <div className="absolute z-10 mt-1 w-full bg-card border rounded-3xl shadow-md max-h-60 overflow-auto">
                   {participantOptions
                     .filter((p) => !excludedIds.includes(p.id))
                     .map((p) => (
@@ -328,8 +329,9 @@ const Soumettre = () => {
                 onChange={(e) => setTitle(e.target.value)}
                 onFocus={() => setTitleFocused(true)}
                 onBlur={() => setTitleFocused(false)}
+                aria-label="Titre de l'idée"
                 placeholder="Titre de l'idée"
-                className="placeholder-black border rounded w-full h-[50px] px-2"
+                className="placeholder-black border rounded-3xl shadow-md text-center w-full h-[50px] px-2"
                 required
               />
               {(titleFocused || (title.length > 0 && title.length < 3)) && (
@@ -344,7 +346,8 @@ const Soumettre = () => {
               <button
                 type="button"
                 onClick={() => setCategoryDropdownOpen((prev) => !prev)}
-                className="border rounded w-full bg-card text-left h-[50px] px-2 cursor-pointer"
+                aria-label="Sélectionner une catégorie"
+                className="border rounded-3xl shadow-md w-full bg-card text-center h-[50px] px-2 cursor-pointer"
               >
                 {categories.length > 0
                   ? `${categories.length} catégorie(s)`
@@ -352,7 +355,7 @@ const Soumettre = () => {
               </button>
 
               {categoryDropdownOpen && (
-                <div className="absolute z-10 mt-1 w-full bg-card border rounded shadow-lg max-h-60 overflow-auto">
+                <div className="absolute z-10 mt-1 w-full bg-card border rounded-3xl shadow-md max-h-60 overflow-auto">
                   {categoryOptions.map((c) => (
                     <label
                       key={c.id}
@@ -421,9 +424,11 @@ const Soumettre = () => {
               onChange={setEditorContent}
               onFocus={handleFocus}
               minLength={10}
+              aria-label="Éditeur de texte pour la description de l'idée"
             />
             <PieceJointeButton
               multiple
+              aria-label="Ajouter des fichiers"
               onChange={(e) => {
                 const inputFiles = Array.from(e.target.files ?? []);
                 const { validFiles, errors } = validateFiles(inputFiles);
@@ -448,11 +453,12 @@ const Soumettre = () => {
               {files.map((file, index) => (
                 <div
                   key={file.name}
-                  className="flex justify-between items-center border rounded px-2 py-1 bg-card text-sm"
+                  className="flex justify-between items-center border rounded-3xl shadow-md text-center px-2 py-1 bg-card text-sm"
                 >
                   <span>{file.name}</span>
                   <button
                     type="button"
+                    aria-label="Supprimer le fichier"
                     className="text-red-600 font-bold hover:text-red-800"
                     onClick={() =>
                       setFiles((prev) => prev.filter((_, i) => i !== index))
@@ -467,7 +473,7 @@ const Soumettre = () => {
         </div>
 
         {/* Informations */}
-        <div className=" bg-card p-4 mx-auto border rounded shadow w-11/12 md:w-1/2 lg:w-1/3 gap-2">
+        <div className=" bg-card p-4 mx-auto border rounded-3xl shadow-md w-11/12 md:w-1/2 lg:w-1/3 gap-2">
           <h2 className="text-red-600 font-extrabold text-lg mb-2">
             ⚠️ Avant de soumettre votre idée, lisez attentivement :
           </h2>
@@ -498,21 +504,23 @@ const Soumettre = () => {
               📎 Fichiers autorisés : <strong>PDF, JPG, PNG</strong> (max. 5 Mo
               par fichier)
             </li>
-            <li className="text-red-500 font-semibold">
-              ⚠️ Attention : La soumission d'une idée est{" "}
+            <li>
+              ⚠️ <strong>Attention</strong> : La soumission d'une idée est{" "}
               <strong>définitive</strong> et ne peut pas être modifiée par la
               suite.
             </li>
-            <li className="text-red-500 font-semibold">
-              🔒 Important : Assurez-vous que votre idée respecte les{" "}
-              <strong>règles de la communauté</strong> avant de la soumettre.
+            <li>
+              🔒 <strong>Important</strong> : Assurez-vous que votre idée
+              respecte les <strong>règles de la communauté</strong> avant de la
+              soumettre.
             </li>
-            <li className="text-red-500 font-semibold">
-              📝 Note : La soumission d'une idée ne garantit pas son{" "}
-              <strong>acceptation</strong> ou sa <strong>publication</strong>.
+            <li>
+              📝 <strong>Note</strong> : La soumission d'une idée ne garantit
+              pas son <strong>acceptation</strong> ou sa{" "}
+              <strong>publication</strong>.
             </li>
-            <li className="text-red-500 font-semibold">
-              🚫 Avertissement : Toute idée soumise peut être{" "}
+            <li>
+              🚫 <strong>Avertissement</strong> : Toute idée soumise peut être{" "}
               <strong>examinée</strong> par les modérateurs et{" "}
               <strong>rejetée</strong> si elle ne respecte pas les règles de la
               communauté.
@@ -524,7 +532,8 @@ const Soumettre = () => {
         <div className="flex justify-center">
           <button
             type="button"
-            className="bg-redButton hover:bg-red-600 px-4 py-2 rounded-3xl mr-4 cursor-pointer"
+            aria-label="Ouvrir le modal de deadline"
+            className="bg-redButton hover:bg-red-600 px-6 py-2 rounded-full mr-4 cursor-pointer"
             onClick={() => setIsDeadlineModalOpen(true)}
           >
             Deadline prise de décision
@@ -539,7 +548,8 @@ const Soumettre = () => {
           />
           <button
             type="submit"
-            className="bg-yellowButton hover:bg-yellow-300 px-4 py-2 rounded-3xl cursor-pointer"
+            aria-label="Soumettre l'idée"
+            className="bg-yellowButton hover:bg-yellow-300 px-6 py-2 rounded-full cursor-pointer"
           >
             Soumettre
           </button>
