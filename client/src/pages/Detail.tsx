@@ -327,7 +327,7 @@ function Detail() {
             Afficher le Workflow
           </button>
 
-          <div className="bg-card rounded-3xl p-4">
+          <div className="bg-card rounded-3xl p-4 shadow-md">
             {/* Photo + Titre */}
             <section className="flex items-center mb-4">
               <img

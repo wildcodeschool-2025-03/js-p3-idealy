@@ -7,12 +7,12 @@ import Messica from "../assets/images/Messica.png";
 
 function Apropos() {
   return (
-    <div className="flex flex-col items-center pt-12 bg-greyBackground">
-      <h2 className=" text-center text-2xl bg-yellowButton rounded-4xl w-60">
+    <div className="flex flex-col items-center pt-12 bg-greyBackground md:min-h-[calc(100vh-200px)]">
+      <h2 className=" text-center text-2xl bg-yellowButton rounded-3xl w-60">
         Le projet
       </h2>
 
-      <p className="leading-relaxed text-center mt-12 bg-white rounded-2xl py-4 px-4 shadow-2xl md:leading-8 md:px-12 md:max-w-4xl">
+      <p className="leading-relaxed text-center mt-12 bg-white rounded-3xl py-4 px-4 shadow-2xl md:leading-8 md:px-12 md:max-w-4xl">
         Idealy transforme la façon dont les entreprises collectent et évaluent
         les idées de leurs équipes. <br />
         Notre plateforme collaborative permet à chacun de proposer des
@@ -29,10 +29,10 @@ function Apropos() {
         environnement où l'innovation devient l'affaire de tous.
       </p>
 
-      <h2 className=" text-center text-2xl bg-redButton rounded-4xl w-60 mt-12">
+      <h2 className=" text-center text-2xl bg-redButton rounded-3xl w-60 mt-12">
         L'equipe
       </h2>
-      <div className="mt-12 space-y-12 text-center md:flex md:flex-row md:gap-24 md:mt-16">
+      <div className="mt-12 space-y-12 text-center md:flex md:flex-row md:gap-24 md:mt-16 mb-10">
         <div>
           <a
             href="https://github.com/Daviddemarville"

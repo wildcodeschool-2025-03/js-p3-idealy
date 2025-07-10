@@ -42,7 +42,7 @@ const WorkflowSidebar = ({ idea }: WorkflowSidebarProps) => {
   if (!deadlineSteps) return null;
 
   return (
-    <div className="bg-card rounded-3xl p-6 w-full h-fit mt-3">
+    <div className="bg-card rounded-3xl p-6 w-full h-fit mt-3 shadow-md">
       <h2 className="text-xl font-bold mb-8">Workflow</h2>
 
       <div className="flex">

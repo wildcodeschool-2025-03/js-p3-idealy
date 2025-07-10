@@ -48,7 +48,7 @@ function PersonalInfo({ user, onEditClick }: PersonalInfoProps) {
         </div>
 
         <button
-          className="bg-greyBackground rounded-3xl px-4 p-1 mt-4 shadow-md border-2 cursor-pointer w-full"
+          className="bg-greyBackground rounded-3xl px-4 p-1 mt-4 shadow-md border-2 cursor-pointer w-full hover:scale-99"
           type="button"
           onClick={onEditClick}
         >

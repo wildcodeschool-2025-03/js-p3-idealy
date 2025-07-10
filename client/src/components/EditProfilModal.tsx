@@ -111,7 +111,7 @@ function EditProfilModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-blackBackground bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black/10 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4 relative">
           <button
             type="button"
@@ -249,7 +249,7 @@ function EditProfilModal({
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-greenButton shadow-lg cursor-pointer"
+                className="flex-1 px-4 py-2 rounded-3xl bg-greenButton shadow-md cursor-pointer hover:scale-99"
               >
                 Enregistrer
               </button>
@@ -257,7 +257,7 @@ function EditProfilModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border-2 rounded-3xl bg-redButton shadow-lg cursor-pointer"
+                className="flex-1 px-4 py-2 rounded-3xl bg-redButton shadow-md cursor-pointer hover:scale-99"
               >
                 Annuler
               </button>

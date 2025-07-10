@@ -51,8 +51,8 @@ function Compte() {
   };
 
   return (
-    <div className="p-8 bg-greyBackground text-center">
-      <div className="inline-block text-2xl bg-greenButton rounded-3xl px-8 mb-8">
+    <div className="p-8 bg-greyBackground text-center md:min-h-[calc(100vh-200px)]">
+      <div className="inline-block text-2xl bg-greenButton rounded-3xl px-8 mb-8 mt-6">
         Infos personnelles
       </div>
       {user ? (

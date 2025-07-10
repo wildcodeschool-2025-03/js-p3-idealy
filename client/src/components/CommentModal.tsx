@@ -51,7 +51,7 @@ function CommentModal({
 
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 bg-gray-300 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-96">
         <h2 className="text-xl font-bold mb-4">Ajouter un commentaire</h2>
 
