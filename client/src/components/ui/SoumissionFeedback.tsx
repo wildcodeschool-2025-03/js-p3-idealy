@@ -18,8 +18,8 @@ const SoumissionFeedback = ({
   const isError = type === "error";
 
   return (
-    <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-xl text-left space-y-6 overflow-y-auto max-h-[90vh]">
+    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div className="bg-card rounded-3xl shadow-md p-6 w-[90%] max-w-xl text-left space-y-6 overflow-y-auto max-h-[90vh]">
         <h2
           className={`text-xl font-bold text-center ${
             isConfirm
@@ -57,14 +57,16 @@ const SoumissionFeedback = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-redButton px-4 py-2 rounded-3xl border text-gray-700 hover:bg-red-600 cursor-pointer"
+                aria-label="Revenir à la soumission"
+                className="bg-redButton px-6 py-2 text-xl md:text-2xl rounded-full hover:bg-red-600 cursor-pointer"
               >
                 Revenir
               </button>
               <button
                 type="button"
                 onClick={onConfirm}
-                className="px-4 py-2 rounded-3xl bg-yellowButton text-black font-semibold hover:bg-yellow-300 cursor-pointer"
+                aria-label="Soumettre définitivement"
+                className="px-6 py-2 text-xl md:text-2xl rounded-full bg-yellowButton hover:bg-yellow-300 cursor-pointer"
               >
                 Soumettre définitivement
               </button>
@@ -73,10 +75,11 @@ const SoumissionFeedback = ({
             <button
               type="button"
               onClick={onClose}
-              className={`px-4 py-2 rounded-3xl text-white font-semibold ${
+              aria-label="Fermer la fenêtre"
+              className={`px-6 py-2 text-xl md:text-2xl rounded-full ${
                 isSuccess
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-red-600 hover:bg-red-700"
+                  ? "bg-greenBUtton hover:bg-green-600"
+                  : "bg-redButton hover:bg-red-600"
               }`}
             >
               {isSuccess ? "Retour à l'accueil" : "Fermer"}

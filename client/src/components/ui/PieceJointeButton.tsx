@@ -32,7 +32,7 @@ const PieceJointeButton = ({
     <label
       onDrop={handleDrop}
       onDragOver={handleDragOver}
-      className="flex flex-col items-center justify-center gap-2 cursor-pointer border-2 border-dashed rounded-lg px-4 py-6 hover:bg-gray-100 transition text-center"
+      className="flex flex-col items-center justify-center gap-2 cursor-pointer border-2 border-dashed rounded-3xl shadow-md px-4 py-6 hover:bg-gray-100 transition text-center"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -58,6 +58,7 @@ const PieceJointeButton = ({
         className="hidden"
         onChange={onChange}
         multiple={multiple}
+        aria-label="Sélectionner des fichiers"
       />
     </label>
   );
