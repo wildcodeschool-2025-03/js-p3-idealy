@@ -211,7 +211,7 @@ function IdeaCard({
         {/* Avatar et titre */}
         <section className="flex items-center mb-4">
           <img
-            className="rounded-full w-10 mr-5"
+            className="rounded-full w-10 mr-5 flex-shrink-0"
             src={
               creator.picture?.startsWith("http") // est-ce que l'url de la photo commence "http" ?
                 ? creator.picture // oui = renvoi l'url complète
@@ -219,7 +219,9 @@ function IdeaCard({
             }
             alt="profil du créateur"
           />
-          <p className="font-bold">{idea.title}</p>
+          <p className="font-bold break-words overflow-wrap-anywhere flex-1 min-w-0 idea-title">
+            {idea.title}
+          </p>
         </section>
 
         {/* Blocs de catégorie */}
@@ -235,11 +237,11 @@ function IdeaCard({
 
         {/* Contenu de l'idée */}
         <div
-          className={`relative mt-6 text-justify ${
-            isTruncated ? "max-h-[12rem] overflow-hidden" : ""
+          className={`relative mt-6 text-justify break-words overflow-hidden ${
+            isTruncated ? "max-h-[12rem]" : ""
           }`}
         >
-          <div className="prose prose-sm max-w-none idea-truncate">
+          <div className="prose prose-sm max-w-none idea-truncate break-words">
             {parse(html)}
           </div>
           {isTruncated && (
