@@ -19,9 +19,13 @@ const DeadlineTimeline = ({
       label: "Prise de décision",
       color: "border border-gray-500 bg-white",
     },
-    { date: vote, label: "Deadline vote", color: "bg-green-500" },
-    { date: comments, label: "Deadline commentaires", color: "bg-yellow-400" },
-    { date: creation, label: "Création de l'idée", color: "bg-red-500" },
+    { date: vote, label: "Deadline vote", color: "bg-greenButton" },
+    {
+      date: comments,
+      label: "Deadline commentaires",
+      color: "bg-yellowButton",
+    },
+    { date: creation, label: "Création de l'idée", color: "bg-redButton" },
   ];
 
   return (

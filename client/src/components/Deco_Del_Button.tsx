@@ -21,14 +21,14 @@ function DecoDelButton() {
       <div className="md:flex gap-4 justify-center md:mt-8">
         <button
           onClick={logout}
-          className="bg-yellowButton rounded-3xl px-8 py-1 cursor-pointer mt-4"
+          className="bg-yellowButton rounded-3xl px-8 py-1 cursor-pointer mt-4 hover:scale-99"
           type="button"
         >
           Deconnexion
         </button>
         <button
           onClick={() => setShowConfirm(true)}
-          className="bg-redButton rounded-3xl px-8 py-1 cursor-pointer mt-4"
+          className="bg-redButton rounded-3xl px-8 py-1 cursor-pointer mt-4 hover:scale-99"
           type="button"
         >
           Supprimer le compte

@@ -54,8 +54,8 @@ const WorkflowModal = ({
   if (!deadlineSteps) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-300 flex items-center justify-center z-50">
-      <div className="bg-white rounded-3xl p-6 w-96">
+    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white rounded-3xl p-6 w-96 shadow-md">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-xl font-bold">Workflow</h2>
           <button type="button" onClick={onClose}>
