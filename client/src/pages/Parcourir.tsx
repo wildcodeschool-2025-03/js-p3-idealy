@@ -371,7 +371,7 @@ function Parcourir() {
           type="button"
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="bg-blackBackground text-white w-26 py-1 rounded-full disabled:opacity-50"
+          className="bg-blackBackground text-white w-26 py-1 rounded-full disabled:opacity-50 cursor-pointer"
         >
           Précédent
         </button>
@@ -384,7 +384,7 @@ function Parcourir() {
             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
           }
           disabled={currentPage === totalPages}
-          className="bg-blackBackground text-white w-26 py-1 rounded-full disabled:opacity-50"
+          className="bg-blackBackground text-white w-26 py-1 rounded-full disabled:opacity-50 cursor-pointer"
         >
           Suivant
         </button>
