@@ -171,6 +171,15 @@ class UserRepository {
     return rows[0];
   }
 
+  // Check if an email already exists in the database
+  async emailExists(mail: string): Promise<boolean> {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT id FROM User WHERE mail = ?",
+      [mail],
+    );
+    return rows.length > 0;
+  }
+
   async authenticate(mail: string, password: string) {
     // Execute the SQL SELECT query to authenticate a user by mail and password
     const [rows] = await databaseClient.query<Rows>(

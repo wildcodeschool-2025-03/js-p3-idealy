@@ -18,6 +18,7 @@ function Home() {
   const [loginPanel, setLoginPanel] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Partie login
   const [mail, setMail] = useState("");
@@ -27,6 +28,7 @@ function Home() {
   // Partie création de compte
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [picture, setPicture] = useState(
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   );
@@ -54,8 +56,20 @@ function Home() {
   };
 
   const handleCreateAccount = async () => {
-    if (!firstname || !lastname || !mail || !password || !service_id) {
+    if (
+      !firstname ||
+      !lastname ||
+      !mail ||
+      !password ||
+      !confirmPassword ||
+      !service_id
+    ) {
       alert("Merci de remplir tous les champs.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Les mots de passe ne correspondent pas.");
       return;
     }
 
@@ -80,6 +94,28 @@ function Home() {
       );
 
       if (!response.ok) {
+        if (response.status === 409) {
+          // Erreur spécifique pour email déjà utilisé
+          const errorData = await response.json();
+          toast.error(
+            errorData.error || "Cette adresse email est déjà utilisée",
+          );
+          return;
+        }
+        if (response.status === 400) {
+          // Erreurs de validation du middleware
+          const errorData = await response.json();
+          if (errorData.validationErrors) {
+            // Afficher chaque erreur de validation
+            for (const error of errorData.validationErrors as {
+              field: string;
+              message: string;
+            }[]) {
+              toast.error(error.message);
+            }
+            return;
+          }
+        }
         throw new Error("Erreur lors de la création du compte.");
       }
 
@@ -253,6 +289,32 @@ function Home() {
                       className="absolute right-3 top-1/2 -translate-y-1/2"
                     >
                       {showPassword ? (
+                        <i className="bi bi-eye-slash" />
+                      ) : (
+                        <i className="bi bi-eye" />
+                      )}
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      id="register-confirm-password"
+                      name="register-confirm-password"
+                      value={confirmPassword}
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirmer mot de passe"
+                      autoComplete="new-password"
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="rounded-3xl text-center bg-greyBackground focus:outline-none w-60 py-1"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      {showConfirmPassword ? (
                         <i className="bi bi-eye-slash" />
                       ) : (
                         <i className="bi bi-eye" />

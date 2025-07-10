@@ -71,7 +71,14 @@ const add: RequestHandler = async (req, res, next) => {
       service_id: req.body.service_id,
     };
 
-    // Create the service
+    // Check if email already exists
+    const emailExists = await userRepository.emailExists(newUser.mail);
+    if (emailExists) {
+      res.status(409).json({ error: "Cette adresse email est déjà utilisée" });
+      return;
+    }
+
+    // Create the user
     const insertId = await userRepository.create(newUser);
 
     // Respond with HTTP 201 (Created) and the ID of the newly inserted item

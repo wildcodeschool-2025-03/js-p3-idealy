@@ -19,11 +19,11 @@ const validate: RequestHandler = (req, res, next) => {
     errors.push({ field: "mail", message: "Email invalide." });
   }
 
-  // Idem mot de passe + au moins 6 caractères
+  // Idem mot de passe + au moins 3 caractères
   if (!password || typeof password !== "string" || password.length < 3) {
     errors.push({
       field: "password",
-      message: "Le mot de passe doit faire au moins 6 caractères.",
+      message: "Le mot de passe doit faire au moins 3 caractères.",
     });
   }
 
