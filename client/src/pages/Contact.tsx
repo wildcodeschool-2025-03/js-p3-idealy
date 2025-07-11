@@ -89,7 +89,7 @@ function Contact() {
   return (
     <section className="bg-greyBackground min-h-lvh py-6 md:pt-10">
       <section className="bg-card rounded-3xl shadow-md md:w-1/2 mx-auto px-4 md:px-30 py-6">
-        <h1 className="text-2xl font-[atkinson] mt-6 mb-6 bg-[#ffbd2e] rounded-3xl px-4 py-2 text-center w-fit mx-auto">
+        <h1 className="text-2xl font-[atkinson] mt-6 mb-6  bg-[#ffbd2e] rounded-3xl px-4 py-2 text-center w-fit mx-auto">
           Contactez-nous
         </h1>
 
@@ -171,7 +171,7 @@ function Contact() {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-[#28c940] px-6 py-2 rounded-3xl focus:outline-none focus:ring-2"
+              className="bg-[#28c940] px-6 py-2 rounded-3xl cursor-pointer focus:outline-none focus:ring-2"
               disabled={status === "sending"}
               aria-busy={status === "sending"}
             >
@@ -209,14 +209,12 @@ function Contact() {
         {/* Modal */}
         {showModal && (
           <div
-            className="fixed inset-0 flex items-center justify-center z-50
-                  backdrop-filter backdrop-blur-xs"
+            className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50
+                  backdrop-filter "
           >
             <div className="bg-white rounded-lg p-6 max-w-sm w-full text-center shadow-lg">
               {status === "success" && (
-                <p className="text-[#28c940] font-semibold text-lg mb-4">
-                  Message envoyé !
-                </p>
+                <p className=" font-semibold text-lg mb-4">Message envoyé !</p>
               )}
               {status === "error" && (
                 <p className="text-red-700 font-semibold text-lg mb-4">
@@ -227,7 +225,7 @@ function Contact() {
                 type="button"
                 aria-label="Fermer la modal"
                 onClick={() => setShowModal(false)}
-                className="mt-4 bg-[#ffbd2e] px-4 py-2 rounded font-bold hover:bg-yellow-400 focus:outline-none focus:ring-2"
+                className="mt-4 bg-[#ffbd2e] px-4 py-2 rounded-3xl cursor-pointer hover:bg-yellow-400 focus:outline-none focus:ring-2"
               >
                 Fermer
               </button>

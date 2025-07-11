@@ -3,6 +3,7 @@ import Carousel from "../components/Carousel";
 import IdeaCard from "../components/IdeaCard";
 import { useLogin } from "../context/AuthContext";
 import { authFetch } from "../utils/authFetch";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 interface Idea {
   id: number;
@@ -40,6 +41,9 @@ function Admin() {
 
   const [users, setUsers] = useState<User[]>([]);
   const [showUsers, setShowUsers] = useState(false);
+  const [confirmUserDelete, setConfirmUserDelete] = useState<number | null>(
+    null,
+  );
 
   const [showHistory, setShowHistory] = useState(false);
   const [historyIdeas, setHistoryIdeas] = useState<Idea[]>([]);
@@ -145,10 +149,7 @@ function Admin() {
   };
 
   const handleDeleteUser = async (id: number) => {
-    const confirm = window.confirm(
-      "Attention, vous allez supprimer cet utilisateur. Ses idées et commentaires seront transférés à l'utilisateur avec l'ID 2. Continuer ?",
-    );
-    if (!confirm) return;
+    // La confirmation est déjà gérée par la pop-up, donc rien à faire ici
 
     try {
       // Transfer ideas to user_id=2
@@ -216,17 +217,17 @@ function Admin() {
         </div>
         <IdeaCard idea={idea} />
 
-        <div className="flex flex-col gap-2 items-center">
+        <div className="flex flex-col gap-2 items-center cursor-pointer">
           <button
             type="button"
             onClick={() => window.open(`/detail/${idea.id}`, "_blank")}
-            className=" bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+            className=" bg-blackBackground w-2/5 h-8 rounded-full flex cursor-pointer items-center justify-center gap-2 text-white"
           >
             Afficher
           </button>
           <a
             href={`mailto:${idea.email}?subject=${encodeURIComponent(`À propos de votre idée n°${idea.id}`)}&body=${encodeURIComponent(justifs[idea.id] || "")}`}
-            className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+            className="bg-blackBackground w-2/5 h-8 rounded-full flex cursor-pointer items-center justify-center gap-2 text-white"
           >
             Contacter
           </a>
@@ -256,7 +257,7 @@ function Admin() {
               className="text-green-600 text-2xl"
               title="Valider"
             >
-              ✓
+              <i className="bi bi-check-circle" />
             </button>
             <button
               type="button"
@@ -266,7 +267,7 @@ function Admin() {
               className="text-red-600 text-2xl"
               title="Refuser"
             >
-              X
+              <i className="bi bi-x-circle" />
             </button>
             <button
               type="button"
@@ -276,7 +277,7 @@ function Admin() {
               className="text-gray-600 text-2xl"
               title="Supprimer"
             >
-              🗑️
+              <i className="bi bi-trash" />
             </button>
           </div>
         </div>
@@ -288,16 +289,16 @@ function Admin() {
     <div className=" bg-greyBackground">
       <main className=" min-h-[80vh]  p-2 md:p-8 max-w-5xl mx-auto">
         {/*gestion des idees*/}
-        <h1 className="text-xl md:text-3xl font-bold mb-4 text-center">
+        <h1 className="text-1xl md:text-3xl font-bold mb-4 text-center">
           Administrateur
         </h1>
 
-        <h2 className="text-xl font-bold mt-10 mb-4 cursor-pointer select-none">
+        <h2 className="text-1xl md:text-2xl  font-[atkinson] hover:cursor-pointer mt-6 mb-6 bg-[#ff5f57] rounded-3xl px-6 py-2 text-center w-fit mx-auto">
           Valider, refuser, supprimer une idée
         </h2>
 
         {confirmAction && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black/10 backdrop-blur-sm bg-opacity-40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded shadow-lg flex flex-col items-center">
               <p className="mb-4 text-lg font-bold">
                 Êtes-vous sûr de vouloir {confirmAction.action} cette
@@ -306,7 +307,7 @@ function Admin() {
               <div className="flex gap-4">
                 <button
                   type="button"
-                  className="bg-green-600 text-white px-4 py-2 rounded"
+                  className="bg-[#28c940] rounded-3xl  px-4 py-2 "
                   onClick={() => {
                     if (confirmAction.action) {
                       handleDecision(confirmAction.id, confirmAction.action);
@@ -318,7 +319,7 @@ function Admin() {
                 </button>
                 <button
                   type="button"
-                  className="bg-gray-400 text-white px-4 py-2 rounded"
+                  className="bg-gray-400  px-4 py-2 rounded-3xl"
                   onClick={() => setConfirmAction(null)}
                 >
                   Annuler
@@ -340,7 +341,10 @@ function Admin() {
               <tr className="bg-gray-100">
                 <th className="p-2 border">ID</th>
                 <th className="p-2 border">Idées</th>
-                <th className="p-2 border">Justifications</th>
+                <th className="p-2 border">
+                  {" "}
+                  Justification <span className="text-red-500">*</span>
+                </th>
                 <th className="p-2 border">Décisions</th>
               </tr>
             </thead>
@@ -363,13 +367,13 @@ function Admin() {
                           onClick={() =>
                             window.open(`/detail/${idea.id}`, "_blank")
                           }
-                          className="bg-blackBackground w-2/5 h-8 rounded-full flex flex-row items-center justify-center gap-2 text-white"
+                          className="bg-blackBackground w-2/5 h-8 rounded-full flex flex-row cursor-pointer items-center justify-center gap-2 text-white"
                         >
                           Afficher
                         </button>
                         <a
                           href={`mailto:${idea.email}?subject=${encodeURIComponent(`À propos de votre idée n°${idea.id}`)}&body=${encodeURIComponent(justifs[idea.id] || "")}`}
-                          className="bg-blackBackground w-2/5 h-8 rounded-full flex items-center justify-center gap-2 text-white"
+                          className="bg-blackBackground w-2/5 h-8 rounded-full flex cursor-pointer items-center justify-center gap-2 text-white"
                         >
                           Contacter
                         </a>
@@ -381,9 +385,10 @@ function Admin() {
                         htmlFor={`justification-${idea.id}`}
                         className="block text-xs font-semibold mb-1"
                       >
-                        Justification <span className="text-red-500">*</span>
+                        Justification
                       </label>
                       <textarea
+                        id={`justification-${idea.id}`}
                         rows={16}
                         maxLength={250}
                         placeholder="Justification obligatoire min 5 caractères"
@@ -391,7 +396,7 @@ function Admin() {
                         onChange={(e) =>
                           setJustifs({ ...justifs, [idea.id]: e.target.value })
                         }
-                        className="w-full border rounded px-2 py-2 min-h-[120px] resize-y"
+                        className="w-full  rounded px-2 py-2 min-h-[120px] resize-y outline-none "
                       />
                       <div className="text-xs text-gray-500 mt-1 text-right">
                         {`${(justifs[idea.id] || "").length}/250 caractères`}
@@ -424,7 +429,7 @@ function Admin() {
                           className="text-green-600 text-2xl"
                           title="Valider"
                         >
-                          ✓
+                          <i className="bi bi-check-circle" />
                         </button>
                         <button
                           type="button"
@@ -446,7 +451,7 @@ function Admin() {
                           className="text-red-600 text-2xl"
                           title="Refuser"
                         >
-                          ✗
+                          <i className="bi bi-x-circle" />
                         </button>
                         <button
                           type="button"
@@ -468,7 +473,7 @@ function Admin() {
                           className="text-gray-600 text-2xl"
                           title="Supprimer"
                         >
-                          🗑️
+                          <i className="bi bi-trash" />
                         </button>
                       </div>
                     </td>
@@ -481,12 +486,42 @@ function Admin() {
         {/* gestion des users */}
         <button
           type="button"
-          className="text-xl font-bold mt-10 mb-4 cursor-pointer select-none"
+          className="text-1xl md:text-2xl font-[atkinson] flex hover:cursor-pointer mt-6 mb-6 bg-[#ffbd2e] rounded-3xl px-6 py-2 text-center w-fit mx-auto md:flex"
           onClick={() => setShowUsers((prev) => !prev)}
         >
           Gestion des utilisateurs{" "}
           <span className="ml-2">{showUsers ? "▲" : "▼"}</span>
         </button>
+        {confirmUserDelete !== null && (
+          <div className="fixed inset-0 bg-black/10 backdrop-blur-sm bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded shadow-lg flex flex-col items-center">
+              <p className="mb-4 text-lg font-bold text-center">
+                Êtes-vous sûr de vouloir supprimer cet utilisateur ?<br />
+                Ses idées et commentaires seront transférés à l'utilisateur avec
+                l'ID 2.
+              </p>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  className="bg-[#28c940] rounded-3xl px-4 py-2"
+                  onClick={async () => {
+                    await handleDeleteUser(confirmUserDelete);
+                    setConfirmUserDelete(null);
+                  }}
+                >
+                  Confirmer
+                </button>
+                <button
+                  type="button"
+                  className="bg-gray-400 px-4 py-2 rounded-3xl"
+                  onClick={() => setConfirmUserDelete(null)}
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {showUsers && (
           <div className="w-full overflow-x-auto">
             <table className="min-w-[350px] w-full bg-white rounded-lg shadow mb-8 text-xs text-center md:text-base">
@@ -512,7 +547,7 @@ function Admin() {
                           <button
                             type="button"
                             className="text-red-600 font-bold"
-                            onClick={() => handleDeleteUser(user.id)}
+                            onClick={() => setConfirmUserDelete(user.id)}
                           >
                             Supprimer
                           </button>
@@ -527,7 +562,7 @@ function Admin() {
         {/* gestion de l historique avec modification */}
         <button
           type="button"
-          className="text-xl font-bold mt-4 mb-4 cursor-pointer select-none md:flex"
+          className="text-1xl md:text-2xl font-[atkinson] flex hover:cursor-pointer mt-6 mb-6 bg-[#28c940] rounded-3xl px-6 py-2 text-center w-fit mx-auto md:flex"
           onClick={() => setShowHistory((prev) => !prev)}
         >
           Historique des idées
