@@ -278,14 +278,14 @@ VALUES (
         "Réduction des déchets plastiques",
         "L'utilisation excessive de plastique à usage unique dans l'entreprise représente un impact environnemental important. Il serait pertinent d’introduire des alternatives durables et de sensibiliser le personnel aux gestes écoresponsables pour réduire notre empreinte écologique.",
         "2025-06-07",
-        "2025-07-10",
+        "2025-07-09",
         1
     ),
     (
         "Application mobile interne",
         "La communication entre les équipes pourrait être largement améliorée par une application mobile dédiée. Elle permettrait de centraliser les échanges, calendriers, documents partagés et notifications importantes dans un outil unique, accessible à tout moment.",
         "2026-03-06",
-        "2025-12-17",
+        "2025-07-09",
         1
     ),
     (
@@ -306,7 +306,7 @@ VALUES (
         "Campagne bien-être au travail",
         "Le stress et la fatigue ont un impact croissant sur la motivation des équipes. Une campagne bien-être incluant des séances de yoga, de méditation, des conférences et des activités sociales pourrait améliorer la santé mentale et renforcer la cohésion interne.",
         "2026-02-07",
-        "2025-09-12",
+        "2025-07-09",
         1
     ),
     (
@@ -320,7 +320,7 @@ VALUES (
         "Sécurité incendie renforcée",
         "Les dispositifs actuels de sécurité incendie sont vieillissants et parfois non conformes. Il est urgent de revoir l’installation des détecteurs, extincteurs, plans d’évacuation et de proposer des formations régulières pour garantir la sécurité de tous les collaborateurs.",
         "2026-02-23",
-        "2025-10-10",
+        "2025-07-09",
         1
     ),
     (
@@ -362,7 +362,7 @@ VALUES (
         "Réduction bruit open space",
         "Le bruit constant dans les open spaces nuit à la concentration et à l'efficacité. Installer des panneaux acoustiques, proposer des casques antibruit et aménager des espaces silencieux pourrait grandement améliorer le confort sonore des collaborateurs.",
         "2026-04-16",
-        "2025-11-16",
+        "2025-07-09",
         1
     ),
     (
