@@ -6,8 +6,8 @@ import IdeaCard from "../components/IdeaCard";
 import "react-toastify/dist/ReactToastify.css";
 import Statistiques from "../components/Statistiques";
 <Statistiques />;
-import { authFetch } from "../utils/authFetch";
 import Carousel from "../components/Carousel";
+import { authFetch } from "../utils/authFetch";
 
 interface Idea {
   id: number;
