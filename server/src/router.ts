@@ -6,6 +6,7 @@ import { validateIdeaQuery } from "./modules/idea/ideaValidation";
 import { validateIdeaUpdate } from "./modules/idea/ideaValidation";
 import { validateIdParam } from "./modules/idea/ideaValidation";
 import { validateIdeaSchema } from "./modules/idea/validateIdeaSchema";
+import emailValidationMiddleware from "./modules/user/emailValidationMiddleware";
 
 const router = express.Router();
 
@@ -48,7 +49,11 @@ router.put("/api/users/:id", userActions.update);
 router.get("/api/users/:id/service", userActions.getServiceOfThisUser);
 router.patch("/api/users/:id/firstname", userActions.editFirstname);
 router.patch("/api/users/:id/lastname", userActions.editLastname);
-router.patch("/api/users/:id/mail", userActions.editMail);
+router.patch(
+  "/api/users/:id/mail",
+  emailValidationMiddleware.validateEmailUpdate,
+  userActions.editMail,
+);
 router.patch("/api/users/:id/password", userActions.editPassword);
 router.patch("/api/users/:id/picture", userActions.editPicture);
 router.patch("/api/users/:id/service", userActions.editService);
