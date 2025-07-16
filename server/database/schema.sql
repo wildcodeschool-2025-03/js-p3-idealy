@@ -132,7 +132,7 @@ VALUES (
         'admin',
         'admin',
         'admin@admin.com',
-        'admin',
+        '$2b$10$DSrLC0m4iiXTiaEBYJjOKOofyBSpKiJyOfqniF6G8gM5qoQkf0DJG',
         'https://i.etsystatic.com/34185979/r/il/ac579f/4769986190/il_1588xN.4769986190_jiiq.jpg',
         TRUE,
         1
@@ -141,7 +141,7 @@ VALUES (
         'Compte',
         'anonyme',
         'anonyme@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
         TRUE,
         1
@@ -150,7 +150,7 @@ VALUES (
         'Lucas',
         'Martin',
         'lucas.martin@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/men/1.jpg',
         FALSE,
         1
@@ -159,7 +159,7 @@ VALUES (
         'Emma',
         'Durand',
         'emma.durand@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/women/2.jpg',
         FALSE,
         2
@@ -168,7 +168,7 @@ VALUES (
         'Hugo',
         'Lefevre',
         'hugo.lefevre@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/men/3.jpg',
         FALSE,
         3
@@ -177,7 +177,7 @@ VALUES (
         'Léa',
         'Moreau',
         'lea.moreau@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/women/4.jpg',
         FALSE,
         4
@@ -186,7 +186,7 @@ VALUES (
         'Arthur',
         'Garcia',
         'arthur.garcia@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/men/5.jpg',
         FALSE,
         5
@@ -195,7 +195,7 @@ VALUES (
         'Chloé',
         'Bernard',
         'chloe.bernard@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/women/6.jpg',
         FALSE,
         6
@@ -204,7 +204,7 @@ VALUES (
         'Louis',
         'Petit',
         'louis.petit@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/men/7.jpg',
         FALSE,
         7
@@ -213,7 +213,7 @@ VALUES (
         'Manon',
         'Roux',
         'manon.roux@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/women/8.jpg',
         FALSE,
         8
@@ -222,7 +222,7 @@ VALUES (
         'Maxime',
         'Fournier',
         'maxime.fournier@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/men/9.jpg',
         FALSE,
         9
@@ -231,7 +231,7 @@ VALUES (
         'Camille',
         'Girard',
         'camille.girard@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/women/10.jpg',
         FALSE,
         10
@@ -240,7 +240,7 @@ VALUES (
         'Nathan',
         'Andre',
         'nathan.andre@example.com',
-        'pass123',
+        '$2b$10$Yz7hpQrpZJBaXQpkk58FauS598.lnN2ATiBeWWRs45XogCJtRnFRC',
         'https://randomuser.me/api/portraits/men/11.jpg',
         FALSE,
         11
@@ -568,3 +568,4 @@ VALUES (1, 1),
     (1, 15),
     (3, 16);
 
+-- NB : Mot de passe utilisateur : "pass123". Mot de passe admin : "admin" 
