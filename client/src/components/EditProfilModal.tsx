@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import type { User } from "../context/AuthContext";
 import { authFetch } from "../utils/authFetch";
+import { validateEmail } from "../utils/validateEmail";
 
 interface serviceInterface {
   id: number;
@@ -73,6 +75,12 @@ function EditProfilModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const emailValidation = validateEmail(formData.mail);
+    if (!emailValidation.valid) {
+      toast.error(emailValidation.error);
+      return;
+    }
 
     // Upload de la photo si une nouvelle a été sélectionnée (JSON = que textes / nombres donc FormData pour fichier)
     if (selectedFile) {
