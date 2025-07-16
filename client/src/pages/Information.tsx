@@ -6,6 +6,7 @@ import IdeaCard from "../components/IdeaCard";
 import "react-toastify/dist/ReactToastify.css";
 import Statistiques from "../components/Statistiques";
 <Statistiques />;
+import Carousel from "../components/Carousel";
 import { authFetch } from "../utils/authFetch";
 
 interface Idea {
@@ -83,6 +84,20 @@ function Information() {
     )
     .slice(0, 3);
 
+  const validSlides = recentValidIdeas.map((idea) => ({
+    id: idea.id.toString(),
+    content: (
+      <IdeaCard idea={idea} showVotes={false} showStatusOverlay={false} />
+    ),
+  }));
+
+  const refusedSlides = recentRefusedIdeas.map((idea) => ({
+    id: idea.id.toString(),
+    content: (
+      <IdeaCard idea={idea} showVotes={false} showStatusOverlay={false} />
+    ),
+  }));
+
   return (
     <section className="bg-greyBackground flex flex-col items-center justify-center min-h-lvh gap-10 px-2 py-6">
       <article className="w-full max-w-6xl px-2 md:px-8 mt-10">
@@ -105,7 +120,12 @@ function Information() {
         >
           Idées récemment validées
         </button>
-        <div className="flex flex-col md:flex-row md:justify-center items-stretch mt-10 gap-4">
+        {/* Mobile : Carrousel */}
+        <div className="block md:hidden w-full mt-10">
+          <Carousel slides={validSlides} />
+        </div>
+        {/* Desktop : Cards en ligne */}
+        <div className="hidden md:flex md:flex-row md:justify-center items-stretch mt-10 gap-4">
           {recentValidIdeas.map((idea) => (
             <IdeaCard
               key={idea.id}
@@ -125,7 +145,12 @@ function Information() {
         >
           Idées récemment refusées
         </button>
-        <div className="flex flex-col md:flex-row md:justify-center items-stretch mt-10 gap-4">
+        {/* Mobile : Carrousel */}
+        <div className="block md:hidden w-full mt-10">
+          <Carousel slides={refusedSlides} />
+        </div>
+        {/* Desktop : Cards en ligne */}
+        <div className="hidden md:flex md:flex-row md:justify-center items-stretch mt-10 gap-4">
           {recentRefusedIdeas.map((idea) => (
             <IdeaCard
               key={idea.id}
