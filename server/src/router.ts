@@ -1,4 +1,3 @@
-import path from "node:path";
 import express from "express";
 import { authenticateToken } from "./modules/auth/authMiddleware";
 import { authenticateAdmin } from "./modules/auth/authMiddleware";
@@ -16,7 +15,6 @@ const router = express.Router();
 import categoryActions from "./modules/category/categoryActions";
 import commentActions from "./modules/comment/commentActions";
 import ideaActions from "./modules/idea/ideaActions";
-import mediaActions from "./modules/media/mediaActions";
 import serviceActions from "./modules/service/serviceActions";
 import statutActions from "./modules/statut/statutActions";
 // ===== ROUTES PUBLIQUES (pas de JWT requis) =====
