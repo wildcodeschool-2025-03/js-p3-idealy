@@ -73,50 +73,6 @@ class UserRepository {
 
   // The U of CRUD - Update operation
 
-  async updateFirstname(user: User) {
-    // Execute the SQL UPDATE query to update an existing user in the "User" table
-    const [result] = await databaseClient.query<Result>(
-      "update User set firstname = ? where id = ?",
-      [user.firstname, user.id],
-    );
-
-    // Return how many rows were affected
-    return result.affectedRows;
-  }
-
-  async updateLastname(user: User) {
-    // Execute the SQL UPDATE query to update an existing user in the "User" table
-    const [result] = await databaseClient.query<Result>(
-      "update User set lastname = ? where id = ?",
-      [user.lastname, user.id],
-    );
-
-    // Return how many rows were affected
-    return result.affectedRows;
-  }
-
-  async updateMail(user: User) {
-    // Execute the SQL UPDATE query to update an existing user in the "User" table
-    const [result] = await databaseClient.query<Result>(
-      "update User set mail = ? where id = ?",
-      [user.mail, user.id],
-    );
-
-    // Return how many rows were affected
-    return result.affectedRows;
-  }
-
-  async updatePassword(user: User) {
-    // Execute the SQL UPDATE query to update an existing user in the "User" table
-    const [result] = await databaseClient.query<Result>(
-      "update User set password = ? where id = ?",
-      [user.password, user.id],
-    );
-
-    // Return how many rows were affected
-    return result.affectedRows;
-  }
-
   async updatePicture(user: User) {
     // Execute the SQL UPDATE query to update an existing user in the "User" table
     const [result] = await databaseClient.query<Result>(

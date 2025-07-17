@@ -144,31 +144,6 @@ const getFiles = (
   return Array.isArray(files) ? files : [files];
 };
 
-// Specific functions
-
-//admin page
-/*const browseToValidate: RequestHandler = async (req, res, next) => {
-  try {
-    const ideas = await ideaRepository.findIdeasToValidate();
-    res.json(ideas);
-  } catch (err) {
-    console.error("Erreur SQL dans /api/ideas/to-validate :", err); 
-    next(err);
-  }
-};*/
-
-//admin page update
-
-/*const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: Number(process.env.MAIL_PORT),
-  secure: process.env.MAIL_SECURE === "true",
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});*/
-
 const putValidationOrRefusal: RequestHandler = async (req, res, next) => {
   try {
     const deadline = String(req.body.deadline).split("T")[0];

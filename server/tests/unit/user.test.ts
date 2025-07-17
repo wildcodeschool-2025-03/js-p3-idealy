@@ -77,21 +77,4 @@ describe("UserRepository", () => {
     );
     expect(result).toBe(mockAffectedRows);
   });
-
-  it("should update a user's firstname", async () => {
-    const mockAffectedRows = 1;
-    (databaseClient.query as jest.Mock).mockResolvedValueOnce([
-      { affectedRows: mockAffectedRows },
-    ]);
-
-    const user = { id: 1, firstname: "Jane" };
-
-    const result = await UserRepository.updateFirstname(user);
-
-    expect(databaseClient.query).toHaveBeenCalledWith(
-      "update User set firstname = ? where id = ?",
-      [user.firstname, user.id],
-    );
-    expect(result).toBe(mockAffectedRows);
-  });
 });

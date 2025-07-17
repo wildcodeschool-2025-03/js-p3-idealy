@@ -1,4 +1,3 @@
-import path from "node:path";
 import express from "express";
 import { authenticateToken } from "./modules/auth/authMiddleware";
 import { authenticateAdmin } from "./modules/auth/authMiddleware";
@@ -17,7 +16,6 @@ const router = express.Router();
 import categoryActions from "./modules/category/categoryActions";
 import commentActions from "./modules/comment/commentActions";
 import ideaActions from "./modules/idea/ideaActions";
-import mediaActions from "./modules/media/mediaActions";
 import serviceActions from "./modules/service/serviceActions";
 import statutActions from "./modules/statut/statutActions";
 // ===== ROUTES PUBLIQUES (pas de JWT requis) =====
@@ -47,14 +45,6 @@ router.delete("/api/users/:id", userActions.destroy);
 router.put("/api/users/:id", userActions.update);
 
 router.get("/api/users/:id/service", userActions.getServiceOfThisUser);
-router.patch("/api/users/:id/firstname", userActions.editFirstname);
-router.patch("/api/users/:id/lastname", userActions.editLastname);
-router.patch(
-  "/api/users/:id/mail",
-  emailValidationMiddleware.validateEmailUpdate,
-  userActions.editMail,
-);
-router.patch("/api/users/:id/password", userActions.editPassword);
 router.patch("/api/users/:id/picture", userActions.editPicture);
 router.patch("/api/users/:id/service", userActions.editService);
 
@@ -80,8 +70,6 @@ router.delete(
   ideaActions.deleteIdea,
 );
 
-//router.get("/api/ideas/to-validate", ideaActions.browseToValidate);
-
 router.get("/api/ideas/:id/creator", ideaActions.getCreatorOfThisIdea); // Get the creator (the user marked as "isCreator = true" on the joint) of a specific given idea
 router.get("/api/ideas/:id/categories", ideaActions.getCategoriesOfThisIdea); // Get the categories (a table of all key words associated) of a specific given idea
 router.get("/api/ideas/:id/comments", commentActions.getCommentsForIdea); // Récupère tous les commentaires d'une idée spécifique
@@ -92,10 +80,6 @@ router.get(
 
 // Define votes-related routes
 
-router.get("/api/votes", voteActions.browse);
-router.get("/api/votes/:id", voteActions.read);
-router.post("/api/votes", voteActions.add);
-
 router.get("/api/ideas/:id/votes", voteActions.getVotesForIdea); // Get votes informations for cards
 router.post("/api/votes/upsert", voteActions.upsert); // Create OR Update at the same time
 router.post("/api/votes/delete-user-votes", voteActions.deleteUserVotes);
@@ -104,36 +88,20 @@ router.post("/api/votes/delete-user-votes", voteActions.deleteUserVotes);
 
 router.get("/api/categories", categoryActions.browse);
 router.get("/api/categories/:id", categoryActions.read);
-router.post("/api/categories", categoryActions.add);
-router.put("/api/categories/:id", categoryActions.edit);
-router.delete("/api/categories/:id", categoryActions.destroy);
 
 // Define statut-related routes
 
 router.get("/api/status", statutActions.browse);
 router.get("/api/status/:id", statutActions.read);
-router.post("/api/status", statutActions.add);
-router.put("/api/status/:id", statutActions.edit);
-router.delete("/api/status/:id", statutActions.destroy);
 
 // Define media-related routes
-
-router.get("/api/medias", mediaActions.browse);
-router.get("/api/medias/:id", mediaActions.read);
-router.post("/api/medias", mediaActions.add);
-router.put("/api/medias/:id", mediaActions.edit);
-router.delete("/api/medias/:id", mediaActions.destroy);
 
 router.get("/api/ideas/:id/medias", ideaActions.getMediasOfThisIdea); // Récupère les médias d'une idée
 router.post("/api/ideas/transfer-to-user-2", ideaActions.transferIdea);
 
 // Define comment-related routes
 
-router.get("/api/comments", commentActions.browse);
-router.get("/api/comments/:id", commentActions.read);
 router.post("/api/comments", commentActions.add);
-router.put("/api/comments/:id", commentActions.edit);
-router.delete("/api/comments/:id", commentActions.destroy);
 router.post("/api/comments/transfer-to-user-2", commentActions.transferComment);
 
 // Definie statistics routes

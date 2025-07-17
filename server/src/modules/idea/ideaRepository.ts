@@ -141,21 +141,6 @@ class IdeaRepository {
 
   // Specific functions
 
-  //Admin page select recent ideas + statut en cours + deadline dépassée   (deuxieme methode a tester mais non fonctionnel pour le moment)
-
-  /*async findIdeasToValidate() {
-  const [rows] = await databaseClient.query<Rows>(
-    `SELECT Idea.*, u.firstname, u.lastname, u.mail as email
-     FROM Idea
-     JOIN User_idea ui ON ui.idea_id = Idea.id AND ui.isCreator = TRUE
-     JOIN User u ON u.id = ui.user_id
-     WHERE Idea.statut_id = 1
-       AND Idea.deadline <= CURDATE()
-     ORDER BY Idea.timestamp DESC`
-  );
-  return rows;
-}*/
-
   //admin page valider refuser supprimer une idée
 
   async putValidationOrRefusal(idea: IdeaUpdate) {
