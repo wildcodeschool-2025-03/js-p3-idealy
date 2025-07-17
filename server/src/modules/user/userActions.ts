@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import bcrypt from "bcryptjs";
 import type { RequestHandler } from "express";
 import formidable from "formidable";
 import jwt from "jsonwebtoken";
@@ -59,27 +60,31 @@ const read: RequestHandler = async (req, res, next) => {
 // The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
   try {
-    // Extract the item data from the request body
-    const newUser = {
-      id: Number(req.params.id),
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      mail: req.body.mail,
-      password: req.body.password,
-      picture: req.body.picture,
-      isAdmin: req.body.isAdmin,
-      service_id: req.body.service_id,
-    };
-
+    const { mail, password } = req.body;
+    console.log("Données reçues:", req.body);
+    console.log("service_id:", req.body.service_id);
     // Check if email already exists
-    const emailExists = await userRepository.emailExists(newUser.mail);
+    const emailExists = await userRepository.emailExists(mail);
     if (emailExists) {
       res.status(409).json({ error: "Cette adresse email est déjà utilisée" });
       return;
     }
 
+    const passHash = bcrypt.hashSync(password, 10);
+
+    const newUserHash = {
+      id: Number(req.params.id),
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      mail: req.body.mail,
+      passHash: passHash,
+      picture: req.body.picture,
+      isAdmin: req.body.isAdmin,
+      service_id: req.body.service_id,
+    };
+
     // Create the user
-    const insertId = await userRepository.create(newUser);
+    const insertId = await userRepository.create(newUserHash);
 
     // Respond with HTTP 201 (Created) and the ID of the newly inserted item
     res.status(201).json({ insertId });
@@ -125,7 +130,8 @@ const update: RequestHandler = async (req, res, next) => {
 
     // vérifie que le mot de passe n'est pas vide + enlève les espaces puis test la longueur du mdp
     if (password && password.trim().length > 0) {
-      userToUpdate.password = password;
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      userToUpdate.password = hashedPassword;
     }
 
     const affectedRows = await userRepository.update(userToUpdate); // retourne le nombre de lignes modifiées
@@ -223,15 +229,32 @@ const login: RequestHandler = async (req, res, next) => {
     // Extract the login credentials from the request body
     const { mail, password } = req.body;
 
+    const userHash = await userRepository.signIn(mail);
+
     // Authenticate the user
-    const user = await userRepository.authenticate(mail, password);
-    if (!user) {
+    if (!userHash) {
       // If authentication fails, respond with HTTP 401 (Unauthorized)
-      res.sendStatus(401);
+      res.status(401).json({ message: "Utilisateur inexistant" });
     } else {
       // If authentication succeeds, respond with the user data
       // Supprime le champ password avant d'envoyer l'utilisateur
-      const { password, ...userWithoutPassword } = user;
+      const isPasswordValid = bcrypt.compareSync(
+        password,
+        userHash.password || "",
+      );
+
+      console.log(
+        "isPasswordValid",
+        isPasswordValid,
+        password,
+        userHash.password,
+      );
+
+      // Si le mot de passe est incorrect, renvoyer une erreur 401
+      if (!isPasswordValid) {
+        res.status(401).json({ message: "Mot de passe incorrect" });
+        return;
+      }
 
       // Génère un token JWT pour l'utilisateur
       const jwtSecret = process.env.JWT_SECRET;
@@ -241,11 +264,11 @@ const login: RequestHandler = async (req, res, next) => {
       }
       // Ici, jwtSecret est forcément string
       const token = jwt.sign(
-        { id: userWithoutPassword.id, isAdmin: userWithoutPassword.isAdmin },
+        { id: userHash.id, isAdmin: userHash.isAdmin },
         jwtSecret as string,
         { expiresIn: "24h" },
       );
-      res.json({ user: userWithoutPassword, token });
+      res.json({ user: userHash, token });
     }
   } catch (err) {
     // Pass any errors to the error-handling middleware

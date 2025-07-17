@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 interface Slide {
   id: string;
@@ -42,17 +43,17 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
         type="button"
         onClick={prevSlide}
         aria-label="Previous slide"
-        className="absolute top-1/2 left-3 -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full p-0.3 z-10"
+        className="absolute top-1/2 left-3 -translate-y-1/2 text-black font-bold bg-opacity-50  rounded-full p-0.3 z-10"
       >
-        &#8592;
+        <i className="bi bi-chevron-left text-2xl" />
       </button>
       <button
         type="button"
         onClick={nextSlide}
         aria-label="Next slide"
-        className="absolute top-1/2 right-3 -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full p-0.3 z-10"
+        className="absolute top-1/2 right-3 -translate-y-1/2  text-black font-bold rounded-full p-0.3 z-10"
       >
-        &#8594;
+        <i className="bi bi-chevron-right text-2xl" />
       </button>
 
       <div className="flex justify-center space-x-2 mt-3">
