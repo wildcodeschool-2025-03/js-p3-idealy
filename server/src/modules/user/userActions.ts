@@ -181,98 +181,6 @@ const editPicture: RequestHandler = (req, res, next) => {
   });
 };
 
-const editFirstname: RequestHandler = async (req, res, next) => {
-  try {
-    // Update a specific category based on the provided ID
-    const user = {
-      id: Number(req.params.id),
-      firstname: req.body.firstname,
-    };
-
-    const affectedRows = await userRepository.updateFirstname(user);
-
-    // If the category is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the category in JSON format
-    if (affectedRows === 0) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
-    }
-  } catch (err) {
-    // Pass any errors to the error-handling middleware
-    next(err);
-  }
-};
-
-const editLastname: RequestHandler = async (req, res, next) => {
-  try {
-    // Update a specific category based on the provided ID
-    const user = {
-      id: Number(req.params.id),
-      lastname: req.body.lastname,
-    };
-
-    const affectedRows = await userRepository.updateLastname(user);
-
-    // If the category is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the category in JSON format
-    if (affectedRows === 0) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
-    }
-  } catch (err) {
-    // Pass any errors to the error-handling middleware
-    next(err);
-  }
-};
-
-const editMail: RequestHandler = async (req, res, next) => {
-  try {
-    // Update a specific category based on the provided ID
-    const user = {
-      id: Number(req.params.id),
-      mail: req.body.mail,
-    };
-
-    const affectedRows = await userRepository.updateMail(user);
-
-    // If the category is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the category in JSON format
-    if (affectedRows === 0) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
-    }
-  } catch (err) {
-    // Pass any errors to the error-handling middleware
-    next(err);
-  }
-};
-
-const editPassword: RequestHandler = async (req, res, next) => {
-  try {
-    // Update a specific category based on the provided ID
-    const user = {
-      id: Number(req.params.id),
-      password: req.body.password,
-    };
-
-    const affectedRows = await userRepository.updatePassword(user);
-
-    // If the category is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the category in JSON format
-    if (affectedRows === 0) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
-    }
-  } catch (err) {
-    // Pass any errors to the error-handling middleware
-    next(err);
-  }
-};
-
 const editService: RequestHandler = async (req, res, next) => {
   try {
     // Update a specific category based on the provided ID
@@ -352,10 +260,6 @@ export default {
   destroy,
   update,
   add,
-  editFirstname,
-  editLastname,
-  editMail,
-  editPassword,
   editPicture,
   editService,
   getServiceOfThisUser,
