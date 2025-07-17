@@ -2,42 +2,29 @@ import { useState } from "react";
 // client/src/components/Header.tsx
 import { MdAccountCircle } from "react-icons/md";
 import { Link, useNavigate } from "react-router";
+import { useLogin } from "../context/AuthContext";
 
 function Header() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useLogin();
 
   // Navigation du bouton "mes idées" => Nécessaire car on veut passer à la page parcourir les infos de l'user actuel
   const handleMyIdeas = () => {
     setOpen(false);
-    const storedUser = localStorage.getItem("user");
-    let firstname = "";
-    let lastname = "";
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        firstname = user.firstname || "";
-        lastname = user.lastname || "";
-      } catch (e) {}
+    if (user) {
+      const firstname = user.firstname || "";
+      const lastname = user.lastname || "";
+      // Ajoute un champ unique pour forcer le changement de state (navigation depuis la même page)
+      navigate("/parcourir", { state: { firstname, lastname, t: Date.now() } });
     }
-    // Ajoute un champ unique pour forcer le changement de state (navigation depuis la même page)
-    navigate("/parcourir", { state: { firstname, lastname, t: Date.now() } });
   };
 
   // Probablement robustifier ça (en faisant une requete SQL pour aller chercher l'info par exemple)
   const handleAdmin = () => {
     setOpen(false);
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        if (user.isAdmin === true) {
-          navigate("/admin");
-        } else {
-        }
-      } catch (e) {
-        // Optionnel : gérer l'erreur de parsing
-      }
+    if (user?.isAdmin === true) {
+      navigate("/admin");
     }
   };
 
