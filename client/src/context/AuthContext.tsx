@@ -45,40 +45,72 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Ajoute un état de chargement pour éviter les rendus prématurés.
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const storedUserId = localStorage.getItem("userId");
 
-    if (storedToken && storedUser) {
+    if (storedToken && storedUserId && !isTokenExpired(storedToken)) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
-    }
 
-    setIsLoading(false); //  Fin du chargement
+      // Récupérer les données utilisateur depuis l'API
+      fetchUserData(storedUserId);
+    } else {
+      setIsLoading(false);
+    }
   }, []);
+
+  // Fonction pour récupérer les données utilisateur
+  const fetchUserData = async (userId: string) => {
+    try {
+      const response = await authFetch(
+        `${import.meta.env.VITE_API_URL}/api/users/${userId}`,
+      );
+      const userData = await response.json();
+
+      const serviceResponse = await authFetch(
+        `${import.meta.env.VITE_API_URL}/api/users/${userId}/service`,
+      );
+      const serviceData = await serviceResponse.json();
+
+      const completeUserData = {
+        ...userData,
+        service: serviceData.service_name,
+      };
+
+      setUser(completeUserData);
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des données utilisateur:",
+        error,
+      );
+      logout();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Vérifie régulièrement si le token a été supprimé manuellement ou s'il est expiré
   useEffect(() => {
     const interval = setInterval(() => {
       const storedToken = localStorage.getItem("token");
-      const storedUser = localStorage.getItem("user");
+      const storedUserId = localStorage.getItem("userId");
 
-      if (!storedToken || isTokenExpired(storedToken) || !storedUser) {
+      if (!storedToken || isTokenExpired(storedToken) || !storedUserId) {
         if (isAuthenticated) {
           console.warn("Token manquant ou expiré, affichage d'une alerte");
-          setIsSessionExpired(true); // Affiche une alerte visuelle
+          setIsSessionExpired(true);
           setTimeout(() => {
-            logout(); // Déconnexion après 3 secondes
+            logout();
           }, 3000);
         }
       }
-    }, 5000); // vérifie toutes les 5 secondes
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [isAuthenticated]);
 
   const updateUser = (updatedUserData: User) => {
-    setUser(updatedUserData); // Met à jour le state
-    localStorage.setItem("user", JSON.stringify(updatedUserData)); // Sauvegarde dans le navigateur
+    setUser(updatedUserData);
+    // Ne plus sauvegarder les données complètes en localStorage
   };
 
   // Fonction de connexion
@@ -97,14 +129,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error("Identifiants invalides");
       }
 
-      const data = await response.json(); // { user, token }
+      const data = await response.json();
       setToken(data.token);
       setUser(data.user);
       setIsAuthenticated(true);
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("userId", data.user.id.toString()); // Stocker uniquement l'ID
     } catch (error) {
-      // Gère l'erreur (affiche un message, etc.)
       console.error(error);
       throw error;
     }
@@ -117,7 +148,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsAuthenticated(false);
     setIsSessionExpired(false);
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem("userId"); // Supprimer l'ID au lieu des données complètes
     navigate("/");
   };
 
