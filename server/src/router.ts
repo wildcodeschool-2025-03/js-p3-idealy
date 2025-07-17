@@ -5,6 +5,7 @@ import { validateIdeaQuery } from "./modules/idea/ideaValidation";
 import { validateIdeaUpdate } from "./modules/idea/ideaValidation";
 import { validateIdParam } from "./modules/idea/ideaValidation";
 import { validateIdeaSchema } from "./modules/idea/validateIdeaSchema";
+import emailValidationMiddleware from "./modules/user/emailValidationMiddleware";
 
 const router = express.Router();
 

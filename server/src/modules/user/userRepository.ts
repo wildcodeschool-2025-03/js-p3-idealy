@@ -8,9 +8,11 @@ type User = {
   lastname?: string;
   mail?: string;
   password?: string;
+  passHash?: string;
   picture?: string;
   isAdmin?: boolean;
   service_id?: number;
+  service?: string;
 };
 
 class UserRepository {
@@ -24,7 +26,7 @@ class UserRepository {
         user.firstname,
         user.lastname,
         user.mail,
-        user.password,
+        user.passHash,
         user.picture,
         user.isAdmin,
         user.service_id,
@@ -141,6 +143,17 @@ class UserRepository {
     const [rows] = await databaseClient.query<Rows>(
       "SELECT u.*, s.statut as service FROM User u LEFT JOIN Service s ON u.service_id = s.id WHERE u.mail = ? AND u.password = ?",
       [mail, password],
+    );
+
+    // Return the first row of the result, which represents the authenticated user
+    return rows[0] as User | undefined;
+  }
+
+  async signIn(mail: string) {
+    // Execute the SQL SELECT query to authenticate a user by mail only
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT u.*, s.statut as service FROM User u LEFT JOIN Service s ON u.service_id = s.id WHERE u.mail = ?",
+      [mail],
     );
 
     // Return the first row of the result, which represents the authenticated user
