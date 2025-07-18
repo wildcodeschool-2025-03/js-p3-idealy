@@ -1,5 +1,5 @@
 -- SQLBook: Code
-CREATE TABLE Service (
+CREATE TABLE service (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     statut ENUM(
         'Production',
@@ -17,7 +17,7 @@ CREATE TABLE Service (
     )
 );
 
-create table Statut (
+create table statut (
     id int primary key auto_increment not null,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     statut ENUM(
@@ -27,7 +27,7 @@ create table Statut (
     ) DEFAULT 'En cours'
 );
 
-CREATE TABLE Idea (
+CREATE TABLE idea (
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE Idea (
     timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     justification TEXT,
     statut_id INT NOT NULL,
-    FOREIGN KEY (statut_id) REFERENCES Statut (id) ON DELETE CASCADE
+    FOREIGN KEY (statut_id) REFERENCES statut (id) ON DELETE CASCADE
 );
 
-CREATE TABLE User (
+CREATE TABLE user (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
@@ -47,64 +47,64 @@ CREATE TABLE User (
     picture TEXT,
     isAdmin BOOLEAN DEFAULT FALSE,
     service_id INT NOT NULL,
-    FOREIGN KEY (service_id) REFERENCES Service (id) ON DELETE CASCADE
+    FOREIGN KEY (service_id) REFERENCES service (id) ON DELETE CASCADE
 );
 
-CREATE TABLE Comment (
+CREATE TABLE comment (
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     content TEXT NOT NULL,
     idea_id INT NOT NULL,
     user_id INT NOT NULL,
-    FOREIGN KEY (idea_id) REFERENCES Idea (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (idea_id) REFERENCES idea (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Media (
+CREATE TABLE media (
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     url VARCHAR(500) NOT NULL,
     type ENUM('image', 'video') NOT NULL,
     idea_id INT NOT NULL,
-    FOREIGN KEY (idea_id) REFERENCES Idea (id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (idea_id) REFERENCES idea (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Vote (
+CREATE TABLE vote (
     id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     agree BOOLEAN NOT NULL DEFAULT FALSE,
     disagree BOOLEAN NOT NULL DEFAULT FALSE,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     idea_id INT NOT NULL,
-    FOREIGN KEY (idea_id) REFERENCES Idea (id) ON DELETE CASCADE,
+    FOREIGN KEY (idea_id) REFERENCES idea (id) ON DELETE CASCADE,
     user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
-CREATE TABLE User_idea (
+CREATE TABLE user_idea (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
     idea_id INT NOT NULL,
-    FOREIGN KEY (idea_id) REFERENCES Idea (id) ON DELETE CASCADE,
+    FOREIGN KEY (idea_id) REFERENCES idea (id) ON DELETE CASCADE,
     isCreator BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-create table Category (
+create table category (
     id int primary key auto_increment not null,
     category varchar(255) not null unique
 );
 
-create table Category_idea (
+create table category_idea (
     id int primary key auto_increment not null,
     category_id int not null,
-    foreign key (category_id) references Category (id),
+    foreign key (category_id) references category (id),
     idea_id int not null,
-    foreign key (idea_id) references Idea (id) on delete cascade
+    foreign key (idea_id) references idea (id) on delete cascade
 );
 
 
 INSERT INTO
-    Service (statut)
+    service (statut)
 VALUES ('Production'),
     ('Marketing'),
     ('Innovation'),
@@ -119,7 +119,7 @@ VALUES ('Production'),
     ('Autre');
 
 INSERT INTO
-    User (
+    user (
         firstname,
         lastname,
         mail,
@@ -247,13 +247,13 @@ VALUES (
     );
 
 insert into
-    Statut (statut)
+    statut (statut)
 values ("En cours"),
     ("Validé"),
     ("Refusé");
 
 INSERT INTO
-    Idea (
+    idea (
         title,
         description,
         deadline,
@@ -374,7 +374,7 @@ VALUES (
     );
 
 INSERT INTO
-    User_idea (user_id, idea_id, isCreator)
+    user_idea (user_id, idea_id, isCreator)
 VALUES (3, 1, TRUE),
     (7, 2, TRUE),
     (10, 3, TRUE),
@@ -393,7 +393,7 @@ VALUES (3, 1, TRUE),
     (9, 16, TRUE);
 
 INSERT INTO
-    Vote (
+    vote (
         agree,
         disagree,
         idea_id,
@@ -487,7 +487,7 @@ VALUES (TRUE, FALSE, 1, 4),
     (TRUE, FALSE, 16, 11);
 
 INSERT INTO
-    Comment (
+    comment (
         created_at,
         content,
         idea_id,
@@ -507,7 +507,7 @@ VALUES (
     );
 
 INSERT INTO
-    Media (
+    media (
         created_at,
         url,
         type,
@@ -527,7 +527,7 @@ VALUES (
     );
 
 insert into
-    Category (category)
+    category (category)
 values ("Amélioration"),
     ("Conditions de travail"),
     ("Innovation"),
@@ -537,7 +537,7 @@ values ("Amélioration"),
     ("Vie d'équipe");
 
 INSERT INTO
-    Category_idea (category_id, idea_id)
+    category_idea (category_id, idea_id)
 VALUES (1, 1),
     (6, 2),
     (1, 2),

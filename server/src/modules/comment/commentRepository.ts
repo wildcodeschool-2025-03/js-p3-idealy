@@ -27,7 +27,7 @@ class CommentRepository {
 
   async getCommentsForIdea(ideaId: number) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM Comment WHERE idea_id = ? ORDER BY created_at DESC", // selectionne tout depuis la table Comment ou l'id de l'idée = placeholder (remplacé par [ideaID]) ordonné par timestamp décroissant
+      "SELECT * FROM comment WHERE idea_id = ? ORDER BY created_at DESC", // selectionne tout depuis la table Comment ou l'id de l'idée = placeholder (remplacé par [ideaID]) ordonné par timestamp décroissant
       [ideaId],
     );
     return rows as Comment[]; // renvoi le tableau complet
@@ -38,7 +38,7 @@ class CommentRepository {
   // Transfer all comments from a user to user_id=2
   async transferToUser2(fromUserId: number) {
     await databaseClient.query(
-      "UPDATE Comment SET user_id = 2 WHERE user_id = ?",
+      "UPDATE comment SET user_id = 2 WHERE user_id = ?",
       [fromUserId],
     );
   }

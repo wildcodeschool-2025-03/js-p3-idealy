@@ -17,7 +17,7 @@ class VoteRepository {
   // Si l'user n'a jamais voté pour l'idée en question
   async create(vote: Omit<Vote, "id" | "timestamp">) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO Vote (agree, disagree, idea_id, user_id) VALUES (?, ?, ?, ?)",
+      "INSERT INTO vote (agree, disagree, idea_id, user_id) VALUES (?, ?, ?, ?)",
       [vote.agree, vote.disagree, vote.idea_id, vote.user_id],
     );
 
@@ -27,7 +27,7 @@ class VoteRepository {
   // Si l'user a déja voté pour l'idée en question
   async updateVote(vote: Vote) {
     const [result] = await databaseClient.query<Result>(
-      "UPDATE Vote SET agree = ?, disagree = ? WHERE idea_id = ? AND user_id = ?",
+      "UPDATE vote SET agree = ?, disagree = ? WHERE idea_id = ? AND user_id = ?",
       [vote.agree, vote.disagree, vote.idea_id, vote.user_id],
     );
     return result.affectedRows;
@@ -36,7 +36,7 @@ class VoteRepository {
   // Vérifie si un user X a déja voté pour l'idée Y (pour fonction ci-dessus)
   async readByIdeaAndUser(idea_id: number, user_id: number) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM Vote WHERE idea_id = ? AND user_id = ?",
+      "SELECT * FROM vote WHERE idea_id = ? AND user_id = ?",
       [idea_id, user_id],
     );
     return rows[0] as Vote | undefined;
@@ -46,7 +46,7 @@ class VoteRepository {
 
   async read(id: number) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM Vote WHERE id = ?",
+      "SELECT * FROM vote WHERE id = ?",
       [id],
     );
 
@@ -65,7 +65,7 @@ class VoteRepository {
       `SELECT 
       SUM(agree) AS agree_count, 
       SUM(disagree) AS disagree_count 
-    FROM Vote 
+    FROM vote 
     WHERE idea_id = ?`,
       [ideaId],
     );
@@ -74,7 +74,7 @@ class VoteRepository {
 
     if (userId) {
       const [rows] = await databaseClient.query<Rows>(
-        "SELECT agree, disagree FROM Vote WHERE idea_id = ? AND user_id = ?",
+        "SELECT agree, disagree FROM vote WHERE idea_id = ? AND user_id = ?",
         [ideaId, userId],
       );
       if (rows.length > 0) {
@@ -98,7 +98,7 @@ class VoteRepository {
 
   // Delete all votes of a user
   async deleteByUserId(userId: number) {
-    await databaseClient.query("DELETE FROM Vote WHERE user_id = ?", [userId]);
+    await databaseClient.query("DELETE FROM vote WHERE user_id = ?", [userId]);
   }
 }
 
