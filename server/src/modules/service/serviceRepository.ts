@@ -11,9 +11,9 @@ class ServiceRepository {
   // The C of CRUD - Create operation
 
   async create(service: Omit<Service, "id">) {
-    // Execute the SQL INSERT query to add a new service to the "Service" table
+    // Execute the SQL INSERT query to add a new service to the "service" table
     const [result] = await databaseClient.query<Result>(
-      "insert into Service (statut) values (?)",
+      "insert into service (statut) values (?)",
       [service.statut],
     );
 
@@ -34,7 +34,7 @@ class ServiceRepository {
   async read(id: number) {
     // Execute the SQL SELECT query to retrieve a specific service by its ID
     const [rows] = await databaseClient.query<Rows>(
-      "select * from Service where id = ?",
+      "select * from service where id = ?",
       [id],
     );
 
@@ -43,8 +43,8 @@ class ServiceRepository {
   }
 
   async readAll() {
-    // Execute the SQL SELECT query to retrieve all items from the "Service" table
-    const [rows] = await databaseClient.query<Rows>("select * from Service");
+    // Execute the SQL SELECT query to retrieve all items from the "service" table
+    const [rows] = await databaseClient.query<Rows>("select * from service");
 
     // Return the array of items
     return rows as Service[];
@@ -53,7 +53,7 @@ class ServiceRepository {
   // The U of CRUD - Update operation
 
   async update(service: Service) {
-    // Execute the SQL UPDATE query to update an existing category in the "Service" table
+    // Execute the SQL UPDATE query to update an existing category in the "service" table
     const [result] = await databaseClient.query<Result>(
       "update service set statut = ? where id = ?",
       [service.statut, service.id],
@@ -66,9 +66,9 @@ class ServiceRepository {
   // The D of CRUD - Delete operation
 
   async delete(id: number) {
-    // Execute the SQL DELETE query to delete an existing service from the "Service" table
+    // Execute the SQL DELETE query to delete an existing service from the "service" table
     const [result] = await databaseClient.query<Result>(
-      "delete from Service where id = ?",
+      "delete from service where id = ?",
       [id],
     );
 

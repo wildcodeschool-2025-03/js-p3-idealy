@@ -83,19 +83,19 @@ class IdeaRepository {
 
     if (toValidate) {
       sql = `SELECT idea.*, u.firstname, u.lastname, u.mail as email
-           FROM Idea
+           FROM idea
            JOIN user_idea ui ON ui.idea_id = idea.id AND ui.isCreator = TRUE
            JOIN user u ON u.id = ui.user_id`;
       where.push("idea.statut_id = 1");
       where.push("idea.deadline <= CURDATE()");
     } else if (user_id) {
-      sql = `SELECT idea.* FROM Idea
+      sql = `SELECT idea.* FROM idea
            JOIN user_idea ui ON ui.idea_id = idea.id`;
       where.push("ui.user_id = ?");
       params.push(user_id);
       where.push("ui.isCreator = TRUE");
     } else {
-      sql = "SELECT * FROM Idea";
+      sql = "SELECT * FROM idea";
     }
 
     if (statut) {
