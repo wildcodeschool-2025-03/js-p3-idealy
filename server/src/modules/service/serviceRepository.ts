@@ -23,7 +23,7 @@ class ServiceRepository {
 
   async readByName(serviceName: string) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM Service WHERE statut = ?",
+      "SELECT * FROM service WHERE statut = ?",
       [serviceName],
     );
     return rows[0];
@@ -55,7 +55,7 @@ class ServiceRepository {
   async update(service: Service) {
     // Execute the SQL UPDATE query to update an existing category in the "Service" table
     const [result] = await databaseClient.query<Result>(
-      "update Service set statut = ? where id = ?",
+      "update service set statut = ? where id = ?",
       [service.statut, service.id],
     );
 

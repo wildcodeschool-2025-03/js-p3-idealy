@@ -26,9 +26,9 @@ async function countIdeasValidated(): Promise<number> {
   const [rows] = await databaseClient.query<RowDataPacket[]>(
     `SELECT COUNT(*) AS count
      FROM Idea
-     INNER JOIN Statut ON Idea.statut_id = Statut.id
+     INNER JOIN Statut ON idea.statut_id = Statut.id
      WHERE Statut.statut = 'Validé'     
-      AND YEAR(Idea.timestamp) = YEAR(CURRENT_DATE())`,
+      AND YEAR(idea.timestamp) = YEAR(CURRENT_DATE())`,
   );
   return rows[0]?.count || 0;
 }
