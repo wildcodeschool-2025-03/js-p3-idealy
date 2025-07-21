@@ -3,16 +3,25 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router";
 
+import AuthGuard from "./components/AuthGuard";
+import Admin from "./pages/Admin";
+import Apropos from "./pages/Apropos";
+import Compte from "./pages/Compte";
+import Contact from "./pages/Contact";
+import Detail from "./pages/Detail";
+import Forbidden from "./pages/Forbidden";
+import Home from "./pages/Home";
+import Information from "./pages/Information";
+import Legal from "./pages/Legal";
+import NotFound from "./pages/NotFound";
+import Parcourir from "./pages/Parcourir";
+import Principal from "./pages/Principal";
+import Soumettre from "./pages/Soumettre";
+
 /* ************************************************************************* */
 
 // Import the main app component
 import App from "./App";
-
-// Import additional components for new routes
-// Try creating these components in the "pages" folder
-
-// import About from "./pages/About";
-// import Contact from "./pages/Contact";
 
 /* ************************************************************************* */
 
@@ -20,13 +29,114 @@ import App from "./App";
 // You can add more routes as you build out your app!
 const router = createBrowserRouter([
   {
-    path: "/", // The root path
-    element: <App />, // Renders the App component for the home page
-  },
-  // Try adding a new route! For example, "/about" with an About component
-]);
+    element: <App />,
+    children: [
+      // Route libre
+      {
+        path: "/",
+        element: <Home />,
+      },
 
-/* ************************************************************************* */
+      // Routes protégées par AuthGuard
+      {
+        element: (
+          <AuthGuard>
+            <Admin />
+          </AuthGuard>
+        ),
+        path: "/admin",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Apropos />
+          </AuthGuard>
+        ),
+        path: "/a-propos",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Compte />
+          </AuthGuard>
+        ),
+        path: "/compte",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Contact />
+          </AuthGuard>
+        ),
+        path: "/contact",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Detail />
+          </AuthGuard>
+        ),
+        path: "/detail/:id",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Information />
+          </AuthGuard>
+        ),
+        path: "/informations",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Legal />
+          </AuthGuard>
+        ),
+        path: "/legal",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <NotFound />
+          </AuthGuard>
+        ),
+        path: "*",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Parcourir />
+          </AuthGuard>
+        ),
+        path: "/parcourir",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Principal />
+          </AuthGuard>
+        ),
+        path: "/principal",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Soumettre />
+          </AuthGuard>
+        ),
+        path: "/soumettre",
+      },
+      {
+        element: (
+          <AuthGuard>
+            <Forbidden />
+          </AuthGuard>
+        ),
+        path: "/forbidden",
+      },
+    ],
+  },
+]);
 
 // Find the root element in the HTML document
 const rootElement = document.getElementById("root");
